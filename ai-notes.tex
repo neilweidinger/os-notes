@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+\usepackage{fancyhdr}
+\usepackage{datetime2}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[a4paper, left=1in, right=1in, bottom=1.25in]{geometry}
+
+% set up headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Operating System Concepts Notes}
+\rfoot{Page \thepage}
+\setlength{\headheight}{15pt}
+
+\begin{document}
+\section*{OS Concepts 1.1: What Operating Systems Do}
+
+\begin{itemize}
+    \item \textbf{What is an OS?:} OS's vary widely in design and in function, but basically an OS is the software that sits between application programs and computer hardware. It provides and environment for application programs to run in by allocating physical resources like CPU, memory, and I/O devices.
+\end{itemize}
+
+\section*{OS Concepts 1.2: Computer-System Organization}
+
+\subsection*{1.2.1: Interrupts}
+
+\begin{itemize}
+    \item \textbf{Device Controller:} The I/O managing processor within a device.
+    \item \textbf{Device Driver:} A component in the OS that understands how to communicate with its respective device controller and manages I/O to those devices.
+    \item \textbf{Interrupts:} Interrupts are used in OS's to handle asynchronous events. Device controllers and hardware faults raise interrupts. Because interrupts are used so heavily for time-sensitive processing, efficient interrupt handling is necessary for good system performance.
+    \item \textbf{Interrupt Vector:} A table of pointers stored in low memory that holds the addresses of the interrupt service routines.
+    \item \textbf{Basic Interrupt Implementation:} The CPU hardware has a wire called the interrupt-request line that the CPU senses after executing every instruction. When the CPU detects a device controller has asserted a signal on the wire, it reads the interrupt number and jumps to the respective interrupt-handler routine by using the interrupt number as an index into the interrupt vector. It then saves the current state of whatever was interrupted, and starts execution of the interrupt-handler routine. Once the handler is finished executing, it performs a state restore and returns the CPU to the execution state prior to the interrupt.
+    \item \textbf{Interrupt Terminology:} We say that the device controller \textbf{raises} an interrupt by asserting a signal on the interrupt request line, the CPU \textbf{catches} the interrupt and \textbf{dispatches} it to the interrupt handler, and the handler \textbf{clears} the interrupt by servicing the device.
+    \item \textbf{More Sophisticated Interrupt Implementation:} We need the ability for the following:
+        \begin{itemize}
+            \item Defer interrupt handling during critical processing
+            \item Efficiently dispatch to the correct interrupt-handler for a device
+            \item Multilevel interrupts, so that the OS can distinguish between high and low priority interrupts and respond with the appropriate level of urgency
+        \end{itemize}
+
+        To do this, most CPU's have two interrupt request lines: one is the nonmaskable interrupt, which is used for events such as unrecoverable memory errors, and the second is the maskable interrupt, which the CPU can turn off before the execution of critical instruction sequences that must not be interrupted. Device controllers use the maskable interrupt to request service.
+\end{itemize}
+
+\subsection*{1.2.2: Storage Structure}
+
+\begin{itemize}
+    \item \textbf{Firmware:} Software stored in ROM or EEPROM for booting the system and managing low level hardware.
+\end{itemize}
+
+\subsection*{1.2.3: I/O Structure}
+
+\begin{itemize}
+    \item \textbf{Direct Memory Access (DMA):} Interrupt-driven I/O as described in section 1.2.1 is fine for moving small amounts of data but can produce high overhead when used for bulk data movement, like when moving data to and from nonvolatile memory. DMA is used to avoid this overhead. The device controller sets up buffers, pointers, and counters for its I/O device, and transfers entire blocks of data to or from the device and main memory, with no intervention by the CPU. Only one interrupt is generated per block, to tell the device driver that the operation has completed, rather than the one interrupt per byte generated for low-speed devices. The CPU is able to perform other work while the device controller is performing these operations.
+\end{itemize}
+
+\section*{OS Concepts 1.3: Computer-System Architecture}
+
+\subsection*{1.3.1: Single-Processor Systems}
+
+\begin{itemize}
+    \item \textbf{CPU:} The hardware that executes instructions.
+    \item \textbf{Processor:} A physical chip that contains one or more CPU's.
+    \item \textbf{CPU Core:} The core is the component of the CPU that executes instructions and contains registers for storing data locally.
+    \item \textbf{Single-Processor System:} A computer system with a single processor containing one CPU with a single processing core. These systems often also have other special-purpose processors as well, such as disk, keyboard, and graphics controllers. These special-purpose processors run a limited instruction set and do not run processes; their use is incredibly common and does not turn a single-processor system into a multiprocessor system.
+\end{itemize}
+
+\subsection*{1.3.2: Multiprocessor Systems}
+
+\begin{itemize}
+    \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors. Traditionally contains two or more processors, each with a single-core CPU.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/symmetric-multiprocessing-architecture.jpg}
+            \caption{Symmetric \textit{multiprocessing} architecture}
+            \label{fig:symmetric-multiprocessing-architecture}
+        \end{figure}
+    \item \textbf{Multiprocessor Advantages (Increased Throughput):} Primary advantages of multiprocessor systems is increased throughput. The speed-up ratio with \(N\) processors is not \(N\), however; it is less than \(N\) because there is overhead incurred and contention for shared resources when dealing with multiple processors.
+    \item \textbf{Multicore Systems:} A computer system containing multiple cores on the same processor chip. Such systems can be more efficient than multiple chips with single cores because on-chip communication is faster than between-chip communication. Additionally, one chip with multiple cores uses significantly less power than multiple single-core chips, an issue especially important for mobile devices.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/multicore-architecture.jpg}
+            \caption{\textit{Multicore} architecture}
+            \label{fig:multicore-architecture}
+        \end{figure}
+    \item \textbf{Multiprocessor Bottleneck:} Adding additional CPU's to a multiprocessor system increases computing power, but does not scale very well. Once too many CPU's are added, contention for the system bus becomes a bottleneck and performance begins to degrade.
+    \item \textbf{Non-uniform Memory Access (NUMA):} To avoid bottleneck performance degradation arising from system bus contention, we can provide each CPU with its own local memory that is accessed via a small and fast local bus. The CPU's are connected by a shared system interconnect, so that all CPU's share one physical address space. The advantage is that when a CPU accesses its local memory, not only is it fast, but there is also no contention over the system interconnect. Thus, NUMA systems can scale more effectively as more processors are added.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.4\textwidth]{figures/numa-architecture.jpg}
+            \caption{Numa architecture}
+            \label{fig:numa-architecture}
+        \end{figure}
+    \item \textbf{NUMA Drawbacks (Increased Latency):} A potential drawback is increased latency when a CPU must access remote memory across the system interconnect (accessing the local memory of another CPU). OS's can minimize this NUMA penalty through careful CPU scheduling and memory management.
+\end{itemize}
+
+% \vspace{4mm}
+
+% \noindent Test here test
+
+\end{document}
