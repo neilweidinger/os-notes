@@ -18,7 +18,7 @@
 \section*{OS Concepts 1.1: What Operating Systems Do}
 
 \begin{itemize}
-    \item \textbf{What is an OS?:} OS's vary widely in design and in function, but basically an OS is the software that sits between application programs and computer hardware. It provides and environment for application programs to run in by allocating physical resources like CPU, memory, and I/O devices.
+    \item \textbf{What is an OS?:} OS's vary widely in design and in function, but basically an OS is the software that sits between application programs and computer hardware. It provides an environment in which application programs are executed, by allocating physical resources like CPU, memory, and I/O devices.
 \end{itemize}
 
 \section*{OS Concepts 1.2: Computer-System Organization}
@@ -28,7 +28,7 @@
 \begin{itemize}
     \item \textbf{Device Controller:} The I/O managing processor within a device.
     \item \textbf{Device Driver:} A component in the OS that understands how to communicate with its respective device controller and manages I/O to those devices.
-    \item \textbf{Interrupts:} Interrupts are used in OS's to handle asynchronous events. Device controllers and hardware faults raise interrupts. Because interrupts are used so heavily for time-sensitive processing, efficient interrupt handling is necessary for good system performance.
+    \item \textbf{Interrupts:} Interrupts are used in OS's to handle asynchronous events originating from outside the processor (interrupts originating from within the processor are called exceptions). Device controllers and hardware faults raise interrupts. Because interrupts are used so heavily for time-sensitive processing, efficient interrupt handling is necessary for good system performance.
     \item \textbf{Interrupt Vector:} A table of pointers stored in low memory that holds the addresses of the interrupt service routines.
     \item \textbf{Basic Interrupt Implementation:} The CPU hardware has a wire called the interrupt-request line that the CPU senses after executing every instruction. When the CPU detects a device controller has asserted a signal on the wire, it reads the interrupt number and jumps to the respective interrupt-handler routine by using the interrupt number as an index into the interrupt vector. It then saves the current state of whatever was interrupted, and starts execution of the interrupt-handler routine. Once the handler is finished executing, it performs a state restore and returns the CPU to the execution state prior to the interrupt.
     \item \textbf{Interrupt Terminology:} We say that the device controller \textbf{raises} an interrupt by asserting a signal on the interrupt request line, the CPU \textbf{catches} the interrupt and \textbf{dispatches} it to the interrupt handler, and the handler \textbf{clears} the interrupt by servicing the device.
@@ -92,6 +92,35 @@
             \label{fig:numa-architecture}
         \end{figure}
     \item \textbf{NUMA Drawbacks (Increased Latency):} A potential drawback is increased latency when a CPU must access remote memory across the system interconnect (accessing the local memory of another CPU). OS's can minimize this NUMA penalty through careful CPU scheduling and memory management.
+\end{itemize}
+
+\section*{OS Concepts 1.4: Operating-System Operations}
+
+\begin{itemize}
+    \item \textbf{Bootstrap Program:} The initial program that is run when a computer starts running for the first time. Typically a very simple program and stored in firmware. The program must know how to load the OS kernel into memory and start executing it.
+    \item \textbf{System Daemons:} Services provided outside of the kernel that are loaded into memory at boot time, which run the entire time the kernel is running.
+\end{itemize}
+
+\subsection*{1.4.1: Multiprogramming and Multitasking}
+
+\begin{itemize}
+    \item \textbf{Multiprogramming:} Increase CPU utilization by organizing programs so that the CPU always has one to execute. Execute a process until it needs to wait on some task like I/O, then switch to another process. Keep switching between processes such that the CPU is never idle.
+    \item \textbf{Process:} In a multiprogrammed system, a program in execution is termed a process.
+    \item \textbf{Multitasking:} The logical extension of multiprogramming. In multitasking systems, the CPU executes multiple processes by switching among them incredibly frequently. This is how interactive I/O like keyboard input works: rather than letting the CPU sit idle in the time between the keystrokes of the user, the OS will rapidly switch to another process in the meantime.
+\end{itemize}
+
+\subsection*{1.4.2: Dual-Mode and Multimode Operation}
+
+\begin{itemize}
+    \item \textbf{Modes of Execution:} A properly designed OS must ensure that an incorrect (or malicious) program cannot cause other programs - or the OS itself - to execute incorrectly. To do this, we need to distinguish between the execution of OS code and user-defined code. Most computer systems provide hardware support that allows differentiation among various modes of execution.
+    \item \textbf{User Mode and Kernel Mode:} At the very least, we need two separate modes of operation: user mode and kernel mode (also called supervisor mode, system mode, or privileged mode). A bit, called the mode bit, is added to the hardware of the computer to indicate the current mode: kernel (0) or user (1). Whenever the OS gains control of the computer, it is in kernel mode. The system always switches back to user mode before passing control to a user program. The concept of modes can be extended beyond two modes (e.g. the four protection rings in Intel processors).
+    \item \textbf{Privileged Instructions:} Some machine instructions that may cause can only be executed in kernel mode. The instruction to switch to kernel mode is an example of a privileged instruction.
+\end{itemize}
+
+\subsection*{1.4.3: Timer}
+
+\begin{itemize}
+    \item \textbf{Timer:} We must ensure that the OS maintains control over the CPU: we allow user programs to execute, but they must eventually relinquish control to the OS (avoid situations like user program infinite loops or not calling system services and thus not returning control to the OS). To accomplish this, we can use a timer that is set to raise an interrupt after a specified amount of time. If the timer interrupts, control transfers automatically to the OS, which may treat the interrupt as a fatal error or may give the program more time. Instructions that modify the timer are clearly privileged.
 \end{itemize}
 
 % \vspace{4mm}
