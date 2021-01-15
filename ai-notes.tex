@@ -156,13 +156,30 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \begin{itemize}
     \item \textbf{OS and Memory Hierarchy:} The OS is responsible for moving data between the different levels of the memory hierarchy that it has access to. The OS can only manipulate software-controlled caches, for instance transfer of data from disk to memory, while data transfer from CPU cache to registers is a hardware function.
     \item \textbf{Caches and Multitasking:} In a computing environment where only one process executes at a time, having the same data appear in multiple levels of the memory hierarchy is not an issue, since access to desired memory always will be to the copy at the highest level of the hierarchy. In a multitasking environment, however, extreme care must be taken to ensure that if several processes wish to access the same data, each of these processes obtains the most recently updated value of the data.
-    \item \textbf{Caches and Multiprocessor Systems:} In a multiprocessing environment, not only do we need to make sure that processes access the most recenly updated value of the desired data (multitasking), but we now have CPUs that contain local caches in which data may esist simultaneously in several of these. We need to make sure that an update to the value of a given piece of data in one cache is immediately reflected in all other caches where this data resides. This issue if called \textit{cache conherency}, and is usually handled in hardware (below the OS level).
+    \item \textbf{Caches and Multiprocessor Systems:} In a multiprocessing environment, not only do we need to make sure that processes access the most recenly updated value of the desired data (multitaking), but we now have CPUs that contain local caches in which data may esist simultaneously in several of these. We need to make sure that an update to the value of a given piece of data in one cache is immediately reflected in all other caches where this data resides. This issue if called \textit{cache conherency}, and is usually handled in hardware (below the OS level).
 \end{itemize}
 
 \subsection*{1.5.6: I/O System Management}
 
 \begin{itemize}
     \item \textbf{I/O Subsystem:} One of the purposes of an OS is to hide the peculiarities of specific hardware devices from the user. Often, these peculiarities are hidden from most of the OS itself by the I/O subsystem. Device drivers for specific hardware devices for instance are included in the I/O subsystem.
+\end{itemize}
+
+\section*{OS Concepts 1.7 Virtualization}
+
+\begin{itemize}
+    \item \textbf{Virtualization:} Virtualization allows us to abstract the hardware of a single computer (the CPU, memory, disk drives, etc.) into several different execution environments, creating the illusion that each separate environment is running on its own private computer. An OS that is natively compiled for a particular CPU architecture runs within another OS also native to that CPU.
+    \item \textbf{Emulation:} Simulates computer hardware in software, typically used when the source CPU type is different from the target CPU type (e.g. Apple Rosetta when moving from PowerPC to x86). Usually much slower than native code.
+\end{itemize}
+
+\section*{OS Concepts 1.10 Computing Environments}
+
+\subsection*{1.10.4: Peer-to-Peer Computing}
+
+\begin{itemize}
+    \item \textbf{Peer-to-Peer (P2P) Computing:} In this distributed computing model, clients and servers are not distinguished from each other. Each node in the system may act as either a client or a server, depending on whether it is requesting or providing a service. In traditional client-server systems, the server is a bottleneck; but in a P2P system, services can be provided by several nodes distributed throughout the network.
+    \item \textbf{Centralized P2P:} When a node first joins a network, it registers its service with a centralized lookup service on the network. Any node desiring a specific service first contacts this centralized lookup service to determine which node provides the service. The remainder of the communication takes place between the client and the service provider.
+    \item \textbf{Decentralized P2P:} A decentralized system uses no centralized lookup service. Instead, a peer acting as a client must discover what node provides a desired service by broadcasting a request for the service to all other nodes in the network. To support this approach, a \textit{discovery protocol} must be provided that allows peers to discover services provided by other peers in the network.
 \end{itemize}
 
 % \vspace{4mm}
