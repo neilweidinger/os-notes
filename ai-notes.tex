@@ -88,7 +88,7 @@
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.4\textwidth]{figures/numa-architecture.jpg}
-            \caption{Numa architecture}
+            \caption{NUMA architecture}
             \label{fig:numa-architecture}
         \end{figure}
     \item \textbf{NUMA Drawbacks (Increased Latency):} A potential drawback is increased latency when a CPU must access remote memory across the system interconnect (accessing the local memory of another CPU). OS's can minimize this NUMA penalty through careful CPU scheduling and memory management.
@@ -121,6 +121,48 @@
 
 \begin{itemize}
     \item \textbf{Timer:} We must ensure that the OS maintains control over the CPU: we allow user programs to execute, but they must eventually relinquish control to the OS (avoid situations like user program infinite loops or not calling system services and thus not returning control to the OS). To accomplish this, we can use a timer that is set to raise an interrupt after a specified amount of time. If the timer interrupts, control transfers automatically to the OS, which may treat the interrupt as a fatal error or may give the program more time. Instructions that modify the timer are clearly privileged.
+\end{itemize}
+
+\section*{OS Concepts 1.5: Resource Management}
+
+The OS can be seen as a resource manager. The following are things that the OS must carefully manage in a computer system.
+
+\subsection*{1.5.1: Process Management}
+
+\begin{itemize}
+    \item \textbf{Program vs Process:} A program by itself is not a process. A program is a \textit{passive} entity, whereas a process is an \textit{active} entity. Remember that a process is just a program in execution, thus there can be multiple processes associated with the same program (and each is considered a separate execution sequence).
+\end{itemize}
+
+\subsection*{1.5.2: Memory Management}
+
+\begin{itemize}
+    \item \textbf{Memory Management:} The OS is responsible for keeping tack of which parts of memory are currently being used and which process is using them, allocating and deallocating memory, and deciding which processes (or parts of processes) and data to move into and out of memory.
+\end{itemize}
+
+\subsection*{1.5.3: File-System Management}
+
+\begin{itemize}
+    \item \textbf{File System:} The OS abstracts the physical properties of its storage devices to define a logical storage unit, the \textbf{file}. In other words, the OS implements the abstract concept of a file by managing mass storage media and the devices that control them.
+\end{itemize}
+
+\subsection*{1.5.4: Mass-Storage Management}
+
+\begin{itemize}
+    \item \textbf{Secondary Storage Management:} The proper management of secondary storage is critical to a computer system. The OS must take care of things such as mounting and unmounting, free-space management, storage allocation, disk scheduling, partitioning, and protection.
+\end{itemize}
+
+\subsection*{1.5.5: Cache Management}
+
+\begin{itemize}
+    \item \textbf{OS and Memory Hierarchy:} The OS is responsible for moving data between the different levels of the memory hierarchy that it has access to. The OS can only manipulate software-controlled caches, for instance transfer of data from disk to memory, while data transfer from CPU cache to registers is a hardware function.
+    \item \textbf{Caches and Multitasking:} In a computing environment where only one process executes at a time, having the same data appear in multiple levels of the memory hierarchy is not an issue, since access to desired memory always will be to the copy at the highest level of the hierarchy. In a multitasking environment, however, extreme care must be taken to ensure that if several processes wish to access the same data, each of these processes obtains the most recently updated value of the data.
+    \item \textbf{Caches and Multiprocessor Systems:} In a multiprocessing environment, not only do we need to make sure that processes access the most recenly updated value of the desired data (multitasking), but we now have CPUs that contain local caches in which data may esist simultaneously in several of these. We need to make sure that an update to the value of a given piece of data in one cache is immediately reflected in all other caches where this data resides. This issue if called \textit{cache conherency}, and is usually handled in hardware (below the OS level).
+\end{itemize}
+
+\subsection*{1.5.6: I/O System Management}
+
+\begin{itemize}
+    \item \textbf{I/O Subsystem:} One of the purposes of an OS is to hide the peculiarities of specific hardware devices from the user. Often, these peculiarities are hidden from most of the OS itself by the I/O subsystem. Device drivers for specific hardware devices for instance are included in the I/O subsystem.
 \end{itemize}
 
 % \vspace{4mm}
