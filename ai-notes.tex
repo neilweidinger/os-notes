@@ -182,6 +182,18 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Decentralized P2P:} A decentralized system uses no centralized lookup service. Instead, a peer acting as a client must discover what node provides a desired service by broadcasting a request for the service to all other nodes in the network. To support this approach, a \textit{discovery protocol} must be provided that allows peers to discover services provided by other peers in the network.
 \end{itemize}
 
+\section*{OS Concepts 2.6 Why Applications are OS Specific}
+
+\begin{itemize}
+    \item \textbf{Why Applications are OS Specific:} Each OS exposes different functionalities (system calls), so applications cannot expect to be able to use the same functions across varying OS's. Even if system calls were somehow uniform, other barriers would still pose a challenge: binary formats, varying CPU ISA's, system call discrepencies (specific operands and operand ordering, how to invoke syscalls, syscall result meanings, etc.).
+    \item \textbf{How to Make Applications Cross Compatible Across OS's:}
+    \begin{itemize}
+        \item Write the application in an \textit{interpreted language} (e.g. Python or Ruby); performance typically suffers. and interpreter usually only offers a subset of the OS's features.
+        \item Write the application in a language that includes a \textit{virtual machine} (e.g. Java). The JVM has been ported to many OS's, and in theory any Java app can run within the JVM wherever it's available. Usually have similar disadvantages as with interpreted languages.
+        \item Use a language that compiles \textit{machine and OS specific binaries} (e.g. C++ or Rust), and simply port to each OS on which it will run. Standard API's like POSIX can make this process easier.
+    \end{itemize}
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
