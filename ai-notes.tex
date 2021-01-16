@@ -208,6 +208,40 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Mechanisms and Policies:} An important principle is the separation of policy from mechanism. Mechanisms determine \textit{how} to do something; policies determine \textit{what} will be done. For instance, the standard Linux kernel has a specific CPU scheduling algorithm, which is a mechanism that supports a certain policy. However, anyone is free to modify or replace the scheduler to support a different policy.
 \end{itemize}
 
+\section*{OS Concepts 2.8: OS Structure}
+
+\subsection*{2.8.1: Monolithic Structure}
+
+\begin{itemize}
+    \item \textbf{Monolithic Structure:} A monolithic kernel places all of the functionality of the kernel into a single, static binary file that runs in a single address space. Everything below the system-call interface and above the physical hardware is the kernel, as seen in figure \ref{fig:monolithic-structure}. Typically difficult to implement and extend, but have good performance due to very little overhead in the syscall interface, and communication within the kernel is fast.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/monolithic-structure.jpg}
+            \caption{Traditional UNIX system structure (monolithic architecture)}
+            \label{fig:monolithic-structure}
+        \end{figure}
+\end{itemize}
+
+\subsection*{2.8.3: Microkernels}
+
+\begin{itemize}
+    \item \textbf{What is a Microkernel:} The microkernel approach structures the OS by removing all nonessential components from the kernel and implementing them as user-level programs that reside in separate address spaces, resulting in a smaller kernel, seen in figure \ref{fig:microkernel-structure}. There is little consensus on what services remain in the kernel, however, typically minimal process and memory management and a communication facility are provided. The main function of the microkernel is to provide communication between the client program and the various services also running in user space; communication is provided though message passing.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/microkernel-structure.jpg}
+            \caption{Architecture of a typical microkernel}
+            \label{fig:microkernel-structure}
+        \end{figure}
+    \item \textbf{Microkernel Benefits:} The microkernel approach makes extending the OS easier, as all new services are added to user space and do not require modification of the kernel. When the kernel does have to be modified, the changes tend to be fewer as the kernel is smaller. It also makes porting the OS to different hardware easier and provides more security and reliability, as most services are running as user -rather than kernel- processes.
+    \item \textbf{Microkernel Drawbacks:} Performance of microkernels can suffer due to increased system-function overhead. The overhead involved in copying messages and switching between processes has been the larged impediment to the groth of microkernel-based OS's.
+\end{itemize}
+
+\subsection*{2.8.4: Modules}
+
+\begin{itemize}
+    \item \textbf{Loadable Kernel Modules (LKMs):} Using LKMs, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time. The key idea is for the kernel to provide core services, while other services are implemented dynamically, as the kernel is running.
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
