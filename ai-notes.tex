@@ -242,6 +242,22 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Loadable Kernel Modules (LKMs):} Using LKMs, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time. The key idea is for the kernel to provide core services, while other services are implemented dynamically, as the kernel is running.
 \end{itemize}
 
+\section*{OS Concepts 2.9: Building and Booting an OS}
+
+\subsection*{2.9.2: System Boot}
+
+\begin{itemize}
+    \item \textbf{Booting OS:} When starting a computer system, how does the hardware know where the kernel is or how to load that kernel? This process of loading the kernel is known as booting the system. The boot process typically roughly follows as so:
+    \begin{enumerate}
+        \item A small piece of code known as the bootstrap program or boot loader locates the kernel
+        \item The kernel is loaded into memory and started
+        \item The kernel initializes the hardware
+        \item The root file system is mounted
+    \end{enumerate}
+    \item \textbf{BIOS:} Some (typically older) computers use a multistage boot process: when the computer first powered on, a small boot loader located in nonvolatile firmware known as BIOS is run. This initial bootloader usually does nothing more than load a second boot lader, which is located at a fixed disk location called the boot block, which is then responsible for loading the OS into memory and begin execution.
+    \item \textbf{UEFI:} More recent computers have replaced the BIOS-based boot process with UEFI (Unified Extensible Firmware Interface). The biggest difference is that UEFI is a single, complete boot manager and therefore is faster than the multistage BIOS boot process.
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
