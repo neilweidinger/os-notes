@@ -35,10 +35,10 @@
     \item \textbf{More Sophisticated Interrupt Implementation:} We need the ability for the following:
         \begin{itemize}
             \item Defer interrupt handling during critical processing
-            \item Efficiently dispatch to the correct interrupt-handler for a device
+            \item Efficiently dispatch to the correct interrupt-handler without having to first poll all devices to see which one raised the interrupt
             \item Multilevel interrupts, so that the OS can distinguish between high and low priority interrupts and respond with the appropriate level of urgency
+            \item A way for an instruction to get the OS's attention directly (separately from I.O requests), for activities such as page faults and errors such as division by zero. This task is accomplished by "traps".
         \end{itemize}
-
         To do this, most CPU's have two interrupt request lines: one is the nonmaskable interrupt, which is used for events such as unrecoverable memory errors, and the second is the maskable interrupt, which the CPU can turn off before the execution of critical instruction sequences that must not be interrupted. Device controllers use the maskable interrupt to request service.
 \end{itemize}
 
@@ -262,6 +262,45 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \begin{itemize}
     \item \textbf{Accomodating Varying I/O Devices using Device Drivers:} Hardware I/O devices are constantly evolving, and so are methods required to communicate with them. To accomodate this ever increasing variety of I/O devices, the kernel of an OS is structured to use device-driver modules. The device drivers present a uniform device-access interface to the I/O subsystem, much as syscalls provide a standard interface between the application and the OS.
+\end{itemize}
+
+\section*{OS Concepts 12.2: I/O Hardware}
+
+\begin{itemize}
+    \item \textbf{Port:} A device communicates with a computer system via a port.
+    \item \textbf{Bus:} If devices share a common set of wires, the connection is called a bus. Uses a rigidly defined protocol that specifies a set of messages that can be sent on the wires. Historically called a data highway. Widely used in computer architecture and vary in signaling methods, speed, throughput, and connection methods.
+    \item \textbf{Controller:}  A controller is a collection of electronics that can operate a port, a bus, or a devices.
+\end{itemize}
+
+\subsection*{12.2.1: Memory-Mapped I/O}
+
+\begin{itemize}
+    \item \textbf{Processor and Device Communication:} A controller has one or more registers for data and control signals. The processor communicates with the controller by reading and writing bit patterns in these registers. I/O device control typically consists of four registers: the status, control, data-in, and data-out registers. Data registers are typically 1 to 4 bytes in size, meaning the processor needs to react quickly otherwise new data may overflow the registers and overwrite the old data. Also means I/O is basically done byte by byte.
+    \item \textbf{Memory-Mapped I/O:} With memory-mapped I/O, the controller registers are mapped into the address space of the processor. The CPU executes I/O instructions using standard memory data transfer instructions to read and write the controller registers at their mapped locations in physical memory.
+    \item \textbf{Memory-Mapped I/O Example:} Memory-mapped I/O for graphics. A thread sends output to the screen by writing data into the memory-mapped region. The controller then generates the screen image based on the contents of this memory. Writing millions of bytes to the graphics memory is faster than issuing millions of I/O instructions to read and write byte by byte.
+\end{itemize}
+
+\subsection*{12.2.2: Polling}
+
+\begin{itemize}
+    \item \textbf{Polling:} Polled mode I/O between a host and a controller is basically where the host has to repeatedly loop to check if the device is ready to read or write by continually checking the controller status register. Polling the controller naturally requires CPU cycles (read a device register, logical-and to extract a status bit, and branch depending on status). Polling becomes inefficient when it is attempted repeatedly yet rarely finds a device ready for service, while other useful CPU processing remains undone.
+\end{itemize}
+
+\subsection*{12.2.3: Interrupts}
+
+\begin{itemize}
+    \item \textbf{Purpose of Interrupts:} Interrupts are used throughout modern OS's to handle asynchronous events and to trap to supervisor-mode (kernel mode) routines.
+    \item \textbf{Interrupt Handlers and OS Boot Time:} At boot time, the OS probes the hardware buses to determine what devices are present and installs the corresponding interrupt handlers into the interrupt vector.
+    \item \textbf{Software Interrupts (Traps):} To get the attention of the OS, a special instruction called a trap can be executed. This instruction has an operand that identifies the desired kernel service. Library functions to issue syscalls typically implemented using traps.
+    \item \textbf{Interrupt-driven I/O vs Polled I/O:} Interrupt-driven I/O is now much more common than polling, with polling being used for high-throughput I/O. Some device drivers use both: interrupts when the I/O rate is low, and switch to polling when the rate increases to the point where polling is faster and more efficient.
+\end{itemize}
+
+\subsection*{12.2.4: Direct Memory Access}
+
+\begin{itemize}
+    \item \textbf{Direct Memory Access (DMA):} Using the expensive general purpose CPU processor to watch status bits and to feed data into a controller register one byte at a time (programmed I/O, PIO) seems wasteful. We can avoid burdening the main CPU with PIO by offloading some of this work to a special-purpose processor called a DMA controller. Essentially, DMA allows us to bypass the CPU and utilize direct memory to device I/O.
+    \item \textbf{DMA High Level Implementation:} Basically, the CPU gives the DMA controller pointers to the source and destination locations and the number of bytes to be transferred. The DMA controller then proceeds to operate the memory bus directly, allowing us to perform I/O without the help of the CPU. When the entire transfer is finished, the DMA controller interrupts the CPU.
+    \item \textbf{Cycle Stealing:} When the DMA controller seizes the memory bus, the CPU is momentarily prevented from accessing main memory, although it can still access data items in its caches. Although this cycle stealing can slow down CPU computation, offloading the data transfer work to a DMA controller generally improves the total system performance.
 \end{itemize}
 
 % \vspace{4mm}
