@@ -332,6 +332,34 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Vectored I/O:} Allows one syscall to perform multiple I/O operations involving multiple locations. This allows multiple separate buffers to have their contents transferred via one syscall, avoiding context switching and syscall overhead. Some versions also provide atomicity.
 \end{itemize}
 
+\section*{OS Concepts 12.4: Kernel I/O Subsystem}
+
+\subsection*{12.4.1: I/O Scheduling}
+
+\begin{itemize}
+    \item \textbf{I/O Scheduling:} The order in which applications issue system calls rarely is the best choice. Scheduling can improve overall system performance, can share device access fairly among processes, and can reduce the average waiting time for I/O to complete. OS developers implement scheduling by maintaing a wait queue of requests for each device, rearranging the order of the queue according to a scheduling algorithm.
+\end{itemize}
+
+\subsection*{12.4.2: Buffering}
+
+\begin{itemize}
+    \item \textbf{Buffering:} Buffering is done for three reasons. One reason is to cope with a speed mismatch between the producer and consumer of a data stream. A second use is to provide adaptations for devices that have different data transfer sizes (especially common in computer networking). A third use is to support copy semantics for application I/O.
+    \item \textbf{When Buffering Can't Help:} Buffering is useful for smoothing peaks and troughs of data rate, but it can't help if on average:
+        \begin{itemize}
+            \item Process demand \(>\) data rate (process will spend time waiting)
+            \item Data rate \(>\) capability of the system (buffers will fill and data will spill)
+            \item Downside: can introduce jitter (deviation from true periodicity of a presumably periodic signal) which is bad for real-time or multimedia
+        \end{itemize}
+    \item \textbf{Double Buffering:} Double buffering allows decoupling of the producer of the data from the consumer, thus relaxing timing requirements between them. This works by alternating between two buffers, where the producer is writing into one and the consumer is reading from the other, and making the switch when the producer finishes writing into its buffer.
+    \item \textbf{Copy Semantics:} Suppose an application has a buffer of data that it wishes to write to disk by calling the \texttt{write()} syscall. If the application modifies the buffer while the I/O is being performed, is the original or the updated data now being written? Copy semantics ensure that the version of the data is the original, the version at the time of the application syscall. A simple way to implement copy semantics is for the OS to copy application data into a kernel buffer before returning control back to the application. Despite the overhead this copying introduces, copying data from application data space to kernel buffers is common because of the useful copy semantics. Clever use of virtual memory mapping and copy-on-write page protection can also be used to implement the same effect.
+\end{itemize}
+
+\subsection*{12.4.4: Spooling}
+
+\begin{itemize}
+    \item \textbf{Spooling:} Queue output for a device, such as a printer, that cannot accept interleaved data streams.
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
