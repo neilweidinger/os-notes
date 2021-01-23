@@ -258,6 +258,12 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{UEFI:} More recent computers have replaced the BIOS-based boot process with UEFI (Unified Extensible Firmware Interface). The biggest difference is that UEFI is a single, complete boot manager and therefore is faster than the multistage BIOS boot process.
 \end{itemize}
 
+\section*{OS Concepts 12.1: I/O Overview}
+
+\begin{itemize}
+    \item \textbf{Accomodating Varying I/O Devices using Device Drivers:} Hardware I/O devices are constantly evolving, and so are methods required to communicate with them. To accomodate this ever increasing variety of I/O devices, the kernel of an OS is structured to use device-driver modules. The device drivers present a uniform device-access interface to the I/O subsystem, much as syscalls provide a standard interface between the application and the OS.
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
