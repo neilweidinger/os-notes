@@ -303,6 +303,35 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Cycle Stealing:} When the DMA controller seizes the memory bus, the CPU is momentarily prevented from accessing main memory, although it can still access data items in its caches. Although this cycle stealing can slow down CPU computation, offloading the data transfer work to a DMA controller generally improves the total system performance.
 \end{itemize}
 
+\section*{OS Concepts 12.3: Application I/O Interface}
+
+\begin{itemize}
+    \item \textbf{Accomodating Varying I/O Devices in an OS:} The wide variety of available devices poses a problem for OS implementors (each device has its own set of capabilities, control-bit definitions, and protocols for interacting with the host). How can the OS be designed so that new devices can be attached to the computer without rewriting the OS? And when devices vary so widely, how can the OS give a convenient, uniform I/O interface to applications? Answer: by abstracting I/O hardware with device drivers.
+    \item \textbf{Device Drivers:} Device drivers are kernel modules that internally are custom-tailored to specific devices but that export one of the standard OS I/O interfaces. The purpose of the device driver layer is to hide the differences among device controllers from the I/O subsystem of the kernel. Hardware manufacturers can design new devices to be compatible with existing host controller interfaces (such as SATA), or they can write device drivers for popular OS's. Each OS has its own standards for the device driver interface, so they must be ported for each OS.
+    \item \textbf{Device Access Conventions:} I/O devices vary among many dimensions, such as synchronous vs asynchronous, sequential or random access, speed of operation, etc. But for the purpose of application access, many of these differences are hidden by the OS, and the devices are grouped into a few conventional types. The major access conventions include: block I/O, character-stream I/O, memory-mapped file access, and network sockets.
+\end{itemize}
+
+\subsection*{12.3.3: Clocks and Timers}
+
+\begin{itemize}
+    \item \textbf{Programmable Interval Timer:} Most computers have hardware clocks and timers that provide three basic functions: give the current time, give the elapsed time, and set a timer to trigger operation \(X\) at time \(T\). This hardware is called a programmable interval timer. It can be set to wait a certain amount of time and then generate an interrupt, with the option of generating this interrupt periodically as well. The precision of triggers to generate interrupts is limited by the resolution of the timer, together with the overhead of maintaining virtual clocks.
+    \item \textbf{Virtual Clocks:} Used to support more timer requests than the number of timer hardware channels. The kernel implements this simply by having a list of of interrupts scheduled both by the kernel and user requests, sorted in earliest-time-first order. It sets the timer for the earliest time, and when the timer interrupts, the kernel just signals the requester that the timer has gone off and reloads the timer with the next earliest interrupt time.
+\end{itemize}
+
+\subsection*{12.3.4: Nonblocking and Asynchronous I/O}
+
+\begin{itemize}
+    \item \textbf{Blocking I/O} A blocking call causes the execution of the calling thread to be suspended. Blocking application is easier to write than nonblocking application code.
+    \item \textbf{Nonblocking I/O:} Nonblocking calls do not suspend the calling threads execution, like blocking calls do. Instead, it returns quickly, with a return value that indicates how many bytes were transferred. One way an application writer could implement this is with multithreading: some threads can perform blocking system calls, while others continue executing. Some OS's also provide nonblocking syscalls.
+    \item \textbf{Asynchronous Calls:} An alternative to nonblocking calls. An asynchronous call returns immediately, without waiting for I/O or whatever computation to complete. The calling thread continues to execute its code. The completion of the task at some future time is then communicated to the thread (either setting some variable in the thread address space, or triggering a signal or software interrupt or a call-back routine that is executed outside the control flow of the thread).
+\end{itemize}
+
+\subsection*{12.3.5: Vectored I/O}
+
+\begin{itemize}
+    \item \textbf{Vectored I/O:} Allows one syscall to perform multiple I/O operations involving multiple locations. This allows multiple separate buffers to have their contents transferred via one syscall, avoiding context switching and syscall overhead. Some versions also provide atomicity.
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
