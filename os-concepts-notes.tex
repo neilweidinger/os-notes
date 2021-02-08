@@ -258,6 +258,76 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{UEFI:} More recent computers have replaced the BIOS-based boot process with UEFI (Unified Extensible Firmware Interface). The biggest difference is that UEFI is a single, complete boot manager and therefore is faster than the multistage BIOS boot process.
 \end{itemize}
 
+\section*{OS Concepts 3.1: Process Concept}
+
+\subsection*{OS Concepts 3.1.1: The Process}
+
+\begin{itemize}
+    \item \textbf{What is a process?} A process is a program in execution. A program becomes a process when an executable file is loaded into memory. Although two processes may be associated with the same program, they are nevertheless considered two separate esecution sequences.
+    \item \textbf{How is the status of a running process represented?} The status of the current activity of a process is represented by the value of the program counter and the contents of the processor's registers (the preservation of a processes memory address space depends on the memory management method of the OS).
+\end{itemize}
+
+\subsection*{OS Concepts 3.1.2: Process State}
+
+\begin{itemize}
+    \item \textbf{What are the different states a process can be in?} In general, a process may be in one of the following states (diagram in figure \ref{fig:process-states}):
+    \begin{itemize}
+        \item \textbf{New:} The process is being created.
+        \item \textbf{Running:} Instructions are being executed.
+        \item \textbf{Waiting:} The process is waiting for some event to occur (such as an I/O completion).
+        \item \textbf{Ready:} The process is waiting to be assigned to a processor.
+        \item \textbf{Terminated:} The process has finished execution.
+    \end{itemize}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/process-states.jpg}
+        \caption{Diagram of process states}
+        \label{fig:process-states}
+    \end{figure}
+\item \textbf{How many processes can be running on a processor core at any given time?} Only one process can be actively running (in the running state) on any processor core at any given time. Many processes may be in the ready or waiting state, however.
+\end{itemize}
+
+\subsection*{OS Concepts 3.1.3: Process Control Block}
+
+\begin{itemize}
+    \item \textbf{How is information about a process tracked by the OS?} The OS maintains information about each process in a data structure called the process control block (PCB), shown in figure \ref{fig:process-control-block}. Basically it contains all the necessary information required to start, or restart, a process, along with bookkeeping data. On systems that support threads, the PCB is expanded to include information for each thread.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.4\textwidth]{figures/process-control-block.jpg}
+        \caption{The process control block. The highlighted blue regions is the machine environment during the time the process is actively in control of the CPU.}
+        \label{fig:process-control-block}
+    \end{figure}
+\end{itemize}
+
+\section*{OS Concepts 3.2: Process Scheduling}
+
+\begin{itemize}
+    \item \textbf{How are processes selected to be run?} To maximize CPU utilization by having some process running at all times and to support efficient multitasking by switching among processes frequently enough, the \textbf{process scheduler} is responsible for selecting an available process for program execution on a CPU core (balancing multiprogramming and time sharing). For a single core system there will never be more than one process running at a time, whereas a multicore system can run multiple processes at a time.
+    \item \textbf{Degree of multiprogramming:} The number of processes currently in memory.
+    \item \textbf{I/O Bound:} An I/O bound process is one whose speed is bound by the I/O (i.e. it doesn't matter if the CPU is blazing fast, the program speed will still be limited by how fast I/O completes).
+    \item \textbf{CPU Bound:} A CPU bound process is one whose speed is limited by the speed of the CPU (i.e. it would go faster if the CPU could go faster).
+\end{itemize}
+
+\subsection*{OS Concepts 3.2.1: Scheduling Queues}
+
+\begin{itemize}
+    \item \textbf{What happens to a process when it first enters the system?} As processes enter the system, they are put into a \textbf{ready queue}, where they have the "ready" state and waiting to be executed (dispatched) on a CPU's core. This queue is typically implemented as a linked list, containg pointers to PCB structures. See figure \ref{fig:queueing-diagram}.
+    \item \textbf{What happesn to a process when it is waiting?} A process in a waiting state (waiting for I/O, time slice expired, etc.) is put into the \textbf{wait queue}. See figure \ref{fig:queueing-diagram}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/queueing-diagram.jpg}
+        \caption{Representation of process scheduling}
+        \label{fig:queueing-diagram}
+    \end{figure}
+\end{itemize}
+
+\subsection*{OS Concepts 3.2.3: Context Switch}
+
+\begin{itemize}
+    \item \textbf{What happens when the CPU needs to switch to a different process?} When switching to another process, whether that be because of an interrupt, time slice expired, or any another reason, the current context of the running process on the CPU core needs to be saved (state save). The context is represented in the PCB of the context. The CPU then needs to restore the context of the other process it wishes to switch to (state restore). This process is known as a \textbf{context switch}.
+    \item \textbf{What are the performance implications of a context switch?} A context switch is pure overhead. The system does no useful work while switching processes. A typical context switch takes several microseconds, but is highly dependent on the hardware the OS is running on.
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
