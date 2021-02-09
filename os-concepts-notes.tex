@@ -378,6 +378,29 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How is shared memory access coordinated among processes?} Processes must themselves ensure that they are not writing to the same location simultaneously.
 \end{itemize}
 
+\section*{OS Concepts 3.6: IPC in Message-Passing Systems}
+
+\begin{itemize}
+    \item \textbf{What is message passing IPC?} Message passing provides a mechanism to allow processes to communicate and to synchronize their actions without sharing the same address space (particularly useful in distributed environments). Message passing may be either \textbf{blocking} or \textbf{nonblocking} (also known as synchronous or asynchronous).
+\end{itemize}
+
+\section*{OS Concepts 3.7: Examples of IPC Systems}
+
+\subsection*{OS Concepts 3.7.4: Pipes}
+
+\subsubsection*{OS Concepts 3.7.4.1: Ordinary Pipes}
+
+\begin{itemize}
+    \item \textbf{How do ordinary pipes work for IPC?} Ordinary (in contrast to named) pipes allow two processes to coomunicate in standard producer-consumer fashion: the producer writes to the write end of the pipe, and the consumer reads from the read end of the pipe. As a result, ordinary pipes are unidirectional (one-way communication), and bidirectional communication requires two pipes.
+    \item \textbf{What processes can access an ordinary pipe?} On UNIX systems, ordinary pipes cannot be accessed from outside the process that created it. Typically, a parent process creates a pipe and uses it to communicate with a child process it created using \texttt{fork()}. In UNIX systems a child process inherits open files from its parent, hence why it is allowed to access the pipe. This also implies that ordinary pipes can only be used for communication between processes on the same machine.
+\end{itemize}
+
+\subsubsection*{OS Concepts 3.7.4.2: Named Pipes}
+
+\begin{itemize}
+    \item \textbf{What is difference between ordinary and named pipes?} Named pipes provide bidrectional communication, and do not require a parent-child process relationship. Once a named pipe is established, sefveral processes can use it for communication. Named pipes also continue to exist after communicating processes have finished, and must explicitly be deleted.
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
