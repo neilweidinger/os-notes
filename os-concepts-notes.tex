@@ -365,6 +365,19 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{itemize}
 \end{itemize}
 
+\section*{OS Concepts 3.4: Interprocess Communication}
+
+\begin{itemize}
+    \item \textbf{How do processes communicate with each other?} Using interprocess communication (IPC): implemented using either shared memory or message passing.
+\end{itemize}
+
+\section*{OS Concepts 3.5: IPC in Shared-Memory Systems}
+
+\begin{itemize}
+    \item \textbf{How does shared memory IPC work?} Normally, the OS tries to prevent processes from accessing memory of other processes. Shared memory IPC requires that two or more processes agree to remove this restriction, so that they can then exchange information by reading and writing data in the shared memory areas.
+    \item \textbf{How is shared memory access coordinated among processes?} Processes must themselves ensure that they are not writing to the same location simultaneously.
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
