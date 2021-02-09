@@ -328,6 +328,43 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What are the performance implications of a context switch?} A context switch is pure overhead. The system does no useful work while switching processes. A typical context switch takes several microseconds, but is highly dependent on the hardware the OS is running on.
 \end{itemize}
 
+\section*{OS Concepts 3.3: Operations on Processes}
+
+\subsection*{OS Concepts 3.3.1: Process Creation}
+
+\begin{itemize}
+    \item \textbf{How are processes created?} During the course of execution, a process may create several new processes. The creating process is called the \textbf{parent} process, and the new processes it has created are aclled the \textbf{children} of that process. Each of these new processes may in turn create other processes, forming a hierarchical tree.
+    \item \textbf{How are processes identified?} Most OS's use unique process identifiers (PID, typically an integer) to identify processes. The PID provides a unique value for each process in the system.
+    \item \textbf{What is the ultimate parent process (chicken and egg problem)?} In a Linux OS, the \texttt{systemd} process (which always has a PID of 1) serves as the root process for all user processes. It is the first user process created when the system boots. Once the system has booted, the \texttt{systemd} process creates processes that provide additional services, like an \texttt{ssh} server or a login server.
+    \item \textbf{How are resources and initialization of processes handled?} In general, child processes require resources (CPU time, memory resources, I/O devices, files) to accomplish its task. There are several options how this is handled:
+        \begin{itemize}
+            \item Parent and child share all resources
+            \item Children share subset of parent's resources
+            \item Parent and child share no resources
+        \end{itemize}
+    \item \textbf{How are parent and child processes executed?} The parent process may continue to execute \textbf{concurrently} with its children, or it may \textbf{wait} until some or all of its children have terminated.
+    \item \textbf{What are the address-space possibilities for the new child process?} The child process is a \textbf{duplicate} of the parent process (it has the same program and data as input), or the child process has a program \textbf{loaded} into it.
+    \item \textbf{What does process creation on a UNIX system typically look like?} Diagram in figure \ref{fig:unix-process-creation}. The parent process calls \texttt{fork()}, at which both the parent and child process continue execution (of the same program). After a \texttt{fork()} call, one of the processes typicall uses the \texttt{exec()} system call to replace the process's memory space with a new program. The parent can then create more children; or, if it has nothing else to do while the child runs, it can issue a \texttt{wait()} system call to move itself off the ready queue until the termination of the child.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/unix-process-creation.jpg}
+            \caption{Representation of typical process creation on a UNIX system}
+            \label{fig:unix-process-creation}
+        \end{figure}
+\end{itemize}
+
+\subsection*{OS Concepts 3.3.2: Process Termination}
+
+\begin{itemize}
+    \item \textbf{What happens when a process is terminated?} When a process is terminated, all the resources of the process (including virtual and physical memory, open files, and I/O buffers) are deallocated and reclaimed by the OS.
+    \item \textbf{Under what situations can a process be terminated?} A process can be terminated under three circumstances:
+        \begin{itemize}
+            \item Process executes last statement and asks the OS to delete it (\texttt{exit()} syscall, either called explicitly or implicitly by C run-time library)
+            \item Process performs an illegal operation (e.g. access memory it is not authorized for or execute a privileged instruction)
+            \item Parent may terminate child process (child process exceeding resource usage, task assigned to child no longer required, or parent is exiting and OS uses cascading termination - if a process terminates so must all its children)
+        \end{itemize}
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
