@@ -14,6 +14,14 @@
 \rfoot{Page \thepage}
 \setlength{\headheight}{15pt}
 
+% highlights links
+% apparently need to import hyperref last
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=cyan,
+}
+
 \begin{document}
 \section*{OS Concepts 1.1: What Operating Systems Do}
 
@@ -265,6 +273,19 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \begin{itemize}
     \item \textbf{What is a process?} A process is a program in execution. A program becomes a process when an executable file is loaded into memory. Although two processes may be associated with the same program, they are nevertheless considered two separate esecution sequences.
     \item \textbf{How is the status of a running process represented?} The status of the current activity of a process is represented by the value of the program counter and the contents of the processor's registers (the preservation of a processes memory address space depends on the memory management method of the OS).
+    \item \textbf{What does the memory layout of a process look like?} The memory layout of a process is typically divided into multiple sections (figure \ref{fig:process-memory-layout}), the most important being:
+        \begin{itemize}
+            \item \textbf{Text} - the executable code
+            \item \textbf{Data section} - global variables
+            \item \textbf{Heap section} - memory that is dynamically allocated during program runtime
+            \item \textbf{Stack section} - temporary data storage when invoking functions (such as function parameters, return addresses, and local variables)
+        \end{itemize}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.4\textwidth]{figures/process-memory-layout.jpg}
+            \caption{Memory layout of a process}
+            \label{fig:process-memory-layout}
+        \end{figure}
 \end{itemize}
 
 \subsection*{OS Concepts 3.1.2: Process State}
