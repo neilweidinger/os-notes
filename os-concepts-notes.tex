@@ -76,7 +76,7 @@
 \subsection*{1.3.2: Multiprocessor Systems}
 
 \begin{itemize}
-    \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors. Traditionally contains two or more processors, each with a single-core CPU.
+    \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors (figure \ref{fig:symmetric-multiprocessing-architecture}). Traditionally contains two or more processors, each with a single-core CPU.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.6\textwidth]{figures/symmetric-multiprocessing-architecture.jpg}
@@ -84,7 +84,7 @@
             \label{fig:symmetric-multiprocessing-architecture}
         \end{figure}
     \item \textbf{Multiprocessor Advantages (Increased Throughput):} Primary advantages of multiprocessor systems is increased throughput. The speed-up ratio with \(N\) processors is not \(N\), however; it is less than \(N\) because there is overhead incurred and contention for shared resources when dealing with multiple processors.
-    \item \textbf{Multicore Systems:} A computer system containing multiple cores on the same processor chip. Such systems can be more efficient than multiple chips with single cores because on-chip communication is faster than between-chip communication. Additionally, one chip with multiple cores uses significantly less power than multiple single-core chips, an issue especially important for mobile devices.
+    \item \textbf{Multicore Systems:} A computer system containing multiple cores on the same processor chip (figure \ref{fig:multicore-architecture}). Such systems can be more efficient than multiple chips with single cores because on-chip communication is faster than between-chip communication. Additionally, one chip with multiple cores uses significantly less power than multiple single-core chips, an issue especially important for mobile devices.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.6\textwidth]{figures/multicore-architecture.jpg}
@@ -92,7 +92,7 @@
             \label{fig:multicore-architecture}
         \end{figure}
     \item \textbf{Multiprocessor Bottleneck:} Adding additional CPU's to a multiprocessor system increases computing power, but does not scale very well. Once too many CPU's are added, contention for the system bus becomes a bottleneck and performance begins to degrade.
-    \item \textbf{Non-uniform Memory Access (NUMA):} To avoid bottleneck performance degradation arising from system bus contention, we can provide each CPU with its own local memory that is accessed via a small and fast local bus. The CPU's are connected by a shared system interconnect, so that all CPU's share one physical address space. The advantage is that when a CPU accesses its local memory, not only is it fast, but there is also no contention over the system interconnect. Thus, NUMA systems can scale more effectively as more processors are added.
+    \item \textbf{Non-uniform Memory Access (NUMA):} To avoid bottleneck performance degradation arising from system bus contention, we can provide each CPU with its own local memory that is accessed via a small and fast local bus (figure \ref{fig:numa-architecture}). The CPU's are connected by a shared system interconnect, so that all CPU's share one physical address space. The advantage is that when a CPU accesses its local memory, not only is it fast, but there is also no contention over the system interconnect. Thus, NUMA systems can scale more effectively as more processors are added.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.4\textwidth]{figures/numa-architecture.jpg}
@@ -420,6 +420,22 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \begin{itemize}
     \item \textbf{What is difference between ordinary and named pipes?} Named pipes provide bidrectional communication, and do not require a parent-child process relationship. Once a named pipe is established, sefveral processes can use it for communication. Named pipes also continue to exist after communicating processes have finished, and must explicitly be deleted.
+\end{itemize}
+
+\section*{OS Concepts 4.1: Threads Overview}
+
+\begin{itemize}
+    \item \textbf{What are threads?} A thread is a basic unit of CPU utilization. Processes can have multiple threads of control to perform more than one task at a time (threads exist as subsets of a process).
+    \item \textbf{What is a thread comprised of?} A thread is comprised of a thread ID, a program counter (PC), a register set. and a stack.
+    \item \textbf{What parts of a process do threads share?} Threads technically share everything belonging to a process, but each thread has it's own independent stack. Figure \ref{fig:thread-memory} shows a rough representation of how stacks use memory in the context of a process.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/thread-memory.jpg}
+            \caption{Rough representation of process memory layout with single thread vs multiple threads}
+            \label{fig:thread-memory}
+        \end{figure}
+    \item \textbf{What is the high level difference between threads and processes?} Processes help organize two independent concepts in computing: resource grouping and execution. Resources (program text, data, open files, child processes, etc.) are grouped into a single process so that they can be managed easily. The other concept of a process is a thread of execution. Threads have program counters keeping track of which instructions to execute next, registers to hold its current working variables, and its own stack. Threads operate in the context of processes. Processes are used to group resources together, while threads are entities scheduled for execution on the CPU.
+    \item \textbf{Why might one want to use threads instead of processes?} Process creation is time consuming and resource intensive: it is generally more efficient to use one process that contains multiple threads. It makes particular sense to use threads when multiple tasks need to be performed at the same time using the same resources.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
