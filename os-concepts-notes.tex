@@ -438,6 +438,43 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Why might one want to use threads instead of processes?} Process creation is time consuming and resource intensive: it is generally more efficient to use one process that contains multiple threads. It makes particular sense to use threads when multiple tasks need to be performed at the same time using the same resources.
 \end{itemize}
 
+\section*{OS Concepts 4.2: Multicore Programming}
+
+\begin{itemize}
+    \item \textbf{What is multicore programming?} With the advent of multicore computer systems, multithreading provides a mechansim for more efficient use of thse multiple computing cores and improved concurrency.
+    \item \textbf{What is the difference between concurrency and parallelism?} Consider an application with four threads. On a system with a single computing core, concurrency merely means that the execution of the threads will be interleaved over time (figure \ref{fig:concurrent-execution}). On a system with multiple cores, however, concurrency means that some threads can run in parallel, because the system can assign a separate thread to each core (figure \ref{fig:parallel-execution}). Thus, it is possible to have concurrency without parallelism.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/concurrent-execution.jpg}
+            \caption{Concurrent execution on a single core system}
+            \label{fig:concurrent-execution}
+        \end{figure}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/parallel-execution.jpg}
+            \caption{Parallel execution on a multicore system}
+            \label{fig:parallel-execution}
+        \end{figure}
+    \item \textbf{Concurrency:} Multiple threads making progress.
+    \item \textbf{Parallelism} Multiple threads making progress \textit{simultaneously}.
+    \item \textbf{What are the two types of parallelism?}
+        \begin{itemize}
+            \item \textbf{Data Parallelism:} Data parallelism focuses on distributing \textit{subsets} of the \textit{same data} across multiple computing cores and \textit{performing the same operation} on each core.
+            \item \textbf{Task Parallelism:} Distributing not data but \textit{tasks} (threads) across multiple computing cores. Each thread is performing a \textit{unique operation}.
+        \end{itemize}
+    \item \textbf{Amdahl's Law:} The main idea behind Amdahl's law is that when we speed up one part of a system, the effect on the overall system performance depends on both what proportion of the overall system this part was and how much it sped up. We can interpret this in the context of multicore programming if we consider parallel components of a program being sped by up the number of processor cores \(N\). The key takeaway is that to significantly speed up an entire system, we must improve the speed of a very large fraction of the overall system. Derivation taken from CS:APP p22.
+        \begin{itemize}
+            \item \textbf{Derivation:} Consider a system in which executing some application requires time \(T_{\text{old}}\). Suppose some part of the system requires a fraction \(\alpha\) of this time, and that we improve its performance by a factor of \(k\). That is, the component originally required time \(\alpha T_{\text{old}}\), and now it requires time \((\alpha T_{\text{old}}) / k\). The overall execution time would thus be
+                \begin{align*}
+                    T_{\text{new}} & = (1 - \alpha) T_{\text{old}} + (\alpha T_{\text{old}}) / k \\
+                                   & = T_{\text{old}} [(1 - \alpha) + \alpha / k]
+                \end{align*}
+                From this, we can compute the speedup \(S = T_{\text{old}} / T_{\text{new}}\) as
+                \[S = \frac{1}{(1 - \alpha) + \alpha / k}\]
+            \item \textbf{When N approaches infinity:} If the speedup \(k = N\) (number of processor cores in multicore context) approaches infinity, the speedup converges to \(\frac{1}{(1 - \alpha)}\). If two thirds of a program must be performed serially (parallel portion \(\alpha = 1/3\)), then the maximum speedup is 1.5 times, regardless of the number or processing cores \(N\) we add. It pays to be aware of exactly how much a program can really be sped up using parallelism (not much point if much of it needs to be done serially).
+        \end{itemize}
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
