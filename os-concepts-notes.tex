@@ -427,12 +427,12 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \begin{itemize}
     \item \textbf{What are threads?} A thread is a basic unit of CPU utilization. Processes can have multiple threads of control to perform more than one task at a time (threads exist as subsets of a process).
     \item \textbf{What is a thread comprised of?} A thread is comprised of a thread ID, a program counter (PC), a register set. and a stack.
-    \item \textbf{What parts of a process do threads share?} Threads technically share everything belonging to a process, but each thread has it's own independent stack. Figure \ref{fig:thread-memory} shows a rough representation of how stacks use memory in the context of a process.
+    \item \textbf{What parts of a process do threads share?} Threads technically share everything belonging to a process, but each thread has it's own independent stack (and of course corresponding registers and a program counter, and possibly thread local storage if supported). Basically each thread contains its own state. Figure \ref{fig:thread-process} shows a rough visualization of how threads operate in the context of processes.
         \begin{figure}[ht]
             \centering
-            \includegraphics[width=0.8\textwidth]{figures/thread-memory.jpg}
-            \caption{Rough representation of process memory layout with single thread vs multiple threads}
-            \label{fig:thread-memory}
+            \includegraphics[width=0.8\textwidth]{figures/thread-process.jpg}
+            \caption{Rough visualization of single vs multithreaded processes}
+            \label{fig:thread-process}
         \end{figure}
     \item \textbf{What is the high level difference between threads and processes?} Processes help organize two independent concepts in computing: resource grouping and execution. Resources (program text, data, open files, child processes, etc.) are grouped into a single process so that they can be managed easily. The other concept of a process is a thread of execution. Threads have program counters keeping track of which instructions to execute next, registers to hold its current working variables, and its own stack. Threads operate in the context of processes. Processes are used to group resources together, while threads are entities scheduled for execution on the CPU.
     \item \textbf{Why might one want to use threads instead of processes?} Process creation is time consuming and resource intensive: it is generally more efficient to use one process that contains multiple threads. It makes particular sense to use threads when multiple tasks need to be performed at the same time using the same resources.
@@ -473,6 +473,33 @@ The OS can be seen as a resource manager. The following are things that the OS m
                 \[S = \frac{1}{(1 - \alpha) + \alpha / k}\]
             \item \textbf{When N approaches infinity:} If the speedup \(k = N\) (number of processor cores in multicore context) approaches infinity, the speedup converges to \(\frac{1}{(1 - \alpha)}\). If two thirds of a program must be performed serially (parallel portion \(\alpha = 1/3\)), then the maximum speedup is 1.5 times, regardless of the number or processing cores \(N\) we add. It pays to be aware of exactly how much a program can really be sped up using parallelism (not much point if much of it needs to be done serially).
         \end{itemize}
+\end{itemize}
+
+\section*{OS Concepts 4.3: Multithreading Models}
+
+\begin{itemize}
+    \item \textbf{What is the difference between user and kernel threads?} User threads are implemented in userspace and managed without knowledge of the kernel (and neither does the kernel know about the user threads). Kernel threads are managed directly by the OS. User threads need to eventually map down somehow to kernel threads (important to take advantage of multicore systems, as user threads alone do not inherently support parallelism), different such multithreading models. Typically slightly more overhead when switching between kernel threads (user theads do not need to dip down to the kernel at all).
+    \item \textbf{Many to One Model:} The many to one model maps many user level threads to one kernel thread (figure \ref{fig:many-to-one}). Thread management is done by the thread library in user space, so it is efficient (does not need to dip down into kernel). However, the entire process will block if a thread makes a blocking system call. Also, since only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.4\textwidth]{figures/many-to-one.jpg}
+            \caption{Many to one threading model}
+            \label{fig:many-to-one}
+        \end{figure}
+    \item \textbf{One to One Model:} The one to one model maps each user thread to a kernel thread (figure \ref{fig:one-to-one}). It provides more concurrency than the many to one model by allowing another thread to run when a thread makes a blocking system call, as the kernel is responsible for managing these threads at the end of the day. Also allows multiple threads to run in \textbf{parallel} on multiprocessors. The only drawback to this model is that there is slightly more overhead involved with creating a kernel thread than just a pure user thread.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{figures/one-to-one.jpg}
+            \caption{One to one threading model}
+            \label{fig:one-to-one}
+        \end{figure}
+    \item \textbf{Many to Many (M:N) Model:} The M:N model \textit{multiplexes} \(M\) user level threads to \(N\) kernel threads, where \(M \geq N\) (figure \ref{fig:many-to-many}). In this model, the developer may create as many user theads as necessary, and the corresponding kernel threads can run in parallel on a multiprocessor. Also, when a thread performs a blocking system call, the kernel can simply schedule another thread for execution. Complex to implement, efficient performance requires extensive coordination between the userspace scheduler and the kernel scheduler.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{figures/many-to-many.jpg}
+            \caption{Many to many threading model}
+            \label{fig:many-to-many}
+        \end{figure}
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
