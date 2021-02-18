@@ -434,7 +434,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \caption{Rough visualization of single vs multithreaded processes}
             \label{fig:thread-process}
         \end{figure}
-    \item \textbf{What is the high level difference between threads and processes?} Processes help organize two independent concepts in computing: resource grouping and execution. Resources (program text, data, open files, child processes, etc.) are grouped into a single process so that they can be managed easily. The other concept of a process is a thread of execution. Threads have program counters keeping track of which instructions to execute next, registers to hold its current working variables, and its own stack. Threads operate in the context of processes. Processes are used to group resources together, while threads are entities scheduled for execution on the CPU.
+    \item \textbf{What is the high level difference between threads and processes?} Processes help organize two independent concepts in computing: resource grouping and execution. Resources (program text, data, open files, child processes, etc.) are grouped into a single process so that they can be managed easily. The other concept of a process is a thread of execution. Threads have program counters keeping track of which instructions to execute next, registers to hold its current working variables, and its own stack. Threads only operate in the context of processes. Processes are used to group resources together, while threads are entities scheduled for execution on the CPU.
     \item \textbf{Why might one want to use threads instead of processes?} Process creation is time consuming and resource intensive: it is generally more efficient to use one process that contains multiple threads. It makes particular sense to use threads when multiple tasks need to be performed at the same time using the same resources.
 \end{itemize}
 
@@ -550,7 +550,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What are the two types of thread cancellation?}
         \begin{itemize}
             \item \textbf{Asynchronous Cancellation:} One thread immediately terminates the target thread to be cancelled. This is troublesome when threads are cancelled in situations where resources have been allocated to these threads, or when a thread is cancelled in the midst of updating data shared with other threads.
-            \item \textbf{Synchronous Cancellation:} The target thread to be cancelled periodically checks whether it should terminate, allowing it to terminate itself in an orderly fashion (clean up and release resources).
+            \item \textbf{Deferred Cancellation:} The target thread periodically checks whether it should terminate, allowing it to terminate itself in an orderly fashion (clean up and release resources).
         \end{itemize}
 \end{itemize}
 
@@ -558,6 +558,12 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \begin{itemize}
     \item \textbf{How are M:N theading models typically implemented (high level)?} Such systems usually place an intermediate data structure between the user and the kernel theads, typically known as a \textbf{lightweight process} (LWP). To the user-thread library, the LWP appears to be a virtual processor on which the application can schedule a user thread to run. Each LWP is attached to a kernel thread, and the kernel threads are scheduled by the OS to run on physical processors. If a kernel thread blocks (such as when waiting for I/O to complete), the LWP and the corresponding user-level threads attached to the LWP block as well. This is an issue when many concurrent blocking system calls are performed: if five I/O requests are made but only four LWPs are available, the firth request must wait for one of the four LWPs to return from the kernel before executing.
+\end{itemize}
+
+\section*{OS Concepts 4.7: OS Thread Examples}
+
+\begin{itemize}
+    \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instyead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
