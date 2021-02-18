@@ -34,8 +34,8 @@
 \subsection*{1.2.1: Interrupts}
 
 \begin{itemize}
-    \item \textbf{Device Controller:} The I/O managing processor within a device.
-    \item \textbf{Device Driver:} A component in the OS that understands how to communicate with its respective device controller and manages I/O to those devices.
+    \item \textbf{Device Controller:} The I/O managing processor within a device. Basically the hardware, that the device driver talks to, which controls the I/O device.
+    \item \textbf{Device Driver:} A software component in the OS that understands how to communicate with its respective device controller and manages I/O to those devices.
     \item \textbf{Interrupts:} Interrupts are used in OS's to handle asynchronous events originating from outside the processor (interrupts originating from within the processor are called exceptions). Device controllers and hardware faults raise interrupts. Because interrupts are used so heavily for time-sensitive processing, efficient interrupt handling is necessary for good system performance.
     \item \textbf{Interrupt Vector:} A table of pointers stored in low memory that holds the addresses of the interrupt service routines.
     \item \textbf{Basic Interrupt Implementation:} The CPU hardware has a wire called the interrupt-request line that the CPU senses after executing every instruction. When the CPU detects a device controller has asserted a signal on the wire, it reads the interrupt number and jumps to the respective interrupt-handler routine by using the interrupt number as an index into the interrupt vector. It then saves the current state of whatever was interrupted, and starts execution of the interrupt-handler routine. Once the handler is finished executing, it performs a state restore and returns the CPU to the execution state prior to the interrupt.
@@ -45,7 +45,7 @@
             \item Defer interrupt handling during critical processing
             \item Efficiently dispatch to the correct interrupt-handler without having to first poll all devices to see which one raised the interrupt
             \item Multilevel interrupts, so that the OS can distinguish between high and low priority interrupts and respond with the appropriate level of urgency
-            \item A way for an instruction to get the OS's attention directly (separately from I.O requests), for activities such as page faults and errors such as division by zero. This task is accomplished by "traps".
+            \item A way for an instruction to get the OS's attention directly (separately from I/O requests), for activities such as page faults and errors such as division by zero. This task is accomplished by "traps".
         \end{itemize}
         To do this, most CPU's have two interrupt request lines: one is the nonmaskable interrupt, which is used for events such as unrecoverable memory errors, and the second is the maskable interrupt, which the CPU can turn off before the execution of critical instruction sequences that must not be interrupted. Device controllers use the maskable interrupt to request service.
 \end{itemize}
@@ -502,6 +502,28 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{figure}
 \end{itemize}
 
+\section*{OS Concepts 4.4: Thread Libraries}
+
+\begin{itemize}
+    \item \textbf{What are the two general strategies for creating multiple threads:} Asynchronous threading and synchronous threading.
+    \item \textbf{Asynchronous Threading:} With asynchronous threading, once the parent creates a child thread, the parent resumes its execution, so that the parent and child execute concurrently and independently of on another.
+    \item \textbf{Synchronous Threading:} With synchronous threading, the parent thread creates one or more children and then must wait for all of its children to terminate before it resumes. The threads created by the parent perform work concurrently, but the parent cannot continue until this work has been completed.
+\end{itemize}
+
+\section*{OS Concepts 4.5: Implicit Threading}
+
+\begin{itemize}
+    \item \textbf{What is implicit threading?} Implicit threading is basically transferring the responsibility of manually managing low level threads from developers to compilers and run-time libraries. Essentially, developers identify \textit{tasks} that they wish to execute concurrently, and these compilers and libraries do the grunt work of managing threads.
+    \item \textbf{What are the benefits of using thread pools?} Thead pools offer these benefits:
+        \begin{itemize}
+            \item \textbf{Avoiding thread creation overhead:} Servicing a thread with an existing thread is often faster than waiting to create a thread.
+            \item \textbf{Enforcing an upper bound to the number of threads:} A thread pool limits the number of threads that exist at any one point, important on systems that cannot support a large number of concurrent threads.
+            \item \textbf{Moving from thread based to task based concurrency approach:} By using a thread pool, we can separate the idea of executing a task concurrently from the mechanics of creating such a task (threading). Basically lean on compilers and libraries to do threading grunt work (e.g. rayon and TBB).
+        \end{itemize}
+    \item \textbf{How do thread pools work?} The general idea behind a thread pool is to create a number of threads at start-up and place them into a pool, where they sit and wait for work. Users can submit task requests, and if there is an available thread in the pool, it is awakened, and the request serviced immediately. If the pool contains no available thread, the task is queued until one becomes free. Once a thread completes its service, it returns to the pool and awaits more work.
+    \item \textbf{How do we determine the number of threads in a thread pool?} The number of threads in a pool can be heuristically set based on factors such as the number of CPUs, the amount of physical memory, and the expected number of concurrent client requests. More sophisticated thread pools can dynamically adjust the number of threads according to usage patterns (e.g. Grand Central Dispatch: makes pool smaller when system load is low, thereby consuming less memory).
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
@@ -513,7 +535,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \begin{itemize}
     \item \textbf{Port:} A device communicates with a computer system via a port.
     \item \textbf{Bus:} If devices share a common set of wires, the connection is called a bus. Uses a rigidly defined protocol that specifies a set of messages that can be sent on the wires. Historically called a data highway. Widely used in computer architecture and vary in signaling methods, speed, throughput, and connection methods.
-    \item \textbf{Controller:}  A controller is a collection of electronics that can operate a port, a bus, or a devices.
+    \item \textbf{Controller:}  A controller is a collection of electronics that can operate a port, a bus, or a device.
 \end{itemize}
 
 \subsection*{12.2.1: Memory-Mapped I/O}
