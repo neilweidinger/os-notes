@@ -427,12 +427,18 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \begin{itemize}
     \item \textbf{What are threads?} A thread is a basic unit of CPU utilization. Processes can have multiple threads of control to perform more than one task at a time (threads exist as subsets of a process).
     \item \textbf{What is a thread comprised of?} A thread is comprised of a thread ID, a program counter (PC), a register set. and a stack.
-    \item \textbf{What parts of a process do threads share?} Threads technically share everything belonging to a process, but each thread has it's own independent stack (and of course corresponding registers and a program counter, and possibly thread local storage if supported). Basically each thread contains its own state. Figure \ref{fig:thread-process} shows a rough visualization of how threads operate in the context of processes.
+    \item \textbf{What parts of a process do threads share?} Threads technically share everything belonging to a process, but each thread has it's own independent stack (and of course corresponding registers and a program counter, and possibly thread local storage if supported). Basically each thread contains its own state. Figure \ref{fig:thread-process} shows a rough visualization of how threads operate in the context of processes. Figure \ref{fig:thread-memory-layout} shows how multiple threads are laid out in the memory of a process.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.8\textwidth]{figures/thread-process.jpg}
             \caption{Rough visualization of single vs multithreaded processes}
             \label{fig:thread-process}
+        \end{figure}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/thread-memory-layout.jpg}
+            \caption{Memory layout of a process with multiple threads. Stack pointers and program counters are tracked in the respective thread control blocks (TCB)}
+            \label{fig:thread-memory-layout}
         \end{figure}
     \item \textbf{What is the high level difference between threads and processes?} Processes help organize two independent concepts in computing: resource grouping and execution. Resources (program text, data, open files, child processes, etc.) are grouped into a single process so that they can be managed easily. The other concept of a process is a thread of execution. Threads have program counters keeping track of which instructions to execute next, registers to hold its current working variables, and its own stack. Threads only operate in the context of processes. Processes are used to group resources together, while threads are entities scheduled for execution on the CPU.
     \item \textbf{Why might one want to use threads instead of processes?} Process creation is time consuming and resource intensive: it is generally more efficient to use one process that contains multiple threads. It makes particular sense to use threads when multiple tasks need to be performed at the same time using the same resources.
@@ -479,7 +485,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \begin{itemize}
     \item \textbf{What is the difference between user and kernel threads?} User threads are implemented in userspace and managed without knowledge of the kernel (and neither does the kernel know about the user threads). Kernel threads are managed directly by the OS. User threads need to eventually map down somehow to kernel threads (important to take advantage of multicore systems, as user threads alone do not inherently support parallelism), different such multithreading models. Typically slightly more overhead when switching between kernel threads (user theads do not need to dip down to the kernel at all).
-    \item \textbf{Many to One Model:} The many to one model maps many user level threads to one kernel thread (figure \ref{fig:many-to-one}). Thread management is done by the thread library in user space, so it is efficient (does not need to dip down into kernel). However, the entire process will block if a thread makes a blocking system call. Also, since only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems.
+    \item \textbf{Many to One Model:} The many to one model maps many user level threads to one kernel thread (figure \ref{fig:many-to-one}). Essentially all the kernel sees is a single process, the threads are managed by a user-space thread library. Since this thread management is done by the thread library in user-space, it is very efficient (does not need to dip down into kernel, switching between kernel theads invoke expensive context switch costs). However, the entire process will block if a thread makes a blocking system call (again, because all the kernel sees is a single process). Also, since only one thread can access the kernel at a time, multiple threads are unable to run in parallel on multicore systems.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.4\textwidth]{figures/many-to-one.jpg}
@@ -563,7 +569,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \section*{OS Concepts 4.7: OS Thread Examples}
 
 \begin{itemize}
-    \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instyead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
+    \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
