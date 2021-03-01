@@ -572,6 +572,44 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
 \end{itemize}
 
+\section*{OS Concepts 5.1: CPU Scheduling Basic Concepts}
+
+\begin{itemize}
+    \item \textbf{What is the motivation for CPU schduling?} In a system with a single CPU core, only one process can run at a time. This means if this single process is in control of the CPU and is waiting for some I/O request, the CPU is basically sitting doing nothing (which is a waste). With multiprogramming, several processes are kept in memory at a time, and we can swap a new process to do useful work while our original process is waiting for its I/O request to complete. This process of swapping out the tasks the CPU is currently executing is the realm of CPU scheduling.
+    \item \textbf{What is the CPU-IO Burst Cycle?} Process execution consist of a cycle of CPU execution and then waiting for I/O (CPU burst and then I/O burst). This cycle is called the CPU-IO burst cycle; processes can be in one of the two states. Processes typically have a large amount of short CPU bursts and a small number of long CPU bursts. This frequency curve is shown in figure \ref{fig:cpu-io-burst}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/cpu-io-burst.jpg}
+            \caption{Histogram of CPU burst durations}
+            \label{fig:cpu-io-burst}
+        \end{figure}
+    \item \textbf{CPU Bound:} CPU bound processes are when the rate of progress for the process is limited by the actual speed of the CPU. The process would go faster with a faster CPU. The opposite of being I/O bound.
+    \item \textbf{I/O Bound:}  I/O bound processes are when the rate of progress for the process is limited by the speed of the I/O it performs. A faster CPU would not help, only faster I/O completion times would cause the process to proceed faster. The process sits around doing nothing and waiting for I/O to complete (memory wall big issue, disparity between CPU and memory speeds).
+    \item \textbf{What has the responsibility of choosing which process to execute on the CPU?} Whenever the CPU becomes idle, the OS must select one of the processes in the ready queue to be executed (not this is not necessarily a FIFO queue, various scheduling algorithms have different implementations). This selection process is carried out by the \textbf{CPU scheduler}, which selectrs a process from the processes in memory that are ready to execute (in the ready queue) and allocates the CPU to that process. The items in the queues are generally process control blocks (PCBs) of the processes (or TCBs for threads? IDK not sure).
+    \item \textbf{Under what circumstances can CPU scheduling decisions take place?} CPU scheduling decisions may take place under the following four circumstances:
+        \begin{enumerate}
+            \item When a proecss switches from the running state to the waiting state (e.g. when requesting I/O or willingly switching to the waiting state like calling \texttt{wait()} for the termination of a child process)
+            \item When a process switches from the running state to the ready state (e.g. when an interrupt occurs)
+            \item When a process switches from the waiting state to the ready state (e.g. at completion of I/O)
+            \item When a process terminates
+        \end{enumerate}
+    \item \textbf{Premptive vs Cooperative Scheduling:} In situations 1 and 4 above, there is no choice in terms of scheduling: a new process \textit{must} be selected for execution. There is a choice, however, for situations 2 and 3. When scheduling takes place only under situations 1 and 4, scheduling is considered to be cooperative (process willingly gives up control): the process keeps control of the CPU until it releases it either by switching to the waiting state (situation 1) or by terminating (situation 4). When scheduling also occurs in situations 2 and 3, scheduling is considered to be preemptive: the process could keep on running and keep control of the CPU, but instead is kicked off the CPU by the OS. Virtually all modern OS's use preemptive scheduling. Premptive scheduling however can result in race conditions when data is shared among several processes.
+    \item \textbf{Why and when does the kernel disable interrupts?} Because interrupts can occur at any time, and because they cannot always be ignored by the kernel, the sections of code affected by interrupts (e.g. atomic operations) must somehow be protected against suddenly losing control of the CPU when an interrupt comes in. This is achieved by simply disabling interrupts at entry and then reenabling interrupts at exit. It is important that these sections of code that disable interrupts do not occur very often and typically contain few instructions. The OS needs to accept interrupts at almost all times, so disabling interrupts should be kept to a minimum.
+    \item \textbf{What is responsible for actually giving control of the CPU to processes?} The \textbf{dispatcher} is the OS module that gives control of the CPU's core to the process selected by the CPU scheduler. This involves:
+        \begin{itemize}
+            \item Performing a context switch from one process to another
+            \item Switching to user mode
+            \item Jumping to the proper location in the user program to resume that program
+        \end{itemize}
+        The dispatcher should be as fast as possible, since it is invoked during every context switch. The time it takes for the dispatcher to stop one process and start another is known as the \textbf{dispatch latency} and is illustrated in figure \ref{fig:dispatch-latency}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.4\textwidth]{figures/dispatch-latency.jpg}
+            \caption{Dispatch latency: the time it takes for the dispatcher to stop one process and perform a context switch to another}
+            \label{fig:dispatch-latency}
+        \end{figure}
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
