@@ -723,6 +723,16 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How does multilevel feedback queue scheduling work?} Multilevel feedback queue scheduling is basically multilevel queue scheduling but processes are allowed to move between different queues of different priority. The main concept is to move processes among different queues according to their CPU bursts: if a process uses too much CPU time, it will be moved to a lower-priority queue, and a process that waits too long in a lower-priority queue may be moved to a higher-priority queue. This leaves I/O bound and interactive processes (characterized by short CPU bursts) in the higher-priority queues. Moving queues to higher-priority queues also helps prevent starvation. This makes a multilevel feedback queue scheduler the most general scheduling algorithm (can be fine-tuned for system), but also makes it the most complex to implement.
 \end{itemize}
 
+\subsection*{OS Concepts 5.4: Thread Scheduling}
+
+\begin{itemize}
+    \item \textbf{Contention Scope:} Contention scope is basically the ``scope'' in which \textit{threads} (not processes) compete for CPU. Scope distinction is important when discussing M:1/M:N vs 1:1 threading models.
+        \begin{itemize}
+            \item \textbf{Process Contention Scope (PCS):} PCS is when competition for the CPU occurs among threads belonging to the \textit{same process} (thread scheduling mechanism using user-level thread library local to the process - not visible to kernel). This is what happens in M:1 and M:N threading models.
+            \item \textbf{System Contention Scope (SCS):} SCS is when competition for the CPU occurs among \textit{all (kernel) threads in the system} (threads scheduled by kernel). Systems using the 1:1 model schedule threads using SCS.
+        \end{itemize}
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
