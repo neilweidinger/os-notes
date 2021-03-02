@@ -295,7 +295,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \begin{itemize}
         \item \textbf{New:} The process is being created.
         \item \textbf{Running:} Instructions are being executed.
-        \item \textbf{Waiting:} The process is waiting for some event to occur (such as an I/O completion).
+        \item \textbf{Waiting:} The process is waiting for some event to occur (such as an I/O completion), it is blocked.
         \item \textbf{Ready:} The process is waiting to be assigned to a processor.
         \item \textbf{Terminated:} The process has finished execution.
     \end{itemize}
@@ -588,12 +588,12 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What has the responsibility of choosing which process to execute on the CPU?} Whenever the CPU becomes idle, the OS must select one of the processes in the ready queue to be executed (not this is not necessarily a FIFO queue, various scheduling algorithms have different implementations). This selection process is carried out by the \textbf{CPU scheduler}, which selectrs a process from the processes in memory that are ready to execute (in the ready queue) and allocates the CPU to that process. The items in the queues are generally process control blocks (PCBs) of the processes (or TCBs for threads? IDK not sure).
     \item \textbf{Under what circumstances can CPU scheduling decisions take place?} CPU scheduling decisions may take place under the following four circumstances:
         \begin{enumerate}
-            \item When a proecss switches from the running state to the waiting state (e.g. when requesting I/O or willingly switching to the waiting state like calling \texttt{wait()} for the termination of a child process)
-            \item When a process switches from the running state to the ready state (e.g. when an interrupt occurs)
-            \item When a process switches from the waiting state to the ready state (e.g. at completion of I/O)
-            \item When a process terminates
+            \item (Running \(\rightarrow\) Waiting) When a process switches from the running state to the waiting state (e.g. when requesting I/O or willingly switching to the waiting state like calling \texttt{wait()} for the termination of a child process)
+            \item (Running \(\rightarrow\) Ready) When a process switches from the running state to the ready state (e.g. when an interrupt occurs)
+            \item (Waiting \(\rightarrow\) Ready) When a process switches from the waiting state to the ready state (e.g. at completion of I/O)
+            \item (Running \(\rightarrow\) Terminated) When a process terminates
         \end{enumerate}
-    \item \textbf{Premptive vs Cooperative Scheduling:} In situations 1 and 4 above, there is no choice in terms of scheduling: a new process \textit{must} be selected for execution. There is a choice, however, for situations 2 and 3. When scheduling takes place only under situations 1 and 4, scheduling is considered to be cooperative (process willingly gives up control): the process keeps control of the CPU until it releases it either by switching to the waiting state (situation 1) or by terminating (situation 4). When scheduling also occurs in situations 2 and 3, scheduling is considered to be preemptive: the process could keep on running and keep control of the CPU, but instead is kicked off the CPU by the OS. Virtually all modern OS's use preemptive scheduling. Premptive scheduling however can result in race conditions when data is shared among several processes.
+    \item \textbf{Preemptive vs Cooperative Scheduling:} In situations 1 and 4 above, there is no choice in terms of scheduling: a new process \textit{must} be selected for execution. There is a choice, however, for situations 2 and 3. When scheduling takes place only under situations 1 and 4, scheduling is considered to be cooperative (process willingly gives up control): the process keeps control of the CPU until it releases it either by switching to the waiting state (situation 1) or by terminating (situation 4). When scheduling also occurs in situations 2 and 3 (in both situations the process is ready to continue execution by being in the ready state), scheduling is considered to be preemptive: the process could keep on running and keep control of the CPU, but instead is kicked off the CPU by the OS. Virtually all modern OS's use preemptive scheduling. Preemptive scheduling however can result in race conditions when data is shared among several processes.
     \item \textbf{Why and when does the kernel disable interrupts?} Because interrupts can occur at any time, and because they cannot always be ignored by the kernel, the sections of code affected by interrupts (e.g. atomic operations) must somehow be protected against suddenly losing control of the CPU when an interrupt comes in. This is achieved by simply disabling interrupts at entry and then reenabling interrupts at exit. It is important that these sections of code that disable interrupts do not occur very often and typically contain few instructions. The OS needs to accept interrupts at almost all times, so disabling interrupts should be kept to a minimum.
     \item \textbf{What is responsible for actually giving control of the CPU to processes?} The \textbf{dispatcher} is the OS module that gives control of the CPU's core to the process selected by the CPU scheduler. This involves:
         \begin{itemize}
@@ -621,6 +621,106 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \item \textbf{Waiting time:} The scheduling algorithm does not affect the amount of time during which a process executes or does I/O. \textbf{The scheduling algorithm affects only the amount of time that a process spends waiting in the ready queue}. Waiting time is the sum of the periods spent waiting in the ready queue. We would like to minimize this.
             \item \textbf{Response time:} In an interactive system, turnaround time may not be the best criterion (in such a system we don't really care about how long it takes for something to complete fully, we care more about how long it takes to initiate something and then \textit{get a response back}; the process can continue while it's outputting more responses to the user). This measure is the time it takes to first start responding, not the time it takes to output the response. We would like to minimize this.
         \end{itemize}
+\end{itemize}
+
+\section*{OS Concepts 5.3: CPU Scheduling Algorithms}
+
+\subsection*{OS Concepts 5.3.1: First Come First Served (FCFS) Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does FCFS scheduling work?} This is by far the simplest scheduling algorithm. With this algorithm, the process that requests to use the CPU is allocated the CPU first. This is easily implemented with a FIFO queue. When a process enters the ready queue, its PCB is linked onto the tail of the queue. When the CPU becomes free, the CPU is allocated the process at the head of the queue. This allocated process now running on the CPU is then removed from the queue.
+    \item \textbf{FCFS Gantt Chart Visualization?} Figure \ref{fig:fcfs-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/fcfs-scheduling.jpg}
+            \caption{FCFS Scheduling}
+            \label{fig:fcfs-scheduling}
+        \end{figure}
+    \item \textbf{What are some downsides of FCFS scheduling?} The average waiting time can become quite long. In the gantt char visualization (figure \ref{fig:fcfs-scheduling}), the short processes at the end of the queue have to wait for a long time because of the one long process at the beginning of the queue.
+    \item \textbf{Is FCFS preemptive or cooperative?} FCFS is cooperative, as once the CPU has been allocated to a process, that process keeps the CPU until it released the CPU, either by terminating (process transitions to terminated state) or by requesting I/O (process transitions to waiting state).
+\end{itemize}
+
+\subsection*{OS Concepts 5.3.2: Shortest Job First (SJF) Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does SJF scheduling work?} The SJF algorithm simply assigns the CPU the process with the smallest upcoming CPU burst. If the upcoming CPU bursts of two processes are the same, FCFS scheduling is used to break the tie. Note that SJF cares about the upcoming \textit{CPU burst}, rather than its total length (since once a CPU burst is over the process does I/O and transitions to the waiting state anyways, not possible to schedule such a process). Algorithm is provably optimal in that it minimizes the average waiting time for a given set of processes (moving a short process before a long one decreases the waiting time of the short process more than it increases the waiting time of the long process). SJF is a special case of the general priority-scheduling algorithm.
+    \item \textbf{How is the length of the CPU burst known for SJF scheduling?} There is no way to know the length of the next CPU burst (we can't look into the future!). However, we can use historical data to approximate this. The next CPU burst is generally prediceted as an exponential average (basically weighted sum of previous actual CPU burst length and previous CPUR burst length prediction) of the measured lengths of previous CPU bursts (look into textbook p.208 for full details).
+    \item \textbf{SJF Gantt Chart Visualization?} Figure \ref{fig:sjf-scheduling}. All processes have arrived at the same time in this scenario.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/sjf-scheduling.jpg}
+            \caption{SJF Scheduling}
+            \label{fig:sjf-scheduling}
+        \end{figure}
+    \item \textbf{Is SJF preemptive or cooperative?} SJF can be either preemptive or cooperative. The choice arises when a new process arrives at the ready queue while a previous process is still executing. The upcoming (predicted) CPU burst of the newly arrived process may be shorter than what is \textit{left} of the currently executing process. In this situation:
+        \begin{itemize}
+            \item A \textbf{preemptive} SJF algorithm will preempt the currently executing process
+            \item A \textbf{cooperative} SJF algorithm will allow the currently running process to finish its CPU burst, and the schedule the newly arrived process. This is sometimes called shortest remaining time first scheduling.
+        \end{itemize}
+    \item \textbf{Preemptive SJF Gantt Chart Visualization?} Figure \ref{fig:sjf-preemptive-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/sjf-preemptive-scheduling.jpg}
+            \caption{Preemptive SJF Scheduling. Notice how process \(P_1\) is preempted.}
+            \label{fig:sjf-preemptive-scheduling}
+        \end{figure}
+\end{itemize}
+
+\subsection*{OS Concepts 5.3.3: Round Robin (RR) Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does RR scheduling work?} RR scheduling is similar to FCFS, but preemption is added to enable the system to switch between processes. A small unit of time, called a \textbf{time slice} (or time quantum), is defined (typically 10 to 100 milliseconds on modern OS's). The ready queue is treated as a circular queue (ring buffer). The CPU scheduler goes around the ready queue, allocating the CPU to each process for a time interval for up to 1 time slice. The scheduler picks the first process from the ready queue, sets a timer to interrupt after 1 time slice, and dispatches the process. One of two things may now happen:
+        \begin{itemize}
+            \item The process may have a CPU burst of \textbf{less} than 1 time slice. In this case, the process itself will release the CPU voluntarily. The scheduler will then proceed to the next process in the ready queue.
+            \item The process may have a CPU burst of \textbf{more} than 1 time slice. In this case, the timer will go off and will cause an interrupt to the OS. A context switch will be executed, and the the preempted process will be put at the tail of the ready queue. The CPU scheduler will then select the next process in the ready queue.
+        \end{itemize}
+    \item \textbf{Round Robin Gantt Chart Visualization?} Figure \ref{fig:rr-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/rr-scheduling.jpg}
+            \caption{Round robin scheduling}
+            \label{fig:rr-scheduling}
+        \end{figure}
+    \item \textbf{What are some downsides with RR scheduling?} The average waiting time under the RR algorithm is often long. This is because a process that exceeds its time slice, gets preempted and booted to the back of the ready queue, which means processes that often exceed their time slices have to wait for their turn in the ready queue many times over.
+    \item \textbf{How long should the time slice be?} The performance of the RR algorithm depends heavily on the size of the time slice. If the time slice is extremely large, RR is the same as FCFS. In contrast, if the time slice is extremely small, RR can result in a large number of context switches (overhead, leads to wasted time). We want the time slice to be large with respect to the context switch time. If the context switch time is approximately 10 percent of the time slice, then about 10 percent of the CPU time will be spent in context switching (not necessarily true for other algorithms like FCFS, FCFS for example rarely context switches). A rule of thumb is that 80 percent of CPU bursts should be shorter than the time slice.
+\end{itemize}
+
+\subsection*{OS Concepts 5.3.4: Priority Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does priority scheduling work?} Each process is associated with a priority, and the CPU is simply allocated to the process with the highest priority. Eqaul priority processes are scheduled in FCFS order. An SJF algorithm is a special case of priority scheduling: SJF is simply a priority algorithm where the priority is the inverse of the (predicted) upcoming CPU burst. Note that some systems use low numbers to represent low priority, while others use low numbers for high priority (in textbook low number represents high priority).
+    \item \textbf{How are process priorities determined?} Process priority can be defined internally by using some measurable quantity or quantities: for example time limits, memory requirements, the number of open files, and the ratio of average I/O burst to average CPU burst. External priorities are set by criteria outside the OS, for example the importance of the process to the OS user, the type and amount of funds begin paid for computer use, and other often political factors.
+    \item \textbf{Priority Scheduling Gantt Chart Visualization?} Figure \ref{fig:priority-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/priority-scheduling.png}
+            \caption{Priority scheduling}
+            \label{fig:priority-scheduling}
+        \end{figure}
+    \item \textbf{Is priority scheduling preemptive or cooperative?} Priority scheduling can be either preemptive or cooperative. The choice arises when a new process arrives at the ready queue while a previous process is still executing:
+        \begin{itemize}
+            \item A \textbf{preemptive} priority scheduling algorithm will preempt the CPU if the priority of the newly arrived process is higher than the priority of the currently running process.
+            \item A \textbf{cooperative} priority scheduling algorithm will simply put the new process at the head of the ready queue.
+        \end{itemize}
+    \item \textbf{What is a major issue with priority scheduling?} A major issue with priority scheduling is indefinitely blocking, or \textbf{starvation}. It's possible that low priority processes never get selected to be run on the CPU, since there are always higher priority processes to run first. It is possible that the profess will eventually be run when there are hardly any other processes keeping the computer busy (e.g. 2AM Sunday when system is lightly loaded), or the system may crash eventually and these unfinished low priority processes are just lost (I assume the high priority processes are also lost then?).
+    \item \textbf{How can the issue of starvation be solved?} One solution is to use \textbf{aging}: aging gradually increases the priority of processes that wait in the system for a long time, so that eventually they will have a priority high enough to actually be selected. Another option is to combine round robine and priority scheduling so that the system executes the highest priority processes, and runs process with the \textbf{same priority} using round robin (basically given equal priority processes, rotate among them using round robin).
+\end{itemize}
+
+\subsection*{OS Concepts 5.3.5: Multilevel Queue Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does multilevel queue scheduling work?} Simple scheduling algorithms have just a single ready queue. Sometimes it is practical to have separate queues for distinct priority levels: multilevel queue scheduling simply schedules the process in the highest-priority queue, and can be combined with round robin to rotate equal priority processes among each other. Processes are permanently assigned to a specific queue and \textbf{may not} be moved between queues. In addition, there must be scheduling among the queue themselves:
+        \begin{itemize}
+            \item One possibility is to use fixed-priority queue preemptive scheduling: each queue has absolute priority over lower-priority queues. No processes in lower-priority queues get to run until all higher priority processes are finished. If a low priority process is running and a higher priority process entered its respective ready queue, the low priority process will be preempted to make way for the higher priority process.
+            \item Another option is to time slice among the queues: each queue gets a certain portion of CPU time, during which it can then schedule its various processes (e.g. high-priority queue can be given 80 percent of CPU time and 20 percent for low-priority queue).
+        \end{itemize}
+    \item \textbf{How can multilevel queue scheduling be useful?} A useful application of multilevel queue scheduling is categorizing processes based on process type: for example real-time processes, system processes, interactive processes, and batch processes.
+\end{itemize}
+
+\subsection*{OS Concepts 5.3.6: Multilevel Feedback Queue Scheduling}
+
+\begin{itemize}
+    \item \textbf{How does multilevel feedback queue scheduling work?} Multilevel feedback queue scheduling is basically multilevel queue scheduling but processes are allowed to move between different queues of different priority. The main concept is to move processes among different queues according to their CPU bursts: if a process uses too much CPU time, it will be moved to a lower-priority queue, and a process that waits too long in a lower-priority queue may be moved to a higher-priority queue. This leaves I/O bound and interactive processes (characterized by short CPU bursts) in the higher-priority queues. Moving queues to higher-priority queues also helps prevent starvation. This makes a multilevel feedback queue scheduler the most general scheduling algorithm (can be fine-tuned for system), but also makes it the most complex to implement.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
