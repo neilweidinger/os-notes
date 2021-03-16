@@ -773,6 +773,23 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is static linking?} With static linking, libraries are treated like any other object file and are combined by the linker into the final binary. Thus, each binary contains its own copy of a library (not the entire library, only the parts the program directly or indirectly uses). This is faster and more portable than dynamic linking, since it does not require the presence of the library on the system where it is run (built into binary).
 \end{itemize}
 
+\section*{OS Concepts 9.2: Contiguous Memory Allocation}
+
+\begin{itemize}
+    \item \textbf{How do we allocate physical main memory to processes?} The OS must somehow choose what physical memory to allocate to running processes. We would like allocation to be as efficient as possible, both in terms of time to allocate memory and also minimizing memory wasted.
+    \item \textbf{What is Variable Partition allocation?} Basically divide physical memory in variable sized paritions to allocate processes to (figure \ref{fig:variable-partitioning}). Each parition contains exactly one process (this also means that the \textbf{entire program} must be loaded into memory, in the partition). This also means that each physical partition is \textbf{contiguous}. The OS keeps a table indicating which parts of memory are available and which are occupied.
+    \item \textbf{How does Variable Partitioning allocate and free memory for processes?} The space in memory not occupied by paritions are referred to as \textbf{holes}. When a process arrives and needs memory, the OS searches for a hole that is large enough for this process. We can use either first fit (first hole that is big enough), best fit (smallest hole that is big enough, need to search through all holes), or worse fit (largest hole available, also need to search through all holes). If the hole is too large, it is split into two parts. One part is allocated to the arriving process; the other is returned to the set of holes. When a process terminates, it releases its block of memory, which is then placed back in the set of holes. If the new hole is adjacent to other holes, these adjacent holes are merged to form one larger hole.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{figures/variable-partitioning.jpg}
+            \caption{Variable Partitioning}
+            \label{fig:variable-partitioning}
+        \end{figure}
+    \item \textbf{What is external fragmentation?} Variable partitioning algorithms suffer from external fragmentation: when processes are loaded the free memory space is broken into little pieces. External fragmentation exists when enough total free memory is available, but it is effectively unusable because it is divided into pieces that are too small individually (last column in figure \ref{fig:variable-partitioning}).
+    \item \textbf{What is internal fragmentation?} More memory may sometimes be allocated to a process than is requested (e.g. if holes have fixes sizes). This wasted memory is called internal fragmentation.
+    \item \textbf{How can we possibly solve external fragmentation?} We can possibly solve external fragmentation using \textbf{compaction}. Basically shuffle memory contents so as to place all free memory together in one block. Compaction is not always possible however: only possible if program relocation is dynamic and done at execution time.
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
