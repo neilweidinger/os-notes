@@ -846,6 +846,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Other disk schedulers:} Other disk schedulers also exist, like the deadline scheduler, NOOP scheduler, and the Completely Fair Queueing Scheduler.
 \end{itemize}
 
+\section*{OS Concepts 11.4: Error Detection and Corection}
+
+\begin{itemize}
+    \item \textbf{Error Detection:} Error detection determines if a problem has occured. E.g. a bitflip in DRAM, contents of a network packet altered during transmission, or a block of data changed between when it was written and when it was read. Does not include error correction, data must be discarded.
+    \item \textbf{Parity Bits:} Error detection can be done using parity bits. A parity bit records whether the number of bits in a byte set to 1 is even (parity bit = 0) or odd (parity bit = 1). If one of the bits in the byte is damaged, the parity of the byte changes and no longer matches the stored parity. The stored parity can also be damaged, in which case it also does not match the computed parity. Bitflips with an odd number of flips are detected; an even number of bitflips cannot be detected.
+    \item \textbf{Error Correcting Code (ECC):} ECCs not only detect errors, but can also correct these errors. The basic idea is to send additional redundant information, from which a limited number (if too many errors, the ECC cannot perform correction) of errors can be detected and correction can be performed without retransmission.
+\end{itemize}
+
 \section*{OS Concepts 12.1: I/O Overview}
 
 \begin{itemize}
