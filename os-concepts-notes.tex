@@ -11,6 +11,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{Operating System Concepts Notes}
+\rhead{Neil Weidinger}
 \rfoot{Page \thepage}
 \setlength{\headheight}{15pt}
 
@@ -788,6 +789,61 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is external fragmentation?} Variable partitioning algorithms suffer from external fragmentation: when processes are loaded the free memory space is broken into little pieces. External fragmentation exists when enough total free memory is available, but it is effectively unusable because it is divided into pieces that are too small individually (last column in figure \ref{fig:variable-partitioning}).
     \item \textbf{What is internal fragmentation?} More memory may sometimes be allocated to a process than is requested (e.g. if holes have fixes sizes). This wasted memory is called internal fragmentation.
     \item \textbf{How can we possibly solve external fragmentation?} We can possibly solve external fragmentation using \textbf{compaction}. Basically shuffle memory contents so as to place all free memory together in one block. Compaction is not always possible however: only possible if program relocation is dynamic and done at execution time.
+\end{itemize}
+
+\section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
+
+\begin{itemize}
+    \item \textbf{What is the physical structure of a HDD?} HDDs (hard disk drive) consist of magnetic disk platters, and data is written and read to and from these platters magnetically. Read-write heads ``fly'' just above the surface of every platter, and are attached to a \textbf{disk arm} that moves all heads as a unit. The surface of each platter is logically divided into circular \textbf{tracks}, which are subdivided into \textbf{sectors}. The set of tracks at a given arm position make up a \textbf{cylinder}. Each sector has a fixed size and is the smallest unit of transfer (typically 4KB nowadays). Shown in figure \ref{fig:hdd}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/hdd.jpg}
+            \caption{Physical structure of a HDD}
+            \label{fig:hdd}
+        \end{figure}
+    \item \textbf{What are commond HDD rotation speeds?} HDDs typically have speeds of 5,400, 7,200, 10,000, and 15,000 RPM. Some drives also power down when not in use and spin up upon receiving an I/O request.
+    \item \textbf{Transfer Rate:} The transfer rate is the rate at which data flows between the drive and the computer. Typically tens to hundreds of megabytes of data per second.
+    \item \textbf{Positioning Time (Random-access Time):} Consists of two parts: the time necessary to move the disk arm to the desired cylinder, called the \textbf{seek time}, and the time necessary for the desired sector to rotate to the disk head, called the \textbf{rotational latency}. Typically latencies of several milliseconds.
+    \item \textbf{What are NVM devices?} Nonvolatile memory (NVM) devices are electrical rather than mechanical, like with HDDs. Such devices are typically composed of a controller and \textbf{flash} NAND die semiconductor chips, which are used to store data. Other NVM technologies exist, but are far less common. Flash based NVM devices are frequently used as disk drives (SSD), and in other instances takes the form of USB drives or a DRAM stick (RAM drive).
+    \item \textbf{What are some benefits of NVM devices over HDDs?} NVM devices can be more reliable than HDDs because they have no moving parts and can be faster because they have no seek time or rotational latency. In addition, they consume less power. NVM devices are much better at random-access I/O than HDDs, since they do not need to move a physical head.
+    \item \textbf{What are some drawbacks of NVM devices compared to HDDs?} NVM devices are typically more expensive and thus have less capacity than HDDs, although this is changing as time goes on. NAND semiconductors also deteriorate with every erase cycle, and after approximately 100,000 program-erase cycles the cells no longer retain data. As such NVM lifespan is not measured in years but in Drive Writes Per Day (DWPD). An NVM device near its end of life due to many erase cycles generally has much worse performance than a new device. NVM devices do not provide much of an advantage over HDDs for sequential I/O (sequential I/O ideal for mechanical devices like HDD and tape since data to be read/written is near the head).
+    \item \textbf{How is data read and written with flash memory?} NAND semiconductors can only be read and written in ``page'' increments (similar to a HDD sector). Data cannot just be overwritten, however, the NAND cells have to be explicitly erased first (and then a new write can take place). Low level: this is because electrons can only be \textit{added} to their ``charge trap'', in order to write a different amount of electrons they need to all be flushed out first. Erasure can only occur in ``block'' increments (blocks consist of several pages), and takes much more time than a read (fastest operation) or a write (slower than a read, but still much than an erase).
+    \item \textbf{Why are flash pages invalid of valid?} Imagine writing data once, and then writing an updated version of the data again later. If no block erasure has occured in the meantime, the page written to first has the old data, which is now invalid. A new page now has the current version of the data, and is valid.
+    \item \textbf{How does flash memory decide where and when to write and erase blocks?} If a fully erased block exists, simply write to that block. If not, search for a block that contains only invalid pages, erase that block (erases all pages in block), and then perform the write. If there are no blocks containing only invalid pages, \textbf{garbage collection} occurs: copy valid pages in blocks to the flash \textbf{over-provisioned} area, erase the block the now unneeded block, and perform the write. Over-provisioned is simply area in the device that is always available to write to (typically 20 percent of the total).
+    \item \textbf{How does flash memory try to avoid wear leveling?} Wear leveling is where blocks that are erased frequently will wear out faster than others, and consequently reducing the lifespan of the entire device. To try and wear out blocks concurrently, the device controller uses various algorithms to place data on less-erased blocks so that subsequent erases will happen on those blocks, leveling the wear across the entire device.
+    \item \textbf{What are RAM drives?} RAM drives are basically sections of the system DRAM that the OS treats as a disk drive. Although DRAM is volatile, RAM drives are used because they are useful as high-speed temporary storage space. NVM devices are fast, but RAM drives are the fastest way to create, read, write, and delete files and their contents.
+    \item \textbf{How do storage devices appear to the OS?} Storage devices are addressed as large one-dimensional arrays of \textbf{logical blocks}, where the logical block is the smallest unit of transfer. A logical block maps to a physical HDD sector or NAND semiconductor page. This mapping is done by the hardware. Logical block addresses are easier for algorithms used by the OS to deal with, rather than (sector, cylinder, head) or (chip, block, page) tuples. Note that this means that the OS does not deal with the intricacies of block erasures and other such details described above, this is all handled by the device controller. This also means that such storage devices are not byte addressable, it only deals in logical blocks.
+    \item \textbf{Are HDDs and NVM devices the only types of storage devices?} No! There are lots of different types of storafge devices, however most are very niche. Technology is also constantly changing, meaning new types of storage devices come along.
+\end{itemize}
+
+\section*{OS Concepts 12.2: HDD Scheduling}
+
+\begin{itemize}
+    \item \textbf{What is HDD scheduling and why is it needed?} It is the responsibility of the OS to use the hardware efficiently. For HDDs, this means minimizing acces time and maximizing data transfer bandwidth. This can be achieved by managing the order in which HDD I/O requests are serviced (basically in what order do we vist HDD block addresses?), to minimize the amount of head movement.
+    \item \textbf{What approximations do HDD scheduling algorithms make?} Modern drives typically hide the intricacies of physical addresses like cylinder locations, and only expose logical block addresses (LBA; mapping of LBA to physical address done by HDD device controller). As a rough approximation, algorithms assume that increasing LBAs mean increasing physical addresses, and LBAs close together equate physical block proximity.
+    \item \textbf{FCFS Scheduling} The simplest form of disk scheduling: simply perform disk I/O in the order requests come in. Wastes lots of time jumping back and forth with wild swings of the read-write head. Shown in figure \ref{fig:fcfs-disk-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/fcfs-disk-scheduling.jpg}
+            \caption{FCFS disk scheduling}
+            \label{fig:fcfs-disk-scheduling}
+        \end{figure}
+    \item \textbf{SCAN Scheduling} In the SCAN algorithm, the disk arm starts at one end of the disk (an end is the first/last track in the platter), and moves towards the other end, servicing requests as it reaches each cylinder, until it gets to the other end of the disk. The direction of head movement is then reversed, and servicing continues. Shown in figure \ref{fig:scan-disk-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/scan-disk-scheduling.jpg}
+            \caption{SCAN disk scheduling}
+            \label{fig:scan-disk-scheduling}
+        \end{figure}
+    \item \textbf{How are incoming disk I/O requests dealt with in SCAN?} If a request arrives in the queue just in front of the head, it will be serviced almost immediately. A request arriving just behind the head will have to wait until the arm moves to the end of the disk, reverses direction, and heads back.
+    \item \textbf{C-SCAN Scheduling} With SCAN scheduling and assuming a uniform distribution of I/O requests for cylinders, when the head reaches one end and reverses direction, there will be relatively few requests immediately in front of the head, since these cylinders have already been recently serviced. The heaviest density of requests is at the other end, and lots of these requests are also the ones that have waited the longest. C-SCAN takes this into account, and instead of simply reversing direction like SCAN, when C-SCAN hits the end of the disk it simply returns immediately to the start of the disk \textit{without servicing any requests on the way back}. Essentially treats cylinders as a circular list that wraps around. Shown in figure \ref{fig:c-scan-disk-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/c-scan-disk-scheduling.jpg}
+            \caption{C-SCAN disk scheduling}
+            \label{fig:c-scan-disk-scheduling}
+        \end{figure}
+    \item \textbf{Other disk schedulers:} Other disk schedulers also exist, like the deadline scheduler, NOOP scheduler, and the Completely Fair Queueing Scheduler.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
