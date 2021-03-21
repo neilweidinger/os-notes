@@ -801,7 +801,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \caption{Physical structure of a HDD}
             \label{fig:hdd}
         \end{figure}
-    \item \textbf{What are commond HDD rotation speeds?} HDDs typically have speeds of 5,400, 7,200, 10,000, and 15,000 RPM. Some drives also power down when not in use and spin up upon receiving an I/O request.
+    \item \textbf{What are common HDD rotation speeds?} HDDs typically have speeds of 5,400, 7,200, 10,000, and 15,000 RPM. Some drives also power down when not in use and spin up upon receiving an I/O request.
     \item \textbf{Transfer Rate:} The transfer rate is the rate at which data flows between the drive and the computer. Typically tens to hundreds of megabytes of data per second.
     \item \textbf{Positioning Time (Random-access Time):} Consists of two parts: the time necessary to move the disk arm to the desired cylinder, called the \textbf{seek time}, and the time necessary for the desired sector to rotate to the disk head, called the \textbf{rotational latency}. Typically latencies of several milliseconds.
     \item \textbf{What are NVM devices?} Nonvolatile memory (NVM) devices are electrical rather than mechanical, like with HDDs. Such devices are typically composed of a controller and \textbf{flash} NAND die semiconductor chips, which are used to store data. Other NVM technologies exist, but are far less common. Flash based NVM devices are frequently used as disk drives (SSD), and in other instances takes the form of USB drives or a DRAM stick (RAM drive).
@@ -828,6 +828,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \caption{FCFS disk scheduling}
             \label{fig:fcfs-disk-scheduling}
         \end{figure}
+    \item \textbf{Shortest Seek First (SSF) Scheduling:} Service requests located in HDD cylinders closest to the current location of the head first (this results in the shortest seek for the head). Lower average response time due to minimizing arm movement, but may result in starvation for requests far away from current location of head (if new requests come in that are close to the head, the head never gets around to these far away requests). Shown in figure \ref{fig:ssf-disk-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/ssf-disk-scheduling.jpg}
+            \caption{SSF disk scheduling}
+            \label{fig:ssf-disk-scheduling}
+        \end{figure}
     \item \textbf{SCAN Scheduling} In the SCAN algorithm, the disk arm starts at one end of the disk (an end is the first/last track in the platter), and moves towards the other end, servicing requests as it reaches each cylinder, until it gets to the other end of the disk. The direction of head movement is then reversed, and servicing continues. Shown in figure \ref{fig:scan-disk-scheduling}.
         \begin{figure}[ht]
             \centering
@@ -852,6 +859,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Error Detection:} Error detection determines if a problem has occured. E.g. a bitflip in DRAM, contents of a network packet altered during transmission, or a block of data changed between when it was written and when it was read. Does not include error correction, data must be discarded.
     \item \textbf{Parity Bits:} Error detection can be done using parity bits. A parity bit records whether the number of bits in a byte set to 1 is even (parity bit = 0) or odd (parity bit = 1). If one of the bits in the byte is damaged, the parity of the byte changes and no longer matches the stored parity. The stored parity can also be damaged, in which case it also does not match the computed parity. Bitflips with an odd number of flips are detected; an even number of bitflips cannot be detected.
     \item \textbf{Error Correcting Code (ECC):} ECCs not only detect errors, but can also correct these errors. The basic idea is to send additional redundant information, from which a limited number (if too many errors, the ECC cannot perform correction) of errors can be detected and correction can be performed without retransmission.
+\end{itemize}
+
+\section*{OS Concepts 11.5: Storage Device Management}
+
+\begin{itemize}
+    \item \textbf{How does a computer boot up and start running?} When a computer is powered up or rebooted, it must have an initial program to run: this program is called the \textbf{bootstrap loader}. The bootstrap loader is very simple, and is typically located at a known address in ROM. The purpose of this program is to load other and programs (the full bootloader) which are then executed from RAM.
+    \item \textbf{What happens after the bootstrap loader runs?} The next step after the bootstrap loader runs is for the full bootstrap loader to run (e.g. grub for Linux). This program is responsible for loading the operating system and transfering execution to it.
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
@@ -917,9 +931,9 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \subsection*{12.3.4: Nonblocking and Asynchronous I/O}
 
 \begin{itemize}
-    \item \textbf{Blocking I/O} A blocking call causes the execution of the calling thread to be suspended. Blocking application is easier to write than nonblocking application code.
-    \item \textbf{Nonblocking I/O:} Nonblocking calls do not suspend the calling threads execution, like blocking calls do. Instead, it returns quickly, with a return value that indicates how many bytes were transferred. One way an application writer could implement this is with multithreading: some threads can perform blocking system calls, while others continue executing. Some OS's also provide nonblocking syscalls.
-    \item \textbf{Asynchronous Calls:} An alternative to nonblocking calls. An asynchronous call returns immediately, without waiting for I/O or whatever computation to complete. The calling thread continues to execute its code. The completion of the task at some future time is then communicated to the thread (either setting some variable in the thread address space, or triggering a signal or software interrupt or a call-back routine that is executed outside the control flow of the thread).
+    \item \textbf{Blocking I/O} A blocking call causes the execution of the calling thread to be suspended (the thread is moved from the OS run queue to the wait queue). Once execution is complete, the thread is moved back to the run queue, where it is \textit{eligible} (note: eligible, scheduler decides when to run thread) to resume execution. Blocking application is easier to write than nonblocking application code.
+    \item \textbf{Nonblocking I/O:} Nonblocking calls do not suspend the calling threads execution, like blocking calls do. Instead, it returns very quickly with whatever data is available (note: \textit{not} asynchronous, simply returns very quickly). One way an application writer could perform nonblocking I/O is with multithreading: some threads can perform blocking system calls, while others continue executing. Some OS's also provide nonblocking syscalls.
+    \item \textbf{Asynchronous Calls:} An asynchronous call returns immediately, without waiting for I/O or whatever computation to complete (will complete at a future time, and completion is communicated to thread). The calling thread continues to execute its code. The completion of the task at some future time is then communicated to the thread (either setting some variable in the thread address space, or triggering a signal or software interrupt, or a call-back routine that is executed outside the control flow of the thread).
 \end{itemize}
 
 \subsection*{12.3.5: Vectored I/O}
