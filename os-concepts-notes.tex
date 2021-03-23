@@ -234,7 +234,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \subsection*{2.8.3: Microkernels}
 
 \begin{itemize}
-    \item \textbf{What is a Microkernel:} The microkernel approach structures the OS by removing all nonessential components from the kernel and implementing them as user-level programs that reside in separate address spaces, resulting in a smaller kernel, seen in figure \ref{fig:microkernel-structure}. There is little consensus on what services remain in the kernel, however, typically minimal process and memory management and a communication facility are provided. The main function of the microkernel is to provide communication between the client program and the various services also running in user space; communication is provided though message passing.
+    \item \textbf{What is a Microkernel?} The microkernel approach structures the OS by removing all nonessential components from the kernel and implementing them as user-level programs that reside in separate address spaces, resulting in a smaller kernel, seen in figure \ref{fig:microkernel-structure}. There is little consensus on what services remain in the kernel, however, typically minimal process and memory management and a communication facility are provided. The main function of the microkernel is to provide communication between the client program and the various services also running in user space; communication is provided though message passing.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.8\textwidth]{figures/microkernel-structure.jpg}
@@ -273,7 +273,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \begin{itemize}
     \item \textbf{What is a process?} A process is a program in execution. A program becomes a process when an executable file is loaded into memory. Although two processes may be associated with the same program, they are nevertheless considered two separate esecution sequences.
-    \item \textbf{How is the status of a running process represented?} The status of the current activity of a process is represented by the value of the program counter and the contents of the processor's registers (the preservation of a processes memory address space depends on the memory management method of the OS).
+    \item \textbf{What does a running process consist of?} The current activity of a process is represented by the value of the program counter and the contents of the processor's registers (the preservation of a processes memory address space depends on the memory management method of the OS).
     \item \textbf{What does the memory layout of a process look like?} The memory layout of a process is typically divided into multiple sections (figure \ref{fig:process-memory-layout}), the most important being:
         \begin{itemize}
             \item \textbf{Text} - the executable code
@@ -970,7 +970,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Spooling:} Queue output for a device, such as a printer, that cannot accept interleaved data streams.
 \end{itemize}
 
-\subsection*{13.1: File Concept}
+\section*{13.1: File Concept}
 
 \begin{itemize}
     \item \textbf{What is the purpose of a file system?} Without a file system, data placed in storage devices would just be one large body of data with no way of telling where one piece starts and ends. The file system provides a way to abstract away the intricacies of interacting with the physical storage hardware, and abstracts away this physical storage through the concept of logical storage units, called \textbf{files}. The file system contains two parts: a collection of files, each storing data, and a directory structure, which provides a way to organize these files.
@@ -983,8 +983,23 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \item \textbf{Size:} Size of the file.
             \item \textbf{Protection:} Access-control information for who is allowed to read, write, execute, etc.
         \end{itemize}
-    \item \textbf{What operations can be performed on files?} The OS provides several system calls to perform primitive building block operations on files. These include: creating a file, opening a file, writing to a file, reading from a file, repositioning withing a file (seek), deleting a file, and truncating a file (erase file contents but keep the attributes).
+    \item \textbf{What operations can be performed on files?} The OS provides several system calls to perform primitive building block operations on files. These include: creating a file, opening a file, writing to a file, reading from a file, repositioning withing a file (seek), deleting a file, and truncating a file (erase file contents but keep the attributes). Exact API is OS specific (but typically similar).
     \item \textbf{What is the point of \textit{opening} a file?} When we want to deal with a file, as a user we only the know the symbolic file name. The kernel needs to perform the [symbolic filename \(\rightarrow\) file entry] conversion, and also perform bookkeeping like checking if the file even exists, checking if the user has adequate permission for access, setting up memory buffers, etc. To avoid doing this every time when performing operations on files, the kernel provides a syscall to \textit{open} a file, which does all this once to set everything up and then returns a handle (basically a pointer) to the file. Note this means that we also have to \textit{close} our files (clean up memory buffers and other bookkeeping)!
+\end{itemize}
+
+\section*{13.2: File Access Methods}
+
+\begin{itemize}
+    \item \textbf{How are the data contents of a file accessed?} Files store data, and this data must somehow be accessed and read into main memory. This data can be accessed in several ways, and OS's provide various file access methods.
+    \item \textbf{Sequential Access:} The simplest access method; by far the most common. Based on a tape model for a file. A file pointer (cursor) represents location of next read or write, and is then advanced accordingly after the operation. The file pointer can be reset to the beginning, and on some systems moving it back or forth (seeking) may even be possible.
+    \item \textbf{Direct Access:} Allows random access of a file. Because a file is represented as fixed-length logical blocks (abstraction of physical blocks on storage device), by providing a logical block as a parameter, direct access allows for immediate access to any block of the file. Simulating a direct-access file on a sequential-access file is inefficient and clumsy (why? idk but I think it's because of seeking overhead, not sure tho).
+    \item \textbf{Indexed Access:} Built on top of direct access. Basically construct an index containing pointers to various file blocks. To find a specific record in the file, we can search (usually binary search) the index and then use the pointer to access the file directly. Shown in figure \ref{fig:indexed-file-access}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.6\textwidth]{figures/indexed-file-access.jpg}
+            \caption{Indexed File Access}
+            \label{fig:indexed-file-access}
+        \end{figure}
 \end{itemize}
 
 % \vspace{4mm}
