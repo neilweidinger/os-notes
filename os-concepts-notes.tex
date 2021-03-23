@@ -970,6 +970,23 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Spooling:} Queue output for a device, such as a printer, that cannot accept interleaved data streams.
 \end{itemize}
 
+\subsection*{13.1: File Concept}
+
+\begin{itemize}
+    \item \textbf{What is the purpose of a file system?} Without a file system, data placed in storage devices would just be one large body of data with no way of telling where one piece starts and ends. The file system provides a way to abstract away the intricacies of interacting with the physical storage hardware, and abstracts away this physical storage through the concept of logical storage units, called \textbf{files}. The file system contains two parts: a collection of files, each storing data, and a directory structure, which provides a way to organize these files.
+    \item \textbf{What is a file?} A file is an abstraction of physical storage, and represents a unit of logical storage. It is a named collection of data that is recorded on a storage device. As such, it is just a sequence of bytes, of which the meaning is defined by the file's creator and user (indicated by the file type, usually in the form of an extension in the file name). Basically, a file is a name + data.
+    \item \textbf{What kind of metadata is associated with a file?} Extra bookkeeping information is typically associated with a file: these are called file \textbf{attributes}. This metadata is stored separate from the actual contents of the file (usually in the directory structure). There are quite a few attributes, important ones (there are others too) include:
+        \begin{itemize}
+            \item \textbf{Name:} Human-readble symbolic file name.
+            \item \textbf{Identifier:} Unique tag, usually a number, that identifies the file within the file system (non-human-redable name).
+            \item \textbf{Location:} Pointer to a storage device and to the location of the file on that device.
+            \item \textbf{Size:} Size of the file.
+            \item \textbf{Protection:} Access-control information for who is allowed to read, write, execute, etc.
+        \end{itemize}
+    \item \textbf{What operations can be performed on files?} The OS provides several system calls to perform primitive building block operations on files. These include: creating a file, opening a file, writing to a file, reading from a file, repositioning withing a file (seek), deleting a file, and truncating a file (erase file contents but keep the attributes).
+    \item \textbf{What is the point of \textit{opening} a file?} When we want to deal with a file, as a user we only the know the symbolic file name. The kernel needs to perform the [symbolic filename \(\rightarrow\) file entry] conversion, and also perform bookkeeping like checking if the file even exists, checking if the user has adequate permission for access, setting up memory buffers, etc. To avoid doing this every time when performing operations on files, the kernel provides a syscall to \textit{open} a file, which does all this once to set everything up and then returns a handle (basically a pointer) to the file. Note this means that we also have to \textit{close} our files (clean up memory buffers and other bookkeeping)!
+\end{itemize}
+
 % \vspace{4mm}
 
 % \noindent Test here test
