@@ -77,7 +77,7 @@
 \subsection*{1.3.2: Multiprocessor Systems}
 
 \begin{itemize}
-    \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors (figure \ref{fig:symmetric-multiprocessing-architecture}). Traditionally contains two or more processors, each with a single-core CPU.
+    \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors (figure \ref{fig:symmetric-multiprocessing-architecture}). Traditionally contains two or more processors, each with a single-core CPU. These days the definition of a multiprocessor system has evolved significantly, and now also includes architectures like multicore CPUs, multithreaded cores, NUMA systems, and heterogeneous multiprocessing systems.
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.6\textwidth]{figures/symmetric-multiprocessing-architecture.jpg}
@@ -123,7 +123,7 @@
 \begin{itemize}
     \item \textbf{Modes of Execution:} A properly designed OS must ensure that an incorrect (or malicious) program cannot cause other programs - or the OS itself - to execute incorrectly. To do this, we need to distinguish between the execution of OS code and user-defined code. Most computer systems provide hardware support that allows differentiation among various modes of execution.
     \item \textbf{User Mode and Kernel Mode:} At the very least, we need two separate modes of operation: user mode and kernel mode (also called supervisor mode, system mode, or privileged mode). A bit, called the mode bit, is added to the hardware of the computer to indicate the current mode: kernel (0) or user (1). Whenever the OS gains control of the computer, it is in kernel mode. The system always switches back to user mode before passing control to a user program. The concept of modes can be extended beyond two modes (e.g. the four protection rings in Intel processors).
-    \item \textbf{Privileged Instructions:} Some machine instructions that may cause can only be executed in kernel mode. The instruction to switch to kernel mode is an example of a privileged instruction.
+    \item \textbf{Privileged Instructions:} Some machine instructions that may cause harm can only be executed in kernel mode. The instruction to switch to kernel mode is an example of a privileged instruction.
 \end{itemize}
 
 \subsection*{1.4.3: Timer}
@@ -724,7 +724,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How does multilevel feedback queue scheduling work?} Multilevel feedback queue scheduling is basically multilevel queue scheduling but processes are allowed to move between different queues of different priority. The main concept is to move processes among different queues according to their CPU bursts: if a process uses too much CPU time, it will be moved to a lower-priority queue, and a process that waits too long in a lower-priority queue may be moved to a higher-priority queue. This leaves I/O bound and interactive processes (characterized by short CPU bursts) in the higher-priority queues. Moving queues to higher-priority queues also helps prevent starvation. This makes a multilevel feedback queue scheduler the most general scheduling algorithm (can be fine-tuned for system), but also makes it the most complex to implement.
 \end{itemize}
 
-\subsection*{OS Concepts 5.4: Thread Scheduling}
+\section*{OS Concepts 5.4: Thread Scheduling}
 
 \begin{itemize}
     \item \textbf{Contention Scope:} Contention scope is basically the ``scope'' in which \textit{threads} (not processes) compete for CPU. Scope distinction is important when discussing M:1/M:N vs 1:1 threading models.
@@ -732,6 +732,62 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \item \textbf{Process Contention Scope (PCS):} PCS is when competition for the CPU occurs among threads belonging to the \textit{same process} (thread scheduling mechanism using user-level thread library local to the process - not visible to kernel). This is what happens in M:1 and M:N threading models.
             \item \textbf{System Contention Scope (SCS):} SCS is when competition for the CPU occurs among \textit{all (kernel) threads in the system} (threads scheduled by kernel). Systems using the 1:1 model schedule threads using SCS.
         \end{itemize}
+\end{itemize}
+
+\section*{OS Concepts 5.5: Multi-Processor Scheduling}
+
+\subsection*{OS Concepts 5.5.1: Approaches to Multi-Processor Scheduling}
+
+\begin{itemize}
+    \item \textbf{CPU scheduling in a multiprocessor system:} If multiple CPUs are available, \textbf{load sharing}, where multiple threads may run in \textit{parallel}, becomes possible. Scheduling issues, however, naturally become more complex.
+    \item \textbf{Asymmetric Multiprocessing:} One approach to CPU scheduling in a multiprocessor system is to have all scheduling decisions, I/O processing, and other system activities handled by a single processor - the master server. The other processes execute only user code. Exactly what work the master processor and other processors perform differs from system to system.
+    \item \textbf{Asymmetric multiprocessing benefits?} Simple to support in the OS because only one core has access to system data structures, reducing the need for data sharing.
+    \item \textbf{Asymmetric multiprocessing drawbacks?} The master server becomes a potential bottleneck that reduces overall system performance.
+    \item \textbf{Symmetric Multiprocessing (SMP):} Instead of having \textit{asymmetric} responsibilities, in an SMP system all processors are treated the same by the OS, reserving none for special purposes. Used by most multiprocessor systems today.
+    \item \textbf{How are threads scheduled to run on which processors on an SMP system?} Two possible strategies:
+        \begin{enumerate}
+            \item All eligible threads may be in a common ready queue. The downside is that there could be a possible race condition on the shared ready queue (processors may schedule the same thread or threads can get lost from the queue). Locking could be used to protect from this race condition, but would likely be a performance bottleneck as all queue access would require lock ownership.
+            \item Each processor may have its own private queue of threads. Does not suffer from locking issues with a shared run queue. The most common approach on SMP systems. May lead to more efficient use of cache memory (processor affinity), but workloads of varying sizes present an issue (addressed by load balancing).
+        \end{enumerate}
+        Shown in figure \ref{fig:smp-scheduling}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/smp-scheduling.jpg}
+            \caption{SMP Scheduling Strategies}
+            \label{fig:smp-scheduling}
+        \end{figure}
+\end{itemize}
+
+\subsection*{OS Concepts 5.5.2: Multicore Processors}
+
+\begin{itemize}
+    \item \textbf{Hardware Threads:} Modern CPUs spend lots of time idle waiting for memory accesses, called \textbf{memory stalls} (because of a cache miss, branch misprediction and consequent pipeline flush, or a data dependency). Some CPUs try to remedy this by using hardware designs in which two (or more) hardware threads are assigned to each core (Intel does this with their hyperthreading technology). This way, when one hardware thread stalls while waiting for memory, the core can switch to another thread. Hardware threads appear as logical CPUs to the OS. Note that the main execution resources (pipeline and execution unit) and caches are shared and only architectural state (e.g. processor registers) is duplicated, which means that the processing core can only execute one hardware thread at a time.
+\end{itemize}
+
+\subsection*{OS Concepts 5.5.3: Load Balancing}
+
+\begin{itemize}
+    \item \textbf{Why do we need workload load balancing?} In SMP systems, to fully utilize the benefits of having more than one processor we need to make sure the workload among them is balanced: this is called \textbf{load balancing}. Otherwise, one or processors may sit idle while other processors have high workloads.
+    \item \textbf{Why is load balancing only necessary on SMP systems with private ready queues?} Load balancing is typically only necessary on SMP systems with per-processor private ready queues: processors on systems with a common ready queue simply take threads from this shared queue, there is no need for load balancing.
+    \item \textbf{What are the two main approaches to load balancing?}
+        \begin{enumerate}
+            \item \textbf{Push Migration:} The OS checks the load on each processor periodically. If there's an imbalance, some threads are \textit{pushed} from overloaded to idle/less-busy processors.
+            \item \textbf{Pull Migration:} Occurs when an idle processor pulls a waiting task from a busy processor. Basically like work stealing I guess.
+        \end{enumerate}
+        These two strategies are not mutually exclusive and are often implemented together on load-balancing systems.
+\end{itemize}
+
+\subsection*{OS Concepts 5.5.4: Processor Affinity}
+
+\begin{itemize}
+    \item \textbf{What is processor affinity?} We would like to keep our caches ``warm'' and avoid moving threads to other processors which would cause cache invalidation for the original processor and repopulation of the cache for the new processor. Trying to keep a thread running on the same processor and taking advantage of a warm cache is known as \textbf{processor affinity} (a process has an affinity for the processor on which it is currently running). There is a natural tension between processor affinity and load balancing, as they try to accomplish conflicting tasks.
+    \item \textbf{Soft vs Hard Affinity?} Soft affinity is best effort- the OS will try to keep processes running on the same processors, but does not guarantee that it does so (during load balancing). Hard affinity ensures that a processor always gets scheduled on the same processor.
+\end{itemize}
+
+\subsection*{OS Concepts 5.5.5: Heterogeneous Multiprocessing}
+
+\begin{itemize}
+    \item \textbf{What is heterogeneous CPU multiprocessing (HMP)?} Commonly found on mobile systems, some multicore architectures feature designs that use cores that run the same instruction set, yet vary in terms of their clock speed and power management (can reduce power consumption of a core to the point of even idling it). The intention behind HMP is to better manage power consumption by assigning tasks to certain cores based upon the specific requirements of the task. Known as \textit{big.LITTLE} on ARM processors.
 \end{itemize}
 
 \section*{OS Concepts 9.1: Main Memory Background}
@@ -787,7 +843,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \label{fig:variable-partitioning}
         \end{figure}
     \item \textbf{What is external fragmentation?} Variable partitioning algorithms suffer from external fragmentation: when processes are loaded the free memory space is broken into little pieces. External fragmentation exists when enough total free memory is available, but it is effectively unusable because it is divided into pieces that are too small individually (last column in figure \ref{fig:variable-partitioning}).
-    \item \textbf{What is internal fragmentation?} More memory may sometimes be allocated to a process than is requested (e.g. if holes have fixes sizes). This wasted memory is called internal fragmentation.
+    \item \textbf{What is internal fragmentation?} More memory may sometimes be allocated to a process than is requested (e.g. if holes have fixed sizes). This wasted memory is called internal fragmentation.
     \item \textbf{How can we possibly solve external fragmentation?} We can possibly solve external fragmentation using \textbf{compaction}. Basically shuffle memory contents so as to place all free memory together in one block. Compaction is not always possible however: only possible if program relocation is dynamic and done at execution time.
 \end{itemize}
 
