@@ -316,7 +316,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \begin{figure}[ht]
         \centering
         \includegraphics[width=0.4\textwidth]{figures/process-control-block.jpg}
-        \caption{The process control block. The highlighted blue regions is the machine environment during the time the process is actively in control of the CPU.}
+        \caption{The process control block. The highlighted blue region is the machine environment during the time the process is actively in control of the CPU.}
         \label{fig:process-control-block}
     \end{figure}
 \end{itemize}
@@ -787,7 +787,24 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \subsection*{OS Concepts 5.5.5: Heterogeneous Multiprocessing}
 
 \begin{itemize}
-    \item \textbf{What is heterogeneous CPU multiprocessing (HMP)?} Commonly found on mobile systems, some multicore architectures feature designs that use cores that run the same instruction set, yet vary in terms of their clock speed and power management (can reduce power consumption of a core to the point of even idling it). The intention behind HMP is to better manage power consumption by assigning tasks to certain cores based upon the specific requirements of the task. Known as \textit{big.LITTLE} on ARM processors.
+    \item \textbf{What is heterogeneous CPU multiprocessing (HMP)?} Commonly found on mobile systems, some multicore architectures feature designs that use cores that run the same instruction set, yet vary in terms of their clock speed and power management (can reduce power consumption of a core to the point of even idling it). The intention behind HMP is to better manage power consumption by assigning tasks to certain cores based upon the specific requirements of the task. Known as \textit{big.LITTLE} on ARM processors (Firestorm and Icestorm cores in Apple M1).
+\end{itemize}
+
+\section*{OS Concepts 5.7: Operating-System Examples}
+
+\subsection*{OS Concepts 5.7.1: Linux Scheduling}
+
+\begin{itemize}
+    \item \textbf{What scheduler is used in Linux?} Introduced in release 2.6.23 (2007!) of the kernel, the \textbf{Completely Fair Scheduler (CFS)} became the default Linux scheduling algorithm.
+    \item \textbf{How does the CFS differ from classic scheduling?} The CFS differs from classic preemptive scheduling by not using fixed timeslices and explicitly set priorites. The CFS also implements real-time scheduling using the POSIX standard.
+    \item \textbf{How does CFS schedule tasks?} The CFS scheduler has a \textit{targeted latency}, which is an interval of time in which every task should run at least once. Ideally we would like the targeted latency to be infinitely small, as this would mean that every task is run in any given timespan (e.g. 5ns, 1ms, etc.). In practice, the targeted latency is set to 20ms by default. Each runnable task gets a \(1/N\) slice of the target latency, where \(N\) is the number of tasks (this is where the term fair comes from, giving a fair \(1/N\) to each task). \begin{sloppypar} The \(1/N\) slice is indeed a timeslice, but this value is dynamic depending on the number of tasks in the system (tasks finish and new tasks are created all the time). Additionally, this slice is weighted by the \textbf{nice value} of the task: ranging from -20 to 19, lower nice values mean that the \(1/N\) will actually be correspondingly greater, and vice versa. \end{sloppypar} \begin{sloppypar} The CFS tracks how long each task has run by maintaining the \textbf{virtual runtime} \texttt{vruntime} variable. The \texttt{vruntime} is what is weighted by the nice value. The CFS selects the task that has the smallest \texttt{vruntime} value (the task with the lowest runtime is the task that deserves the most to run next). The runqueue is implemented as a red-black tree using \texttt{vruntime} values as keys. \end{sloppypar} 
+    \item \textbf{How does CFS implement load balancing?} The CFS supports load balancing, that is also NUMA aware and tries to minimize the migration of threads. Since migrating threads may result in memory access penalties (cache invalidation or accessing non-local memory across the system interconnect on NUMA systems), CFS addresses this using a hierachical system of \textbf{scheduling domains} (figure \ref{fig:cfs-load-balancing}). A scheduling domain is a set of CPU cores that threads can be balanced among. The cores are grouped by how they share the resources of the system (e.g. first domain level are cores that only share L2 cache, next domain level are NUMA nodes that share L3 cache, etc.). The CFS balances loads within these domain levels, beginning at the lowest level of the hierarchy (try to migrate threads in the smallest domain level first, e.g. cores sharing L2 cache, and only reluctanly migrate threads across higher level domains like NUMA nodes).
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.6\textwidth]{figures/cfs-load-balancing.jpg}
+        \caption{Linux CFS load balancing}
+        \label{fig:cfs-load-balancing}
+    \end{figure}
 \end{itemize}
 
 \section*{OS Concepts 9.1: Main Memory Background}
