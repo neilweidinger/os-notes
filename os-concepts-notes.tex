@@ -814,6 +814,24 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How do we protect against race conditions?} Threads need to by synchronized in some way to protect against race conditions.
 \end{itemize}
 
+\section*{OS Concepts 6.2: The Critical Section Problem}
+
+\begin{itemize}
+    \item \textbf{What is a critical section?} A critical section is a segment of code in which a process may be accessing and modifying data that is shared with at least one other process, and thus has to be executed as an atomic action. We want only one process at most to be executing its critical section at a time. A critical section is illustrated in figure \ref{fig:critical-section}. This is especially important in the context of OS's, since many kernel data structures (e.g. open file lists) are accessed by a lot of different kernel-mode processes.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.45\textwidth]{figures/critical-section.jpg}
+        \caption{Two processes with the same critical section}
+        \label{fig:critical-section}
+    \end{figure}
+\end{itemize}
+
+\section*{OS Concepts 6.3: Peterson's Solution}
+
+\begin{itemize}
+    \item \textbf{What is Peterson's solution?} Peterson's solution is a software approach to the critical-section problem. It is an algorithm that allows two processes to use shared data without conflict (can be generalized to more than two processes). Since most modern processors and/or compilers reorder memory accesses that have no dependencies, Peterson's solution is not guaranteed to work correctly on these systems.
+\end{itemize}
+
 \section*{OS Concepts 9.1: Main Memory Background}
 
 \subsection*{OS Concepts 9.1.1: Basic Hardware}
