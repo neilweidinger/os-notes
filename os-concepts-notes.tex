@@ -879,6 +879,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What are atomic variables?} Typically, instructions like test-and-set and CAS are not used directly to provide mutual exclusion. Rather, they are used as basic building blocks for higher level abstractions to solve the critical-section problem. These instructions can be used to implement \textbf{atomic variables}, which provide atomic operations on basic data types like integers and booleans.
 \end{itemize}
 
+\section*{OS Concepts 6.5: Mutex Locks}
+
+\begin{itemize}
+    \item \textbf{What are mutex locks?} Mutex locks can be used to protect critical sections and thus prevent race conditions. A process must acquire the lock (mutual exclusion) before entering a critical section, and release the lock when it exits the critical section.
+    \item \textbf{Why use mutex locks over hardware instructions like CAS?} Hardware instructions like CAS are complicated and easy to get wrong, so higher level abstractions like mutexes are built upon them instead.
+    \item \textbf{What happens if a process attempts to acquire a lock that is already acquired by another process?} This depends on the exact type of mutex implementation, but for something like a spinlock it simply blocks until the lock is release by the other process. With spinlocks, the fact that a process simply ``spins'' and wastes CPU cycles while it waits on the lock to be released is not great for performance, but a spinlock may be preferable if the lock is only held for a short duration (avoid context switch).
+\end{itemize}
+
 \section*{OS Concepts 9.1: Main Memory Background}
 
 \subsection*{OS Concepts 9.1.1: Basic Hardware}
