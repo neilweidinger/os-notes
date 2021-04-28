@@ -15,6 +15,16 @@
 \rfoot{Page \thepage}
 \setlength{\headheight}{15pt}
 
+\usepackage{silence}
+\WarningFilter{latex}{Command \underbar}
+\WarningFilter{latex}{Command \underline}
+\usepackage{xcolor}
+\usepackage{sectsty}
+\definecolor{sectioncolor}{RGB}{3, 94, 158}
+\definecolor{subsectioncolor}{RGB}{0, 146, 153}
+\sectionfont{\color{sectioncolor}}
+\subsectionfont{\color{subsectioncolor}}
+
 % highlights links
 % apparently need to import hyperref last
 \usepackage{hyperref}
