@@ -832,6 +832,43 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is Peterson's solution?} Peterson's solution is a software approach to the critical-section problem. It is an algorithm that allows two processes to use shared data without conflict (can be generalized to more than two processes). Since most modern processors and/or compilers reorder memory accesses that have no dependencies, Peterson's solution is not guaranteed to work correctly on these systems.
 \end{itemize}
 
+\section*{OS Concepts 6.4: Hardware Support for Synchronization}
+
+\subsection*{OS Concepts 6.4.1: Memory Barriers}
+
+\begin{itemize}
+    \item \textbf{What is memory reordering?} Modern compilers and processors often reorder memory accesses to maximize performance. Compilers can do this reordering at compile time at the machine instruction level, and processors can do this at runtime (out of order execution).
+    \item \textbf{What are memory models?} The (hardware) memory model of a system specifies the types of processor memory reordering at runtime that can be expected, relative to given source machine instruction code. Software memory models exist as well, that are supposed to standardize the semantics of memory across arbitrary compilers and platforms.
+    \item \textbf{Weak vs strong memory models?} Memory models lie on a spectrum, from weak to strong. Weaker memory models permit more memory reordering (e.g. ARM), while stronger memory models (e.g. x86) are more stringent on what reordering is allowed.
+    \item \textbf{How do we protect ourselves from memory reordering on multiprocessor systems?} We can use \textbf{memory barriers} to ensure that all loads/stores are completed before any subsequent loads/stores (basically enforce our desired memory ordering and not allow the compiler/processor to perform any memory reordering).
+\end{itemize}
+
+\subsection*{OS Concepts 6.4.2: Hardware Instructions}
+
+\begin{itemize}
+    \item \textbf{What instructions does HW give us to perform atomic operations?} Many computer systems have special hardware instructions that allow us to perform atomic operations (one uninterruptible unit). These instructions can be used to enforce mutual exclusion.
+    \item \textbf{Test-and-set} Test-and-set is an atomic instruction provided by the hardware. It writes 1/true (set) to a memory location and returns its old value as a single atomic operation (where we can test the old value). This can be used to implement mutual exclusion using a lock. Pseudocode of the \textit{effects} of test-and-set are shown in figure \ref{fig:test-and-set} (note that this is just an illustration in pseudocode, this must be implemented as an atomic instruction in hardware).
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.45\textwidth]{figures/test-and-set.jpg}
+        \caption{Pseudocode of test-and-set}
+        \label{fig:test-and-set}
+    \end{figure}
+\item \textbf{Compare-and-swap} Compare-and-swap (CAS) is an atomic instruction provided by the hardware. It can be used to implement mutual exclusion (using a lock). Basically CAS, in one atomic operation, tests to see if the current value is the same as our old value, and only then updates it with a new value. It always returns the old value. Pseudocode is shown in figure \ref{fig:cas}. On x86 platforms CAS is implemented using the \texttt{lock cmpxchg} instruction.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/cas.jpg}
+        \caption{Pseudocode of CAS}
+        \label{fig:cas}
+    \end{figure}
+\end{itemize}
+
+\subsection*{OS Concepts 6.4.3: Atomic Variables}
+
+\begin{itemize}
+    \item \textbf{What are atomic variables?} Typically, instructions like test-and-set and CAS are not used directly to provide mutual exclusion. Rather, they are used as basic building blocks for higher level abstractions to solve the critical-section problem. These instructions can be used to implement \textbf{atomic variables}, which provide atomic operations on basic data types like integers and booleans.
+\end{itemize}
+
 \section*{OS Concepts 9.1: Main Memory Background}
 
 \subsection*{OS Concepts 9.1.1: Basic Hardware}
