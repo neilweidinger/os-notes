@@ -820,20 +820,26 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \section*{OS Concepts 6.1: Synchronization Background}
 
 \begin{itemize}
-    \item \textbf{What is a race condition?} A situation where several threads access and manipulate the same data concurrently and the outcome of the execution depends on the specific order in which the acces takes place.
-    \item \textbf{How do we protect against race conditions?} Threads need to by synchronized in some way to protect against race conditions.
+    \item \textbf{What is a race condition?} A situation where several threads access and manipulate the same data concurrently and the outcome of the execution depends on the specific order in which the accesses takes place.
+    \item \textbf{How do we protect against race conditions?} Threads need to be synchronized in some way to protect against race conditions.
 \end{itemize}
 
 \section*{OS Concepts 6.2: The Critical Section Problem}
 
 \begin{itemize}
-    \item \textbf{What is a critical section?} A critical section is a segment of code in which a process may be accessing and modifying data that is shared with at least one other process, and thus has to be executed as an atomic action. We want only one process at most to be executing its critical section at a time. A critical section is illustrated in figure \ref{fig:critical-section}. This is especially important in the context of OS's, since many kernel data structures (e.g. open file lists) are accessed by a lot of different kernel-mode processes.
+    \item \textbf{What is a critical section?} A critical section is a segment of code in which a process may be accessing and modifying data that is shared with at least one other process, and thus has to be executed as an atomic action. We want only \textbf{one process} at most to be executing its critical section at a time. A critical section is illustrated in figure \ref{fig:critical-section}. This is especially important in the context of OS's, since many kernel data structures (e.g. open file lists) are accessed by a lot of different kernel-mode processes.
     \begin{figure}[ht]
         \centering
         \includegraphics[width=0.45\textwidth]{figures/critical-section.jpg}
         \caption{Two processes with the same critical section}
         \label{fig:critical-section}
     \end{figure}
+    \item \textbf{How can the critical-section problem be solved?} A solution to the critical-section must satisfy the following three requirements:
+    \begin{enumerate}
+        \item \textbf{Mutual Exclusion:} Only one process at a time may be active in the critical-section.
+        \item \textbf{Progress:} Processes will cooperatively determine which process will next enter the critical-section.
+        \item \textbf{Bounded Waiting:} There must be an upper limit to how long a process will wait before it can enter the critical section.
+    \end{enumerate}
 \end{itemize}
 
 \section*{OS Concepts 6.3: Peterson's Solution}
