@@ -1056,7 +1056,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Why use swapping?} Swapping allows the total physical address space of all processes to exceed the real physical main memory of the system (processes can be swapped out to secondary storage), thus \textit{increasing the degree of multiprogramming in a system}.
     \item \textbf{What is the relationship between virtual memory and swapping?} Swapping is a key component of virtual memory, in that in allows main memory to essentially act as a cache for our secondary storage (just one of the benefits of virtual memory). Virtual memory, however, is not a prerequisite for swapping: a memory management scheme using only physical addresses can also swap entire processes out to disk and have the same benefits.
     \item \textbf{What is the relationship between paging and swapping?} Most modern OS's use a form of swapping where instead of entire processes, only pages of a process are swapped out to disk. This still allows the total physical address space of all processes to exceed real main memory, but does not incur the cost of swapping out \textit{entire} processes (we can keep frequently used pages in memory, and only lesser used pages in disk). Swapping with pages is typically referred to as \textbf{paging} (in/out).
-    \item \textbf{Swapping in mobile systems:} Mobile systems typically do not support swapping. This is because even though they use virtual memory (to benefit from things like process address space separation), mobile systems like iOS \href{https://developer.apple.com/library/archive/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html}{do not support a backing store for main memory}. The flash memory these systems use for secondary storage is too small and valuable to be used for swapping, only tolerates a limited number of writes before it becomes unreliable, and has relatively poor throughput between main memory and the flash storage. Instead of swapping, when the free memory falls below a certain threshold, the iOS kernel flushes read-only data from memory and reloads it later if necessary. In addition, the kernel \textit{requests} that applications voluntarily free memory themselves (modified but inactive pages are not flushed by the kernel). Applications that fail to free up sufficient memory may be terminated by the iOS kernel.
+    \item \textbf{Swapping in mobile systems:} Mobile systems typically do not support swapping. This is because even though they use virtual memory (to benefit from things like process address space separation), mobile systems like iOS \href{https://developer.apple.com/library/archive/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html}{do not support a backing store for main memory}. The flash memory these systems use for secondary storage is too small and valuable to be used for swapping, only tolerates a limited number of writes before it becomes unreliable, and has relatively poor throughput between main memory and the flash storage. Instead of swapping, when the free memory falls below a certain threshold, the iOS kernel flushes read-only data from memory and reloads it later if necessary (demand-page read-only memory from file system). In addition, the kernel \textit{requests} that applications voluntarily free anonymous memory (memory that is not backed up by the file system, e.g. stack and heap) themselves. Applications that fail to free up sufficient memory may be terminated by the iOS kernel.
     \item \textbf{What is the performance impact of swapping?} Any form of paging is pure overhead, as it is essentially just copying data back and forth from disk (very slow). Temporal locality normally means paging does not have to occur too frequently. When the working set size exceeds the size of physical memory and pages are continously swapped in and out, this leads to a situation known as \textbf{thrashing} (overhead of lots of paging slows peformance to a crawl).
     \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory!
 \end{itemize}
@@ -1068,13 +1068,27 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What are the benefits of virtual memory?} There are many benefits:
         \begin{itemize}
             \item \textbf{VM as a tool for caching:} Virtual memory makes efficient use of main memory by treating it as a cache for an address space stored on disk. Only active areas are stored in main memory and data is transferred (paging) back and forth as needed.
-            \item \textbf{Uniform address space:} Virtual memory allows processes to view memory as a large, uniform, and private address space. This simplifies memory management: programmers no longer have to worry about running out of physical memory (programs can be larger than physical memory).
+            \item \textbf{Uniform address space:} Virtual memory allows processes to view memory as a large, uniform, and private address space. Each process has their own virtual address space. This simplifies memory management: programmers no longer have to worry about running out of physical memory (programs can be larger than physical memory).
             \item \textbf{Shared memory:} Virtual memory allows processes to share memory, useful for files and libraries.
             \item \textbf{Increased degree of multiprogramming:} By only having the active portions of processes in physical memory, more processes can be run at the same time.
             \item \textbf{Memory protection:} Virtual memory provides a mechanism for memory protection, protecting processes from accessing memory they should not.
         \end{itemize}
 \end{itemize}
  
+\section*{OS Concepts 10.2: Demand Paging}
+
+\begin{itemize}
+    \item \textbf{What is demand paging?} Demand paging is the strategy of waiting to swap in pages only as they are needed. Pages that are never accessed are thus never loaded into physical memory.
+    \item \textbf{What happens if a process tries to access a page not currently in physical memory?} A \textbf{page fault exception} occurs. This happens when the hardware is performing the address translation, and causes a trap to the OS (which executes the page fault exception handler).
+    \item \textbf{What steps does the page fault exception handler take?} The general steps the page fault exception handler are the following:
+        \begin{enumerate}
+            \item Service the page fault interrupt.
+            \item Swap in a page from disk (in the process potentially replacing another page in memory, writing this page back to disk if it has been marked as modified). This also requires updating the page table.
+            \item Restart the instruction that caused the page fault.
+        \end{enumerate}
+    \item \textbf{What performance considerations do we have to make in a demand-paging system?} It is important to keep the pag fault rate low, since otherwise the effective access time increases (more memory accesses require the overhead of paging) and process execution slows down dramatically.
+\end{itemize}
+
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
 
 \begin{itemize}
