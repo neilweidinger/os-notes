@@ -1043,6 +1043,24 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How is code shared using paging?} The page tables for each process sharing the code map to the same physical memory frames.
 \end{itemize}
 
+\section*{OS Concepts 9.4: Structure of the Page Table}
+
+\begin{itemize}
+    \item \textbf{TODO}
+\end{itemize}
+
+\section*{OS Concepts 9.5: Swapping}
+
+\begin{itemize}
+    \item \textbf{What is swapping?} Swapping is where a process, or a portion of a process, can be swapped out of memory to a backing store, and then later brought back into memory for continued execution.
+    \item \textbf{Why use swapping?} Swapping allows the total physical address space of all processes to exceed the real physical main memory of the system (processes can be swapped out to secondary storage), thus \textit{increasing the degree of multiprogramming in a system}.
+    \item \textbf{What is the relationship between virtual memory and swapping?} Swapping is a key component of virtual memory, in that in allows main memory to essentially act as a cache for our secondary storage (just one of the benefits of virtual memory). Virtual memory, however, is not a prerequisite for swapping: a memory management scheme using only physical addresses can also swap entire processes out to disk and have the same benefits.
+    \item \textbf{What is the relationship between paging and swapping?} Most modern OS's use a form of swapping where instead of entire processes, only pages of a process are swapped out to disk. This still allows the total physical address space of all processes to exceed real main memory, but does not incur the cost of swapping out \textit{entire} processes (we can keep frequently used pages in memory, and only lesser used pages in disk). Swapping with pages is typically referred to as \textbf{paging} (in/out).
+    \item \textbf{Swapping in mobile systems:} Mobile systems typically do not support swapping. This is because even though they use virtual memory (to benefit from things like process address space separation), mobile systems like iOS \href{https://developer.apple.com/library/archive/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html}{do not support a backing store for main memory}. The flash memory these systems use for secondary storage is too small and valuable to be used for swapping, only tolerates a limited number of writes before it becomes unreliable, and has relatively poor throughput between main memory and the flash storage. Instead of swapping, when the free memory falls below a certain threshold, the iOS kernel flushes read-only data from memory and reloads it later if necessary. In addition, the kernel \textit{requests} that applications voluntarily free memory themselves (modified but inactive pages are not flushed by the kernel). Applications that fail to free up sufficient memory may be terminated by the iOS kernel.
+    \item \textbf{What is the performance impact of swapping?} Any form of paging is pure overhead, as it is essentially just copying data back and forth from disk (very slow). Temporal locality normally means paging does not have to occur too frequently. When the working set size exceeds the size of physical memory and pages are continously swapped in and out, this leads to a situation known as \textbf{thrashing} (overhead of lots of paging slows peformance to a crawl).
+    \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory!
+\end{itemize}
+
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
 
 \begin{itemize}
