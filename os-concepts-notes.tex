@@ -1196,6 +1196,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What performance considerations do we have to make in a demand-paging system?} It is important to keep the pag fault rate low, since otherwise the effective access time increases (more memory accesses require the overhead of paging) and process execution slows down dramatically.
 \end{itemize}
 
+\section*{OS Concepts 10.3: Copy-on-Write}
+\addcontentsline{toc}{section}{OS Concepts 10.3: Copy-on-Write}
+
+\begin{itemize}
+    \item \textbf{How does the \texttt{fork()} syscall copy address spaces?} Recall that the \texttt{fork()} syscall creates a child process that is a duplicate of its parent, meaning the child process has a copy of the parent process address space. Traditionally, \texttt{fork()} duplicated the pages belonging to the parent. But since many processes that call \texttt{fork()} just wind up calling \texttt{exec()} immediately after creation anyway, the copying of the parent's address space may be wasteful. Instead, the child and parent process can initially share the same pages, by marking them as \textbf{copy-on-write}. This means a copy of these shared pages is only made when a process first writes to it. Only pages that can be modified need to be marked as copy-on-write: pages that cannot be modified (for example pages containing executable code) can always be shared safely between the parent and the child.
+\end{itemize}
+
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
 \addcontentsline{toc}{section}{11.1: Overview of Mass-Storage Structure}
 
