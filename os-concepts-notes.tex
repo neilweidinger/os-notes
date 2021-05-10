@@ -1061,6 +1061,20 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory!
 \end{itemize}
 
+\section*{OS Concepts 10.1: Virtual Memory Background}
+
+\begin{itemize}
+    \item \textbf{What is virtual memory?} Virtual memory is the abstraction of real physical memory: it involves an elegant interaction of hardware exceptions, hardware address translation, main memory, disk files, and kernel software. It abstracts real physical memory away as a large, uniform (contiguous), and private address space for each process.
+    \item \textbf{What are the benefits of virtual memory?} There are many benefits:
+        \begin{itemize}
+            \item \textbf{VM as a tool for caching:} Virtual memory makes efficient use of main memory by treating it as a cache for an address space stored on disk. Only active areas are stored in main memory and data is transferred (paging) back and forth as needed.
+            \item \textbf{Uniform address space:} Virtual memory allows processes to view memory as a large, uniform, and private address space. This simplifies memory management: programmers no longer have to worry about running out of physical memory (programs can be larger than physical memory).
+            \item \textbf{Shared memory:} Virtual memory allows processes to share memory, useful for files and libraries.
+            \item \textbf{Increased degree of multiprogramming:} By only having the active portions of processes in physical memory, more processes can be run at the same time.
+            \item \textbf{Memory protection:} Virtual memory provides a mechanism for memory protection, protecting processes from accessing memory they should not.
+        \end{itemize}
+\end{itemize}
+ 
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
 
 \begin{itemize}
