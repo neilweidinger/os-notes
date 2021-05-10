@@ -27,22 +27,27 @@
 
 % highlights links
 % apparently need to import hyperref last
-\usepackage{hyperref}
+\usepackage[bookmarks=true]{hyperref}
 \hypersetup{
     colorlinks=true,
     linkcolor=cyan,
 }
+\usepackage{bookmark}
 
 \begin{document}
+
 \section*{OS Concepts 1.1: What Operating Systems Do}
+\addcontentsline{toc}{section}{1.1: What Operating Systems Do}
 
 \begin{itemize}
     \item \textbf{What is an OS?:} OS's vary widely in design and in function, but basically an OS is the software that sits between application programs and computer hardware. It provides an environment in which application programs are executed, by allocating physical resources like CPU, memory, and I/O devices.
 \end{itemize}
 
 \section*{OS Concepts 1.2: Computer-System Organization}
+\addcontentsline{toc}{section}{1.2: Computer-System Organization}
 
 \subsection*{1.2.1: Interrupts}
+\addcontentsline{toc}{subsection}{1.2.1: Interrupts}
 
 \begin{itemize}
     \item \textbf{Device Controller:} The I/O managing processor within a device. Basically the hardware, that the device driver talks to, which controls the I/O device.
@@ -62,20 +67,24 @@
 \end{itemize}
 
 \subsection*{1.2.2: Storage Structure}
+\addcontentsline{toc}{subsection}{1.2.2: Storage Structure}
 
 \begin{itemize}
     \item \textbf{Firmware:} Software stored in ROM or EEPROM for booting the system and managing low level hardware.
 \end{itemize}
 
 \subsection*{1.2.3: I/O Structure}
+\addcontentsline{toc}{subsection}{1.2.3: I/O Structure}
 
 \begin{itemize}
     \item \textbf{Direct Memory Access (DMA):} Interrupt-driven I/O as described in section 1.2.1 is fine for moving small amounts of data but can produce high overhead when used for bulk data movement, like when moving data to and from nonvolatile memory. DMA is used to avoid this overhead. The device controller sets up buffers, pointers, and counters for its I/O device, and transfers entire blocks of data to or from the device and main memory, with no intervention by the CPU. Only one interrupt is generated per block, to tell the device driver that the operation has completed, rather than the one interrupt per byte generated for low-speed devices. The CPU is able to perform other work while the device controller is performing these operations.
 \end{itemize}
 
 \section*{OS Concepts 1.3: Computer-System Architecture}
+\addcontentsline{toc}{section}{1.3: Computer-System Architecture}
 
 \subsection*{1.3.1: Single-Processor Systems}
+\addcontentsline{toc}{subsection}{1.3.1: Single-Processor Systems}
 
 \begin{itemize}
     \item \textbf{CPU:} The hardware that executes instructions.
@@ -85,6 +94,7 @@
 \end{itemize}
 
 \subsection*{1.3.2: Multiprocessor Systems}
+\addcontentsline{toc}{subsection}{1.3.2: Multiprocessor Systems}
 
 \begin{itemize}
     \item \textbf{Multiprocessor Systems:} A computer system containing multiple processors (figure \ref{fig:symmetric-multiprocessing-architecture}). Traditionally contains two or more processors, each with a single-core CPU. These days the definition of a multiprocessor system has evolved significantly, and now also includes architectures like multicore CPUs, multithreaded cores, NUMA systems, and heterogeneous multiprocessing systems.
@@ -114,6 +124,7 @@
 \end{itemize}
 
 \section*{OS Concepts 1.4: Operating-System Operations}
+\addcontentsline{toc}{section}{1.4: Operating-System Operations}
 
 \begin{itemize}
     \item \textbf{Bootstrap Program:} The initial program that is run when a computer starts running for the first time. Typically a very simple program and stored in firmware. The program must know how to load the OS kernel into memory and start executing it.
@@ -121,6 +132,7 @@
 \end{itemize}
 
 \subsection*{1.4.1: Multiprogramming and Multitasking}
+\addcontentsline{toc}{subsection}{1.4.1: Multiprogramming and Multitasking}
 
 \begin{itemize}
     \item \textbf{Multiprogramming:} Increase CPU utilization by organizing programs so that the CPU always has one to execute. Execute a process until it needs to wait on some task like I/O, then switch to another process. Keep switching between processes such that the CPU is never idle.
@@ -129,6 +141,7 @@
 \end{itemize}
 
 \subsection*{1.4.2: Dual-Mode and Multimode Operation}
+\addcontentsline{toc}{subsection}{1.4.2: Dual-Mode and Multimode Operation}
 
 \begin{itemize}
     \item \textbf{Modes of Execution:} A properly designed OS must ensure that an incorrect (or malicious) program cannot cause other programs - or the OS itself - to execute incorrectly. To do this, we need to distinguish between the execution of OS code and user-defined code. Most computer systems provide hardware support that allows differentiation among various modes of execution.
@@ -137,40 +150,47 @@
 \end{itemize}
 
 \subsection*{1.4.3: Timer}
+\addcontentsline{toc}{subsection}{1.4.3: Timer}
 
 \begin{itemize}
     \item \textbf{Timer:} We must ensure that the OS maintains control over the CPU: we allow user programs to execute, but they must eventually relinquish control to the OS (avoid situations like user program infinite loops or not calling system services and thus not returning control to the OS). To accomplish this, we can use a timer that is set to raise an interrupt after a specified amount of time. If the timer interrupts, control transfers automatically to the OS, which may treat the interrupt as a fatal error or may give the program more time. Instructions that modify the timer are clearly privileged.
 \end{itemize}
 
 \section*{OS Concepts 1.5: Resource Management}
+\addcontentsline{toc}{section}{1.5: Resource Management}
 
 The OS can be seen as a resource manager. The following are things that the OS must carefully manage in a computer system.
 
 \subsection*{1.5.1: Process Management}
+\addcontentsline{toc}{subsection}{1.5.1: Process Management}
 
 \begin{itemize}
     \item \textbf{Program vs Process:} A program by itself is not a process. A program is a \textit{passive} entity, whereas a process is an \textit{active} entity. Remember that a process is just a program in execution, thus there can be multiple processes associated with the same program (and each is considered a separate execution sequence).
 \end{itemize}
 
 \subsection*{1.5.2: Memory Management}
+\addcontentsline{toc}{subsection}{1.5.2: Memory Management}
 
 \begin{itemize}
     \item \textbf{Memory Management:} The OS is responsible for keeping tack of which parts of memory are currently being used and which process is using them, allocating and deallocating memory, and deciding which processes (or parts of processes) and data to move into and out of memory.
 \end{itemize}
 
 \subsection*{1.5.3: File-System Management}
+\addcontentsline{toc}{subsection}{1.5.3: File-System Management}
 
 \begin{itemize}
     \item \textbf{File System:} The OS abstracts the physical properties of its storage devices to define a logical storage unit, the \textbf{file}. In other words, the OS implements the abstract concept of a file by managing mass storage media and the devices that control them.
 \end{itemize}
 
 \subsection*{1.5.4: Mass-Storage Management}
+\addcontentsline{toc}{subsection}{1.5.4: Mass-Storage Management}
 
 \begin{itemize}
     \item \textbf{Secondary Storage Management:} The proper management of secondary storage is critical to a computer system. The OS must take care of things such as mounting and unmounting, free-space management, storage allocation, disk scheduling, partitioning, and protection.
 \end{itemize}
 
 \subsection*{1.5.5: Cache Management}
+\addcontentsline{toc}{subsection}{1.5.5: Cache Management}
 
 \begin{itemize}
     \item \textbf{OS and Memory Hierarchy:} The OS is responsible for moving data between the different levels of the memory hierarchy that it has access to. The OS can only manipulate software-controlled caches, for instance transfer of data from disk to memory, while data transfer from CPU cache to registers is a hardware function.
@@ -179,12 +199,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{1.5.6: I/O System Management}
+\addcontentsline{toc}{subsection}{1.5.6: I/O System Management}
 
 \begin{itemize}
     \item \textbf{I/O Subsystem:} One of the purposes of an OS is to hide the peculiarities of specific hardware devices from the user. Often, these peculiarities are hidden from most of the OS itself by the I/O subsystem. Device drivers for specific hardware devices for instance are included in the I/O subsystem.
 \end{itemize}
 
 \section*{OS Concepts 1.7: Virtualization}
+\addcontentsline{toc}{section}{1.7: Virtualization}
 
 \begin{itemize}
     \item \textbf{Virtualization:} Virtualization allows us to abstract the hardware of a single computer (the CPU, memory, disk drives, etc.) into several different execution environments, creating the illusion that each separate environment is running on its own private computer. An OS that is natively compiled for a particular CPU architecture runs within another OS also native to that CPU.
@@ -192,8 +214,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 1.10: Computing Environments}
+\addcontentsline{toc}{section}{1.10: Computing Environments}
 
 \subsection*{1.10.4: Peer-to-Peer Computing}
+\addcontentsline{toc}{subsection}{1.10.4: Peer-to-Peer Computing}
 
 \begin{itemize}
     \item \textbf{Peer-to-Peer (P2P) Computing:} In this distributed computing model, clients and servers are not distinguished from each other. Each node in the system may act as either a client or a server, depending on whether it is requesting or providing a service. In traditional client-server systems, the server is a bottleneck; but in a P2P system, services can be provided by several nodes distributed throughout the network.
@@ -202,6 +226,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 2.6: Why Applications are OS Specific}
+\addcontentsline{toc}{section}{2.6: Why Applications are OS Specific}
 
 \begin{itemize}
     \item \textbf{Why Applications are OS Specific:} Each OS exposes different functionalities (system calls), so applications cannot expect to be able to use the same functions across varying OS's. Even if system calls were somehow uniform, other barriers would still pose a challenge: binary formats, varying CPU ISA's, system call discrepancies (specific operands and operand ordering, how to invoke syscalls, syscall result meanings, etc.).
@@ -214,22 +239,27 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 2.7: OS Design and Implementation}
+\addcontentsline{toc}{section}{2.7: OS Design and Implementation}
 
 \subsection*{2.7.1: Design Goals}
+\addcontentsline{toc}{subsection}{2.7.1: Design Goals}
 
 \begin{itemize}
     \item \textbf{OS Goals and Specifications:} The first problem in designing a system is to define goals and specifications. These requirements can, however, be divided into two basic groups: user goals and system goals.
 \end{itemize}
 
 \subsection*{2.7.2: Mechanisms and Policies}
+\addcontentsline{toc}{subsection}{2.7.2: Mechanisms and Policies}
 
 \begin{itemize}
     \item \textbf{Mechanisms and Policies:} An important principle is the separation of policy from mechanism. Mechanisms determine \textit{how} to do something; policies determine \textit{what} will be done. For instance, the standard Linux kernel has a specific CPU scheduling algorithm, which is a mechanism that supports a certain policy. However, anyone is free to modify or replace the scheduler to support a different policy.
 \end{itemize}
 
 \section*{OS Concepts 2.8: OS Structure}
+\addcontentsline{toc}{section}{2.8: OS Structure}
 
 \subsection*{2.8.1: Monolithic Structure}
+\addcontentsline{toc}{subsection}{2.8.1: Monolithic Structure}
 
 \begin{itemize}
     \item \textbf{Monolithic Structure:} A monolithic kernel places all of the functionality of the kernel into a single, static binary file that runs in a single address space. Everything below the system-call interface and above the physical hardware is the kernel, as seen in figure \ref{fig:monolithic-structure}. Typically difficult to implement and extend, but have good performance due to very little overhead in the syscall interface, and communication within the kernel is fast.
@@ -242,6 +272,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{2.8.3: Microkernels}
+\addcontentsline{toc}{subsection}{2.8.3: Microkernels}
 
 \begin{itemize}
     \item \textbf{What is a Microkernel?} The microkernel approach structures the OS by removing all nonessential components from the kernel and implementing them as user-level programs that reside in separate address spaces, resulting in a smaller kernel, seen in figure \ref{fig:microkernel-structure}. There is little consensus on what services remain in the kernel, however, typically minimal process and memory management and a communication facility are provided. The main function of the microkernel is to provide communication between the client program and the various services also running in user space; communication is provided though message passing.
@@ -256,14 +287,17 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{2.8.4: Modules}
+\addcontentsline{toc}{subsection}{2.8.4: Modules}
 
 \begin{itemize}
     \item \textbf{Loadable Kernel Modules (LKMs):} Using LKMs, the kernel has a set of core components and can link in additional services via modules, either at boot time or during run time. The key idea is for the kernel to provide core services, while other services are implemented dynamically, as the kernel is running.
 \end{itemize}
 
 \section*{OS Concepts 2.9: Building and Booting an OS}
+\addcontentsline{toc}{section}{2.9: Building and Booting an OS}
 
 \subsection*{2.9.2: System Boot}
+\addcontentsline{toc}{subsection}{2.9.2: System Boot}
 
 \begin{itemize}
     \item \textbf{Booting OS:} When starting a computer system, how does the hardware know where the kernel is or how to load that kernel? This process of loading the kernel is known as booting the system. The boot process typically roughly follows as so:
@@ -278,8 +312,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 3.1: Process Concept}
+\addcontentsline{toc}{section}{3.1: Process Concept}
 
 \subsection*{3.1.1: The Process}
+\addcontentsline{toc}{subsection}{3.1.1: The Process}
 
 \begin{itemize}
     \item \textbf{What is a process?} A process is a program in execution. A program becomes a process when an executable file is loaded into memory. Although two processes may be associated with the same program, they are nevertheless considered two separate esecution sequences.
@@ -300,6 +336,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{3.1.2: Process State}
+\addcontentsline{toc}{subsection}{3.1.2: Process State}
 
 \begin{itemize}
     \item \textbf{What are the different states a process can be in?} In general, a process may be in one of the following states (diagram in figure \ref{fig:process-states}):
@@ -320,6 +357,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{3.1.3: Process Control Block}
+\addcontentsline{toc}{subsection}{3.1.3: Process Control Block}
 
 \begin{itemize}
     \item \textbf{How is information about a process tracked by the OS?} The OS maintains information about each process in a data structure called the process control block (PCB), shown in figure \ref{fig:process-control-block}. Basically it contains all the necessary information required to start, or restart, a process, along with bookkeeping data. On systems that support threads, the PCB is expanded to include information for each thread.
@@ -332,6 +370,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 3.2: Process Scheduling}
+\addcontentsline{toc}{section}{3.2: Process Scheduling}
 
 \begin{itemize}
     \item \textbf{How are processes selected to be run?} To maximize CPU utilization by having some process running at all times and to support efficient multitasking by switching among processes frequently enough, the \textbf{process scheduler} is responsible for selecting an available process for program execution on a CPU core (balancing multiprogramming and time sharing). For a single core system there will never be more than one process running at a time, whereas a multicore system can run multiple processes at a time.
@@ -341,6 +380,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{3.2.1: Scheduling Queues}
+\addcontentsline{toc}{subsection}{3.2.1: Scheduling Queues}
 
 \begin{itemize}
     \item \textbf{What happens to a process when it first enters the system?} As processes enter the system, they are put into a \textbf{ready queue}, where they have the "ready" state and waiting to be executed (dispatched) on a CPU's core. This queue is typically implemented as a linked list, containg pointers to PCB structures. See figure \ref{fig:queueing-diagram}.
@@ -354,6 +394,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{3.2.3: Context Switch}
+\addcontentsline{toc}{subsection}{3.2.3: Context Switch}
 
 \begin{itemize}
     \item \textbf{What happens when the CPU needs to switch to a different process?} When switching to another process, whether that be because of an interrupt, time slice expired, or any another reason, the current context of the running process on the CPU core needs to be saved (state save). The context is represented in the PCB of the context. The CPU then needs to restore the context of the other process it wishes to switch to (state restore). This process is known as a \textbf{context switch}.
@@ -361,8 +402,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 3.3: Operations on Processes}
+\addcontentsline{toc}{section}{3.3: Operations on Processes}
 
 \subsection*{3.3.1: Process Creation}
+\addcontentsline{toc}{subsection}{3.3.1: Process Creation}
 
 \begin{itemize}
     \item \textbf{How are processes created?} During the course of execution, a process may create several new processes. The creating process is called the \textbf{parent} process, and the new processes it has created are called the \textbf{children} of that process. Each of these new processes may in turn create other processes, forming a hierarchical tree.
@@ -386,6 +429,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{3.3.2: Process Termination}
+\addcontentsline{toc}{subsection}{3.3.2: Process Termination}
 
 \begin{itemize}
     \item \textbf{What happens when a process is terminated?} When a process is terminated, all the resources of the process (including virtual and physical memory, open files, and I/O buffers) are deallocated and reclaimed by the OS.
@@ -398,12 +442,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 3.4: Interprocess Communication}
+\addcontentsline{toc}{section}{3.4: Interprocess Communication}
 
 \begin{itemize}
     \item \textbf{How do processes communicate with each other?} Using interprocess communication (IPC): implemented using either shared memory or message passing.
 \end{itemize}
 
 \section*{OS Concepts 3.5: IPC in Shared-Memory Systems}
+\addcontentsline{toc}{section}{3.5: IPC in Shared-Memory Systems}
 
 \begin{itemize}
     \item \textbf{How does shared memory IPC work?} Normally, the OS tries to prevent processes from accessing memory of other processes. Shared memory IPC requires that two or more processes agree to remove this restriction, so that they can then exchange information by reading and writing data in the shared memory areas.
@@ -411,16 +457,20 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 3.6: IPC in Message-Passing Systems}
+\addcontentsline{toc}{section}{3.6: IPC in Message-Passing Systems}
 
 \begin{itemize}
     \item \textbf{What is message passing IPC?} Message passing provides a mechanism to allow processes to communicate and to synchronize their actions without sharing the same address space (particularly useful in distributed environments). Message passing may be either \textbf{blocking} or \textbf{nonblocking} (also known as synchronous or asynchronous).
 \end{itemize}
 
 \section*{OS Concepts 3.7: Examples of IPC Systems}
+\addcontentsline{toc}{section}{3.7: Examples of IPC Systems}
 
 \subsection*{3.7.4: Pipes}
+\addcontentsline{toc}{subsection}{3.7.4: Pipes}
 
 \subsubsection*{3.7.4.1: Ordinary Pipes}
+\addcontentsline{toc}{subsubsection}{3.7.4.1: Ordinary Pipes}
 
 \begin{itemize}
     \item \textbf{How do ordinary pipes work for IPC?} Ordinary (in contrast to named) pipes allow two processes to coomunicate in standard producer-consumer fashion: the producer writes to the write end of the pipe, and the consumer reads from the read end of the pipe. As a result, ordinary pipes are unidirectional (one-way communication), and bidirectional communication requires two pipes.
@@ -428,12 +478,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsubsection*{3.7.4.2: Named Pipes}
+\addcontentsline{toc}{subsubsection}{3.7.4.2: Named Pipes}
 
 \begin{itemize}
     \item \textbf{What is difference between ordinary and named pipes?} Named pipes provide bidrectional communication, and do not require a parent-child process relationship. Once a named pipe is established, sefveral processes can use it for communication. Named pipes also continue to exist after communicating processes have finished, and must explicitly be deleted.
 \end{itemize}
 
 \section*{OS Concepts 4.1: Threads Overview}
+\addcontentsline{toc}{section}{4.1: Threads Overview}
 
 \begin{itemize}
     \item \textbf{What are threads?} A thread is a basic unit of CPU utilization. Processes can have multiple threads of control to perform more than one task at a time (threads exist as subsets of a process).
@@ -456,6 +508,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 4.2: Multicore Programming}
+\addcontentsline{toc}{section}{4.2: Multicore Programming}
 
 \begin{itemize}
     \item \textbf{What is multicore programming?} With the advent of multicore computer systems, multithreading provides a mechansim for more efficient use of thse multiple computing cores and improved concurrency.
@@ -493,6 +546,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 4.3: Multithreading Models}
+\addcontentsline{toc}{section}{4.3: Multithreading Models}
 
 \begin{itemize}
     \item \textbf{What is the difference between user and kernel threads?} User threads are implemented in userspace and managed without knowledge of the kernel (and neither does the kernel know about the user threads). Kernel threads are managed directly by the OS. User threads need to eventually map down somehow to kernel threads (important to take advantage of multicore systems, as user threads alone do not inherently support parallelism), different such multithreading models. Typically slightly more overhead when switching between kernel threads (user theads do not need to dip down to the kernel at all).
@@ -520,6 +574,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 4.4: Thread Libraries}
+\addcontentsline{toc}{section}{4.4: Thread Libraries}
 
 \begin{itemize}
     \item \textbf{What are the two general strategies for creating multiple threads:} Asynchronous threading and synchronous threading.
@@ -528,6 +583,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 4.5: Implicit Threading}
+\addcontentsline{toc}{section}{4.5: Implicit Threading}
 
 \begin{itemize}
     \item \textbf{What is implicit threading?} Implicit threading is basically transferring the responsibility of manually managing low level threads from developers to compilers and run-time libraries. Essentially, developers identify \textit{tasks} that they wish to execute concurrently, and these compilers and libraries do the grunt work of managing threads.
@@ -542,8 +598,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 4.6: Threading Issues}
+\addcontentsline{toc}{section}{4.6: Threading Issues}
 
 \subsection*{4.6.1: The \texttt{fork()} and \texttt{exec()} System Calls}
+\addcontentsline{toc}{subsection}{4.6.1: The \texttt{fork()} and \texttt{exec()} System Calls}
 
 \begin{itemize}
     \item \textbf{How do the semantics of \texttt{fork()} change in a multithreaded program?} If one thread calls \texttt{fork()}, does the new process duplicate all threads, or is the new process single-threaded? Some UNIX systems have chosen to have two versions of \texttt{fork()}, one that duplicates all threads and another that duplicates only the thread that invoked the \texttt{fork()} system call.
@@ -552,6 +610,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{4.6.2: Signal Handling}
+\addcontentsline{toc}{subsection}{4.6.2: Signal Handling}
 
 \begin{itemize}
     \item \textbf{What is a signal (in UNIX systems)?} A signal is used in UNIX systems to notify a process that a particular event has occurred, and may be received either synchronously or asynchronously. Synchronous signals are delivered to the same process that performed the operation that caused the signal (examples: illegal memory access and division by 0). When a signal is generated by an external event to a running process, that process receives the signal asynchronously (examples: terminated process with CTRL-C and having a timer expire).
@@ -561,6 +620,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{4.6.3: Thread Cancellation}
+\addcontentsline{toc}{subsection}{4.6.3: Thread Cancellation}
 
 \begin{itemize}
     \item \textbf{What is thread cancellation?} Terminating a thread before it has completed.
@@ -572,18 +632,21 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{4.6.5: Scheduler Activations}
+\addcontentsline{toc}{subsection}{4.6.5: Scheduler Activations}
 
 \begin{itemize}
     \item \textbf{How are M:N theading models typically implemented (high level)?} Such systems usually place an intermediate data structure between the user and the kernel theads, typically known as a \textbf{lightweight process} (LWP). To the user-thread library, the LWP appears to be a virtual processor on which the application can schedule a user thread to run. Each LWP is attached to a kernel thread, and the kernel threads are scheduled by the OS to run on physical processors. If a kernel thread blocks (such as when waiting for I/O to complete), the LWP and the corresponding user-level threads attached to the LWP block as well. This is an issue when many concurrent blocking system calls are performed: if five I/O requests are made but only four LWPs are available, the firth request must wait for one of the four LWPs to return from the kernel before executing.
 \end{itemize}
 
 \section*{OS Concepts 4.7: OS Thread Examples}
+\addcontentsline{toc}{section}{4.7: OS Thread Examples}
 
 \begin{itemize}
     \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
 \end{itemize}
 
 \section*{OS Concepts 5.1: CPU Scheduling Basic Concepts}
+\addcontentsline{toc}{section}{5.1: CPU Scheduling Basic Concepts}
 
 \begin{itemize}
     \item \textbf{What is the motivation for CPU schduling?} In a system with a single CPU core, only one process can run at a time. This means if this single process is in control of the CPU and is waiting for some I/O request, the CPU is basically sitting doing nothing (which is a waste). With multiprogramming, several processes are kept in memory at a time, and we can swap a new process to do useful work while our original process is waiting for its I/O request to complete. This process of swapping out the tasks the CPU is currently executing is the realm of CPU scheduling.
@@ -622,6 +685,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 5.2: CPU Scheduling Criteria}
+\addcontentsline{toc}{section}{5.2: CPU Scheduling Criteria}
 
 \begin{itemize}
     \item \textbf{How to characterize different scheduling algorithms?} We can characterize the properties of various scheduling algorithms according to various criteria. We may choose to optimize for the average measure, but sometimes we may want to optimize for the absolute minimum or maximum value.
@@ -635,8 +699,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 5.3: CPU Scheduling Algorithms}
+\addcontentsline{toc}{section}{5.3: CPU Scheduling Algorithms}
 
 \subsection*{5.3.1: First Come First Served (FCFS) Scheduling}
+\addcontentsline{toc}{subsection}{5.3.1: First Come First Served (FCFS) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does FCFS scheduling work?} This is by far the simplest scheduling algorithm. With this algorithm, the process that requests to use the CPU is allocated the CPU first. This is easily implemented with a FIFO queue. When a process enters the ready queue, its PCB is linked onto the tail of the queue. When the CPU becomes free, the CPU is allocated the process at the head of the queue. This allocated process now running on the CPU is then removed from the queue.
@@ -652,6 +718,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.3.2: Shortest Job First (SJF) Scheduling}
+\addcontentsline{toc}{subsection}{5.3.2: Shortest Job First (SJF) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does SJF scheduling work?} The SJF algorithm simply assigns the CPU the process with the smallest upcoming CPU burst. If the upcoming CPU bursts of two processes are the same, FCFS scheduling is used to break the tie. Note that SJF cares about the upcoming \textit{CPU burst}, rather than its total length (since once a CPU burst is over the process does I/O and transitions to the waiting state anyways, not possible to schedule such a process). Algorithm is provably optimal in that it minimizes the average waiting time for a given set of processes (moving a short process before a long one decreases the waiting time of the short process more than it increases the waiting time of the long process). SJF is a special case of the general priority-scheduling algorithm.
@@ -678,6 +745,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.3.3: Round Robin (RR) Scheduling}
+\addcontentsline{toc}{subsection}{5.3.3: Round Robin (RR) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does RR scheduling work?} RR scheduling is similar to FCFS, but preemption is added to enable the system to switch between processes. A small unit of time, called a \textbf{time slice} (or time quantum), is defined (typically 10 to 100 milliseconds on modern OS's). The ready queue is treated as a circular queue (ring buffer). The CPU scheduler goes around the ready queue, allocating the CPU to each process for a time interval for up to 1 time slice. The scheduler picks the first process from the ready queue, sets a timer to interrupt after 1 time slice, and dispatches the process. One of two things may now happen:
@@ -697,6 +765,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.3.4: Priority Scheduling}
+\addcontentsline{toc}{subsection}{5.3.4: Priority Scheduling}
 
 \begin{itemize}
     \item \textbf{How does priority scheduling work?} Each process is associated with a priority, and the CPU is simply allocated to the process with the highest priority. Eqaul priority processes are scheduled in FCFS order. An SJF algorithm is a special case of priority scheduling: SJF is simply a priority algorithm where the priority is the inverse of the (predicted) upcoming CPU burst. Note that some systems use low numbers to represent low priority, while others use low numbers for high priority (in textbook low number represents high priority).
@@ -718,6 +787,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.3.5: Multilevel Queue Scheduling}
+\addcontentsline{toc}{subsection}{5.3.5: Multilevel Queue Scheduling}
 
 \begin{itemize}
     \item \textbf{How does multilevel queue scheduling work?} Simple scheduling algorithms have just a single ready queue. Sometimes it is practical to have separate queues for distinct priority levels: multilevel queue scheduling simply schedules the process in the highest-priority queue, and can be combined with round robin to rotate equal priority processes among each other. Processes are permanently assigned to a specific queue and \textbf{may not} be moved between queues. In addition, there must be scheduling among the queue themselves:
@@ -729,12 +799,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.3.6: Multilevel Feedback Queue Scheduling}
+\addcontentsline{toc}{subsection}{5.3.6: Multilevel Feedback Queue Scheduling}
 
 \begin{itemize}
     \item \textbf{How does multilevel feedback queue scheduling work?} Multilevel feedback queue scheduling is basically multilevel queue scheduling but processes are allowed to move between different queues of different priority. The main concept is to move processes among different queues according to their CPU bursts: if a process uses too much CPU time, it will be moved to a lower-priority queue, and a process that waits too long in a lower-priority queue may be moved to a higher-priority queue. This leaves I/O bound and interactive processes (characterized by short CPU bursts) in the higher-priority queues. Moving queues to higher-priority queues also helps prevent starvation. This makes a multilevel feedback queue scheduler the most general scheduling algorithm (can be fine-tuned for system), but also makes it the most complex to implement.
 \end{itemize}
 
 \section*{OS Concepts 5.4: Thread Scheduling}
+\addcontentsline{toc}{section}{5.4: Thread Scheduling}
 
 \begin{itemize}
     \item \textbf{Contention Scope:} Contention scope is basically the ``scope'' in which \textit{threads} (not processes) compete for CPU. Scope distinction is important when discussing M:1/M:N vs 1:1 threading models.
@@ -745,8 +817,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 5.5: Multi-Processor Scheduling}
+\addcontentsline{toc}{section}{5.5: Multi-Processor Scheduling}
 
 \subsection*{5.5.1: Approaches to Multi-Processor Scheduling}
+\addcontentsline{toc}{subsection}{5.5.1: Approaches to Multi-Processor Scheduling}
 
 \begin{itemize}
     \item \textbf{CPU scheduling in a multiprocessor system:} If multiple CPUs are available, \textbf{load sharing}, where multiple threads may run in \textit{parallel}, becomes possible. Scheduling issues, however, naturally become more complex.
@@ -769,12 +843,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.5.2: Multicore Processors}
+\addcontentsline{toc}{subsection}{5.5.2: Multicore Processors}
 
 \begin{itemize}
     \item \textbf{Hardware Threads:} Modern CPUs spend lots of time idle waiting for memory accesses, called \textbf{memory stalls} (because of a cache miss, branch misprediction and consequent pipeline flush, or a data dependency). Some CPUs try to remedy this by using hardware designs in which two (or more) hardware threads are assigned to each core (Intel does this with their hyperthreading technology). This way, when one hardware thread stalls while waiting for memory, the core can switch to another thread. Hardware threads appear as logical CPUs to the OS. Note that the main execution resources (pipeline and execution unit) and caches are shared and only architectural state (e.g. processor registers) is duplicated, which means that the processing core can only execute one hardware thread at a time.
 \end{itemize}
 
 \subsection*{5.5.3: Load Balancing}
+\addcontentsline{toc}{subsection}{5.5.3: Load Balancing}
 
 \begin{itemize}
     \item \textbf{Why do we need workload load balancing?} In SMP systems, to fully utilize the benefits of having more than one processor we need to make sure the workload among them is balanced: this is called \textbf{load balancing}. Otherwise, one or processors may sit idle while other processors have high workloads.
@@ -788,6 +864,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.5.4: Processor Affinity}
+\addcontentsline{toc}{subsection}{5.5.4: Processor Affinity}
 
 \begin{itemize}
     \item \textbf{What is processor affinity?} We would like to keep our caches ``warm'' and avoid moving threads to other processors which would cause cache invalidation for the original processor and repopulation of the cache for the new processor. Trying to keep a thread running on the same processor and taking advantage of a warm cache is known as \textbf{processor affinity} (a process has an affinity for the processor on which it is currently running). There is a natural tension between processor affinity and load balancing, as they try to accomplish conflicting tasks.
@@ -795,14 +872,17 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{5.5.5: Heterogeneous Multiprocessing}
+\addcontentsline{toc}{subsection}{5.5.5: Heterogeneous Multiprocessing}
 
 \begin{itemize}
     \item \textbf{What is heterogeneous CPU multiprocessing (HMP)?} Commonly found on mobile systems, some multicore architectures feature designs that use cores that run the same instruction set, yet vary in terms of their clock speed and power management (can reduce power consumption of a core to the point of even idling it). The intention behind HMP is to better manage power consumption by assigning tasks to certain cores based upon the specific requirements of the task. Known as \textit{big.LITTLE} on ARM processors (Firestorm and Icestorm cores in Apple M1).
 \end{itemize}
 
 \section*{OS Concepts 5.7: Operating-System Examples}
+\addcontentsline{toc}{section}{5.7: Operating-System Examples}
 
 \subsection*{5.7.1: Linux Scheduling}
+\addcontentsline{toc}{subsection}{5.7.1: Linux Scheduling}
 
 \begin{itemize}
     \item \textbf{What scheduler is used in Linux?} Introduced in release 2.6.23 (2007!) of the kernel, the \textbf{Completely Fair Scheduler (CFS)} became the default Linux scheduling algorithm.
@@ -818,6 +898,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 6.1: Synchronization Background}
+\addcontentsline{toc}{section}{6.1: Synchronization Background}
 
 \begin{itemize}
     \item \textbf{What is a race condition?} A situation where several threads access and manipulate the same data concurrently and the outcome of the execution depends on the specific order in which the accesses takes place.
@@ -825,6 +906,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 6.2: The Critical Section Problem}
+\addcontentsline{toc}{section}{6.2: The Critical Section Problem}
 
 \begin{itemize}
     \item \textbf{What is a critical section?} A critical section is a segment of code in which a process may be accessing and modifying data that is shared with at least one other process, and thus has to be executed as an atomic action. We want only \textbf{one process} at most to be executing its critical section at a time. A critical section is illustrated in figure \ref{fig:critical-section}. This is especially important in the context of OS's, since many kernel data structures (e.g. open file lists) are accessed by a lot of different kernel-mode processes.
@@ -843,14 +925,17 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 6.3: Peterson's Solution}
+\addcontentsline{toc}{section}{6.3: Peterson's Solution}
 
 \begin{itemize}
     \item \textbf{What is Peterson's solution?} Peterson's solution is a software approach to the critical-section problem. It is an algorithm that allows two processes to use shared data without conflict (can be generalized to more than two processes). Since most modern processors and/or compilers reorder memory accesses that have no dependencies, Peterson's solution is not guaranteed to work correctly on these systems.
 \end{itemize}
 
 \section*{OS Concepts 6.4: Hardware Support for Synchronization}
+\addcontentsline{toc}{section}{6.4: Hardware Support for Synchronization}
 
 \subsection*{6.4.1: Memory Barriers}
+\addcontentsline{toc}{subsection}{6.4.1: Memory Barriers}
 
 \begin{itemize}
     \item \textbf{What is memory reordering?} Modern compilers and processors often reorder memory accesses to maximize performance. Compilers can do this reordering at compile time at the machine instruction level, and processors can do this at runtime (out of order execution).
@@ -860,6 +945,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{6.4.2: Hardware Instructions}
+\addcontentsline{toc}{subsection}{6.4.2: Hardware Instructions}
 
 \begin{itemize}
     \item \textbf{What instructions does HW give us to perform atomic operations?} Many computer systems have special hardware instructions that allow us to perform atomic operations (one uninterruptible unit). These instructions can be used to enforce mutual exclusion.
@@ -880,12 +966,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{6.4.3: Atomic Variables}
+\addcontentsline{toc}{subsection}{6.4.3: Atomic Variables}
 
 \begin{itemize}
     \item \textbf{What are atomic variables?} Typically, instructions like test-and-set and CAS are not used directly to provide mutual exclusion. Rather, they are used as basic building blocks for higher level abstractions to solve the critical-section problem. These instructions can be used to implement \textbf{atomic variables}, which provide atomic operations on basic data types like integers and booleans.
 \end{itemize}
 
 \section*{OS Concepts 6.5: Mutex Locks}
+\addcontentsline{toc}{section}{6.5: Mutex Locks}
 
 \begin{itemize}
     \item \textbf{What are mutex locks?} Mutex locks can be used to protect critical sections and thus prevent race conditions. A process must acquire the lock (mutual exclusion) before entering a critical section, and release the lock when it exits the critical section.
@@ -894,6 +982,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 6.6: Semaphores}
+\addcontentsline{toc}{section}{6.6: Semaphores}
 
 \begin{itemize}
     \item \textbf{What is synchronization?} In computer science, synchronization means the requirements pertaining to the order of specific events. For example, \textbf{serialization} is when we are concerned with event \(A\) happening before event \(B\) (\(A \prec B\)), and \textbf{mutual exclusion} is when we are concerned with events \(A\) and \(B\) \textit{not} happening at the same time (\(A \prec \succ B\), either \(A\) precedes \(B\) or \(B\) precedes \(A\)).
@@ -905,12 +994,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 6.7: Monitors}
+\addcontentsline{toc}{section}{6.7: Monitors}
 
 \begin{itemize}
     \item \textbf{TODO}
 \end{itemize}
 
 \section*{OS Concepts 6.8: Liveness}
+\addcontentsline{toc}{section}{6.8: Liveness}
 
 \begin{itemize}
     \item \textbf{What is a deadlock?} A set of processes is in a deadlocked state when \textit{every} process in the set is waiting for an event that can \textit{only} be triggered by another process in the set (that is also waiting on another such event). Basically, every process is waiting for an event to happen that can only be triggered by another process, that is also waiting (for another event). "When two trains approach each other at a crossing, both shall come to a full stop and neither shall start up again until the other has gone."
@@ -921,8 +1012,10 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 9.1: Main Memory Background}
+\addcontentsline{toc}{section}{9.1: Main Memory Background}
 
 \subsection*{9.1.1: Basic Hardware}
+\addcontentsline{toc}{subsection}{9.1.1: Basic Hardware}
 
 \begin{itemize}
     \item \textbf{What kinds of memory can a CPU access?} The CPU can only access its registers and the main memory. The machine instructions a CPU executes can only use memory addresses that refer to main memory (can also of course use register names in instructions). If the desired data is not in memory (e.g. in disk), it must be moved there first before the CPU can operate on it.
@@ -931,12 +1024,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{9.1.2: Address Binding}
+\addcontentsline{toc}{subsection}{9.1.2: Address Binding}
 
 \begin{itemize}
     \item \textbf{How do programs determine the memory addresses they need to access?} Addresses in the source program are generally symbolic (i.e. variables). Binding these symbolic addresses to actual physical addresses may occur during any of comiple, load, or runtime. Most operating systems bind addresses at runtime - this requires virtual to physical address translation implemented in the hardware.
 \end{itemize}
 
 \subsection*{9.1.3: Logical vs. Physical Address Space}
+\addcontentsline{toc}{subsection}{9.1.3: Logical vs. Physical Address Space}
 
 \begin{itemize}
     \item \textbf{Logical (Virtual) Address:} An address generated by the CPU. The user program only ever deals with virtual addresses.
@@ -948,12 +1043,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{9.1.4: Dynamic Loading}
+\addcontentsline{toc}{subsection}{9.1.4: Dynamic Loading}
 
 \begin{itemize}
     \item \textbf{What is dynamic loading?} Dynamic \textbf{loading}, not linking! Typically, the entire program and its data needs to be in physical memory for the process to execute. With dynamic loading, a routine is not loaded into memory until it is actually called. All routines are kept on disk in a relocatable load format. Useful for when large amounts of code are needed to handle infrequent cases, keeps memory usage lower. Does not require special support from the OS.
 \end{itemize}
 
 \subsection*{9.1.5: Dynamic Linking and Shared Libraries}
+\addcontentsline{toc}{subsection}{9.1.5: Dynamic Linking and Shared Libraries}
 
 \begin{itemize}
     \item \textbf{What are dynamically linked libraries (DLLs)?} Also known as shared libraries. Shared libraries are libraries that are linked to user program when the programs are run (linking at runtime). This is usually used with system libraries (e.g. C standard library), since without shared libraries each program would need to include a copy of its language library in the binary (static linking). This would not only increase binary size but also waste main memory when the program is loaded into memory (multiple copies of same library taking up space in memory). Shared libraries can be shared among multiple processes. Dynamic linking also allows libraries to be updated (essentially replaced) without having to relink programs (programs will automatically use this new version at runtime). Generally requires special support from the OS.
@@ -961,6 +1058,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 9.2: Contiguous Memory Allocation}
+\addcontentsline{toc}{section}{9.2: Contiguous Memory Allocation}
 
 \begin{itemize}
     \item \textbf{How do we allocate physical main memory to processes?} The OS must somehow choose what physical memory to allocate to running processes. We would like allocation to be as efficient as possible, both in terms of time to allocate memory and also minimizing memory wasted.
@@ -978,6 +1076,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 9.3: Paging}
+\addcontentsline{toc}{section}{9.3: Paging}
 
 \begin{itemize}
     \item \textbf{What is paging?} Paging is a memory management scheme that allows a process's physical address space to be non-contiguous. It separates the logical address space from the physical memory space. This concept has many implications: external fragmentation is completely avoided (although internal fragmentation still exists), adds memory protection capabilities, greatly increases the logical address space of processes, and more. 
@@ -985,6 +1084,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{9.3.1: Basic Paging Concepts/Implementation}
+\addcontentsline{toc}{subsection}{9.3.1: Basic Paging Concepts/Implementation}
 
 \begin{itemize}
     \item \textbf{How is physical memory divided?} Physical memory is broken into fixed-sized blocks called \textbf{frames}.
@@ -1020,6 +1120,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{9.3.2: Hardware Support for Paging}
+\addcontentsline{toc}{subsection}{9.3.2: Hardware Support for Paging}
 
 \begin{itemize}
     \item \textbf{How is the page table implemented?} The page table for each process is kept in main memory. A \textbf{page-table base register} in hardware contains the address of the page table. Changing page tables in a context switch requires changing only this one register.
@@ -1030,12 +1131,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{9.3.3: Memory Protection using Paging}
+\addcontentsline{toc}{subsection}{9.3.3: Memory Protection using Paging}
 
 \begin{itemize}
     \item \textbf{How is memory protection achieved in a paged environment?} Memory protection in a paged environment can easily be accomplished by adding permission bits to page table entries. Example permission bits are read, write, execute, and supervisor (process must be in kernel mode). These permission bits can be checked everytime when address translation is performed. If an instruction violates these permissions, the processor triggers a fault that transfers control to an exception handler in the kernel (typically reported as a ``segmentation fault''!).
 \end{itemize}
 
 \subsection*{9.3.4: Shared Pages}
+\addcontentsline{toc}{subsection}{9.3.4: Shared Pages}
 
 \begin{itemize}
     \item \textbf{What is reentrant code?} Reentrant code is non-self-modifying code: it never changes during execution. Thus, two or more processes can execute the same code at the same time. Reentrant code can be safely shared between processes.
@@ -1044,12 +1147,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 9.4: Structure of the Page Table}
+\addcontentsline{toc}{section}{9.4: Structure of the Page Table}
 
 \begin{itemize}
     \item \textbf{TODO}
 \end{itemize}
 
 \section*{OS Concepts 9.5: Swapping}
+\addcontentsline{toc}{section}{9.5: Swapping}
 
 \begin{itemize}
     \item \textbf{What is swapping?} Swapping is where a process, or a portion of a process, can be swapped out of memory to a backing store, and then later brought back into memory for continued execution.
@@ -1062,6 +1167,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 10.1: Virtual Memory Background}
+\addcontentsline{toc}{section}{10.1: Virtual Memory Background}
 
 \begin{itemize}
     \item \textbf{What is virtual memory?} Virtual memory is the abstraction of real physical memory: it involves an elegant interaction of hardware exceptions, hardware address translation, main memory, disk files, and kernel software. It abstracts real physical memory away as a large, uniform (contiguous), and private address space for each process.
@@ -1076,6 +1182,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
  
 \section*{OS Concepts 10.2: Demand Paging}
+\addcontentsline{toc}{section}{10.2: Demand Paging}
 
 \begin{itemize}
     \item \textbf{What is demand paging?} Demand paging is the strategy of waiting to swap in pages only as they are needed. Pages that are never accessed are thus never loaded into physical memory.
@@ -1090,6 +1197,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
+\addcontentsline{toc}{section}{11.1: Overview of Mass-Storage Structure}
 
 \begin{itemize}
     \item \textbf{What is the physical structure of a HDD?} HDDs (hard disk drive) consist of magnetic disk platters, and data is written and read to and from these platters magnetically. Read-write heads ``fly'' just above the surface of every platter, and are attached to a \textbf{disk arm} that moves all heads as a unit. The surface of each platter is logically divided into circular \textbf{tracks}, which are subdivided into \textbf{sectors}. The set of tracks at a given arm position make up a \textbf{cylinder}. Each sector has a fixed size and is the smallest unit of transfer (typically 4KB nowadays). Shown in figure \ref{fig:hdd}.
@@ -1115,6 +1223,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 12.2: HDD Scheduling}
+\addcontentsline{toc}{section}{12.2: HDD Scheduling}
 
 \begin{itemize}
     \item \textbf{What is HDD scheduling and why is it needed?} It is the responsibility of the OS to use the hardware efficiently. For HDDs, this means minimizing acces time and maximizing data transfer bandwidth. This can be achieved by managing the order in which HDD I/O requests are serviced (basically in what order do we vist HDD block addresses?), to minimize the amount of head movement.
@@ -1152,6 +1261,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 11.4: Error Detection and Corection}
+\addcontentsline{toc}{section}{11.4: Error Detection and Corection}
 
 \begin{itemize}
     \item \textbf{Error Detection:} Error detection determines if a problem has occured. E.g. a bitflip in DRAM, contents of a network packet altered during transmission, or a block of data changed between when it was written and when it was read. Does not include error correction, data must be discarded.
@@ -1160,6 +1270,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 11.5: Storage Device Management}
+\addcontentsline{toc}{section}{11.5: Storage Device Management}
 
 \begin{itemize}
     \item \textbf{How does a computer boot up and start running?} When a computer is powered up or rebooted, it must have an initial program to run: this program is called the \textbf{bootstrap loader}. The bootstrap loader is very simple, and is typically located at a known address in ROM. The purpose of this program is to load other and programs (the full bootloader) which are then executed from RAM.
@@ -1167,12 +1278,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 12.1: I/O Overview}
+\addcontentsline{toc}{section}{12.1: I/O Overview}
 
 \begin{itemize}
     \item \textbf{Accomodating Varying I/O Devices using Device Drivers:} Hardware I/O devices are constantly evolving, and so are methods required to communicate with them. To accomodate this ever increasing variety of I/O devices, the kernel of an OS is structured to use device-driver modules. The device drivers present a uniform device-access interface to the I/O subsystem, much as syscalls provide a standard interface between the application and the OS.
 \end{itemize}
 
 \section*{OS Concepts 12.2: I/O Hardware}
+\addcontentsline{toc}{section}{12.2: I/O Hardware}
 
 \begin{itemize}
     \item \textbf{Port:} A device communicates with a computer system via a port.
@@ -1181,6 +1294,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.2.1: Memory-Mapped I/O}
+\addcontentsline{toc}{subsection}{12.2.1: Memory-Mapped I/O}
 
 \begin{itemize}
     \item \textbf{Processor and Device Communication:} A controller has one or more registers for data and control signals. The processor communicates with the controller by reading and writing bit patterns in these registers. I/O device control typically consists of four registers: the status, control, data-in, and data-out registers. Data registers are typically 1 to 4 bytes in size, meaning the processor needs to react quickly otherwise new data may overflow the registers and overwrite the old data. Also means I/O is basically done byte by byte.
@@ -1189,12 +1303,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.2.2: Polling}
+\addcontentsline{toc}{subsection}{12.2.2: Polling}
 
 \begin{itemize}
     \item \textbf{Polling:} Polled mode I/O between a host and a controller is basically where the host has to repeatedly loop to check if the device is ready to read or write by continually checking the controller status register. Polling the controller naturally requires CPU cycles (read a device register, logical-and to extract a status bit, and branch depending on status). Polling becomes inefficient when it is attempted repeatedly yet rarely finds a device ready for service, while other useful CPU processing remains undone.
 \end{itemize}
 
 \subsection*{12.2.3: Interrupts}
+\addcontentsline{toc}{subsection}{12.2.3: Interrupts}
 
 \begin{itemize}
     \item \textbf{Purpose of Interrupts:} Interrupts are used throughout modern OS's to handle asynchronous events and to trap to supervisor-mode (kernel mode) routines.
@@ -1204,6 +1320,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.2.4: Direct Memory Access}
+\addcontentsline{toc}{subsection}{12.2.4: Direct Memory Access}
 
 \begin{itemize}
     \item \textbf{Direct Memory Access (DMA):} Using the expensive general purpose CPU processor to watch status bits and to feed data into a controller register one byte at a time (programmed I/O, PIO) seems wasteful. We can avoid burdening the main CPU with PIO by offloading some of this work to a special-purpose processor called a DMA controller. Essentially, DMA allows us to bypass the CPU and utilize direct memory to device I/O.
@@ -1212,6 +1329,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 12.3: Application I/O Interface}
+\addcontentsline{toc}{section}{12.3: Application I/O Interface}
 
 \begin{itemize}
     \item \textbf{Accomodating Varying I/O Devices in an OS:} The wide variety of available devices poses a problem for OS implementors (each device has its own set of capabilities, control-bit definitions, and protocols for interacting with the host). How can the OS be designed so that new devices can be attached to the computer without rewriting the OS? And when devices vary so widely, how can the OS give a convenient, uniform I/O interface to applications? Answer: by abstracting I/O hardware with device drivers.
@@ -1220,6 +1338,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.3.3: Clocks and Timers}
+\addcontentsline{toc}{subsection}{12.3.3: Clocks and Timers}
 
 \begin{itemize}
     \item \textbf{Programmable Interval Timer:} Most computers have hardware clocks and timers that provide three basic functions: give the current time, give the elapsed time, and set a timer to trigger operation \(X\) at time \(T\). This hardware is called a programmable interval timer. It can be set to wait a certain amount of time and then generate an interrupt, with the option of generating this interrupt periodically as well. The precision of triggers to generate interrupts is limited by the resolution of the timer, together with the overhead of maintaining virtual clocks.
@@ -1227,6 +1346,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.3.4: Nonblocking and Asynchronous I/O}
+\addcontentsline{toc}{subsection}{12.3.4: Nonblocking and Asynchronous I/O}
 
 \begin{itemize}
     \item \textbf{Blocking I/O} A blocking call causes the execution of the calling thread to be suspended (the thread is moved from the OS run queue to the wait queue). Once execution is complete, the thread is moved back to the run queue, where it is \textit{eligible} (note: eligible, scheduler decides when to run thread) to resume execution. Blocking application is easier to write than nonblocking application code.
@@ -1235,20 +1355,24 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.3.5: Vectored I/O}
+\addcontentsline{toc}{subsection}{12.3.5: Vectored I/O}
 
 \begin{itemize}
     \item \textbf{Vectored I/O:} Allows one syscall to perform multiple I/O operations involving multiple locations. This allows multiple separate buffers to have their contents transferred via one syscall, avoiding context switching and syscall overhead. Some versions also provide atomicity.
 \end{itemize}
 
 \section*{OS Concepts 12.4: Kernel I/O Subsystem}
+\addcontentsline{toc}{section}{12.4: Kernel I/O Subsystem}
 
 \subsection*{12.4.1: I/O Scheduling}
+\addcontentsline{toc}{subsection}{12.4.1: I/O Scheduling}
 
 \begin{itemize}
     \item \textbf{I/O Scheduling:} The order in which applications issue system calls rarely is the best choice. Scheduling can improve overall system performance, can share device access fairly among processes, and can reduce the average waiting time for I/O to complete. OS developers implement scheduling by maintaing a wait queue of requests for each device, rearranging the order of the queue according to a scheduling algorithm.
 \end{itemize}
 
 \subsection*{12.4.2: Buffering}
+\addcontentsline{toc}{subsection}{12.4.2: Buffering}
 
 \begin{itemize}
     \item \textbf{Buffering:} Buffering is done for three reasons. One reason is to cope with a speed mismatch between the producer and consumer of a data stream. A second use is to provide adaptations for devices that have different data transfer sizes (especially common in computer networking). A third use is to support copy semantics for application I/O.
@@ -1263,12 +1387,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \subsection*{12.4.4: Spooling}
+\addcontentsline{toc}{subsection}{12.4.4: Spooling}
 
 \begin{itemize}
     \item \textbf{Spooling:} Queue output for a device, such as a printer, that cannot accept interleaved data streams.
 \end{itemize}
 
 \section*{13.1: File Concept}
+\addcontentsline{toc}{section}{13.1: File Concept}
 
 \begin{itemize}
     \item \textbf{What is the purpose of a file system?} Without a file system, data placed in storage devices would just be one large body of data with no way of telling where one piece starts and ends. The file system provides a way to abstract away the intricacies of interacting with the physical storage hardware, and abstracts away this physical storage through the concept of logical storage units, called \textbf{files}. The file system contains two parts: a collection of files, each storing data, and a directory structure, which provides a way to organize these files.
@@ -1286,6 +1412,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{13.2: File Access Methods}
+\addcontentsline{toc}{section}{13.2: File Access Methods}
 
 \begin{itemize}
     \item \textbf{How are the data contents of a file accessed?} Files store data, and this data must somehow be accessed and read into main memory. This data can be accessed in several ways, and OS's provide various file access methods.
