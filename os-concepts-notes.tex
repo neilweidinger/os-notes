@@ -279,7 +279,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 3.1: Process Concept}
 
-\subsection*{OS Concepts 3.1.1: The Process}
+\subsection*{3.1.1: The Process}
 
 \begin{itemize}
     \item \textbf{What is a process?} A process is a program in execution. A program becomes a process when an executable file is loaded into memory. Although two processes may be associated with the same program, they are nevertheless considered two separate esecution sequences.
@@ -299,7 +299,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 3.1.2: Process State}
+\subsection*{3.1.2: Process State}
 
 \begin{itemize}
     \item \textbf{What are the different states a process can be in?} In general, a process may be in one of the following states (diagram in figure \ref{fig:process-states}):
@@ -319,7 +319,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \item \textbf{How many processes can be running on a processor core at any given time?} Only one process can be actively running (in the running state) on any processor core at any given time. Many processes may be in the ready or waiting state, however.
 \end{itemize}
 
-\subsection*{OS Concepts 3.1.3: Process Control Block}
+\subsection*{3.1.3: Process Control Block}
 
 \begin{itemize}
     \item \textbf{How is information about a process tracked by the OS?} The OS maintains information about each process in a data structure called the process control block (PCB), shown in figure \ref{fig:process-control-block}. Basically it contains all the necessary information required to start, or restart, a process, along with bookkeeping data. On systems that support threads, the PCB is expanded to include information for each thread.
@@ -340,7 +340,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{CPU Bound:} A CPU bound process is one whose speed is limited by the speed of the CPU (i.e. it would go faster if the CPU could go faster).
 \end{itemize}
 
-\subsection*{OS Concepts 3.2.1: Scheduling Queues}
+\subsection*{3.2.1: Scheduling Queues}
 
 \begin{itemize}
     \item \textbf{What happens to a process when it first enters the system?} As processes enter the system, they are put into a \textbf{ready queue}, where they have the "ready" state and waiting to be executed (dispatched) on a CPU's core. This queue is typically implemented as a linked list, containg pointers to PCB structures. See figure \ref{fig:queueing-diagram}.
@@ -353,7 +353,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 3.2.3: Context Switch}
+\subsection*{3.2.3: Context Switch}
 
 \begin{itemize}
     \item \textbf{What happens when the CPU needs to switch to a different process?} When switching to another process, whether that be because of an interrupt, time slice expired, or any another reason, the current context of the running process on the CPU core needs to be saved (state save). The context is represented in the PCB of the context. The CPU then needs to restore the context of the other process it wishes to switch to (state restore). This process is known as a \textbf{context switch}.
@@ -362,7 +362,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 3.3: Operations on Processes}
 
-\subsection*{OS Concepts 3.3.1: Process Creation}
+\subsection*{3.3.1: Process Creation}
 
 \begin{itemize}
     \item \textbf{How are processes created?} During the course of execution, a process may create several new processes. The creating process is called the \textbf{parent} process, and the new processes it has created are called the \textbf{children} of that process. Each of these new processes may in turn create other processes, forming a hierarchical tree.
@@ -385,7 +385,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 3.3.2: Process Termination}
+\subsection*{3.3.2: Process Termination}
 
 \begin{itemize}
     \item \textbf{What happens when a process is terminated?} When a process is terminated, all the resources of the process (including virtual and physical memory, open files, and I/O buffers) are deallocated and reclaimed by the OS.
@@ -418,16 +418,16 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 3.7: Examples of IPC Systems}
 
-\subsection*{OS Concepts 3.7.4: Pipes}
+\subsection*{3.7.4: Pipes}
 
-\subsubsection*{OS Concepts 3.7.4.1: Ordinary Pipes}
+\subsubsection*{3.7.4.1: Ordinary Pipes}
 
 \begin{itemize}
     \item \textbf{How do ordinary pipes work for IPC?} Ordinary (in contrast to named) pipes allow two processes to coomunicate in standard producer-consumer fashion: the producer writes to the write end of the pipe, and the consumer reads from the read end of the pipe. As a result, ordinary pipes are unidirectional (one-way communication), and bidirectional communication requires two pipes.
     \item \textbf{What processes can access an ordinary pipe?} On UNIX systems, ordinary pipes cannot be accessed from outside the process that created it. Typically, a parent process creates a pipe and uses it to communicate with a child process it created using \texttt{fork()}. In UNIX systems a child process inherits open files from its parent, hence why it is allowed to access the pipe. This also implies that ordinary pipes can only be used for communication between processes on the same machine.
 \end{itemize}
 
-\subsubsection*{OS Concepts 3.7.4.2: Named Pipes}
+\subsubsection*{3.7.4.2: Named Pipes}
 
 \begin{itemize}
     \item \textbf{What is difference between ordinary and named pipes?} Named pipes provide bidrectional communication, and do not require a parent-child process relationship. Once a named pipe is established, sefveral processes can use it for communication. Named pipes also continue to exist after communicating processes have finished, and must explicitly be deleted.
@@ -543,7 +543,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 4.6: Threading Issues}
 
-\subsection*{OS Concepts 4.6.1: The \texttt{fork()} and \texttt{exec()} System Calls}
+\subsection*{4.6.1: The \texttt{fork()} and \texttt{exec()} System Calls}
 
 \begin{itemize}
     \item \textbf{How do the semantics of \texttt{fork()} change in a multithreaded program?} If one thread calls \texttt{fork()}, does the new process duplicate all threads, or is the new process single-threaded? Some UNIX systems have chosen to have two versions of \texttt{fork()}, one that duplicates all threads and another that duplicates only the thread that invoked the \texttt{fork()} system call.
@@ -551,7 +551,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Which version of \texttt{fork()} to call in a multithreaded program?} If \texttt{exec()} is called immediately after forking, then duplicating all threads is unnecessary, as the new program specifiedto \texttt{exec()} will replace the whole process anyways.
 \end{itemize}
 
-\subsection*{OS Concepts 4.6.2: Signal Handling}
+\subsection*{4.6.2: Signal Handling}
 
 \begin{itemize}
     \item \textbf{What is a signal (in UNIX systems)?} A signal is used in UNIX systems to notify a process that a particular event has occurred, and may be received either synchronously or asynchronously. Synchronous signals are delivered to the same process that performed the operation that caused the signal (examples: illegal memory access and division by 0). When a signal is generated by an external event to a running process, that process receives the signal asynchronously (examples: terminated process with CTRL-C and having a timer expire).
@@ -560,7 +560,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How are signals delivered to multithreaded programs?} Synchronous signals are sent to the thread that caused the signal, and not to other threads in the process. Asynchronous signals are typically delivered only to the first thread found that is not blocking it (theads can choose which signals to accept and which to block).
 \end{itemize}
 
-\subsection*{OS Concepts 4.6.3: Thread Cancellation}
+\subsection*{4.6.3: Thread Cancellation}
 
 \begin{itemize}
     \item \textbf{What is thread cancellation?} Terminating a thread before it has completed.
@@ -571,7 +571,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{itemize}
 \end{itemize}
 
-\subsection*{OS Concepts 4.6.5: Scheduler Activations}
+\subsection*{4.6.5: Scheduler Activations}
 
 \begin{itemize}
     \item \textbf{How are M:N theading models typically implemented (high level)?} Such systems usually place an intermediate data structure between the user and the kernel theads, typically known as a \textbf{lightweight process} (LWP). To the user-thread library, the LWP appears to be a virtual processor on which the application can schedule a user thread to run. Each LWP is attached to a kernel thread, and the kernel threads are scheduled by the OS to run on physical processors. If a kernel thread blocks (such as when waiting for I/O to complete), the LWP and the corresponding user-level threads attached to the LWP block as well. This is an issue when many concurrent blocking system calls are performed: if five I/O requests are made but only four LWPs are available, the firth request must wait for one of the four LWPs to return from the kernel before executing.
@@ -636,7 +636,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 5.3: CPU Scheduling Algorithms}
 
-\subsection*{OS Concepts 5.3.1: First Come First Served (FCFS) Scheduling}
+\subsection*{5.3.1: First Come First Served (FCFS) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does FCFS scheduling work?} This is by far the simplest scheduling algorithm. With this algorithm, the process that requests to use the CPU is allocated the CPU first. This is easily implemented with a FIFO queue. When a process enters the ready queue, its PCB is linked onto the tail of the queue. When the CPU becomes free, the CPU is allocated the process at the head of the queue. This allocated process now running on the CPU is then removed from the queue.
@@ -651,7 +651,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Is FCFS preemptive or cooperative?} FCFS is cooperative, as once the CPU has been allocated to a process, that process keeps the CPU until it released the CPU, either by terminating (process transitions to terminated state) or by requesting I/O (process transitions to waiting state).
 \end{itemize}
 
-\subsection*{OS Concepts 5.3.2: Shortest Job First (SJF) Scheduling}
+\subsection*{5.3.2: Shortest Job First (SJF) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does SJF scheduling work?} The SJF algorithm simply assigns the CPU the process with the smallest upcoming CPU burst. If the upcoming CPU bursts of two processes are the same, FCFS scheduling is used to break the tie. Note that SJF cares about the upcoming \textit{CPU burst}, rather than its total length (since once a CPU burst is over the process does I/O and transitions to the waiting state anyways, not possible to schedule such a process). Algorithm is provably optimal in that it minimizes the average waiting time for a given set of processes (moving a short process before a long one decreases the waiting time of the short process more than it increases the waiting time of the long process). SJF is a special case of the general priority-scheduling algorithm.
@@ -677,7 +677,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 5.3.3: Round Robin (RR) Scheduling}
+\subsection*{5.3.3: Round Robin (RR) Scheduling}
 
 \begin{itemize}
     \item \textbf{How does RR scheduling work?} RR scheduling is similar to FCFS, but preemption is added to enable the system to switch between processes. A small unit of time, called a \textbf{time slice} (or time quantum), is defined (typically 10 to 100 milliseconds on modern OS's). The ready queue is treated as a circular queue (ring buffer). The CPU scheduler goes around the ready queue, allocating the CPU to each process for a time interval for up to 1 time slice. The scheduler picks the first process from the ready queue, sets a timer to interrupt after 1 time slice, and dispatches the process. One of two things may now happen:
@@ -696,7 +696,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How long should the time slice be?} The performance of the RR algorithm depends heavily on the size of the time slice. If the time slice is extremely large, RR is the same as FCFS. In contrast, if the time slice is extremely small, RR can result in a large number of context switches (overhead, leads to wasted time). We want the time slice to be large with respect to the context switch time. If the context switch time is approximately 10 percent of the time slice, then about 10 percent of the CPU time will be spent in context switching (not necessarily true for other algorithms like FCFS, FCFS for example rarely context switches). A rule of thumb is that 80 percent of CPU bursts should be shorter than the time slice.
 \end{itemize}
 
-\subsection*{OS Concepts 5.3.4: Priority Scheduling}
+\subsection*{5.3.4: Priority Scheduling}
 
 \begin{itemize}
     \item \textbf{How does priority scheduling work?} Each process is associated with a priority, and the CPU is simply allocated to the process with the highest priority. Eqaul priority processes are scheduled in FCFS order. An SJF algorithm is a special case of priority scheduling: SJF is simply a priority algorithm where the priority is the inverse of the (predicted) upcoming CPU burst. Note that some systems use low numbers to represent low priority, while others use low numbers for high priority (in textbook low number represents high priority).
@@ -717,7 +717,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How can the issue of starvation be solved?} One solution is to use \textbf{aging}: aging gradually increases the priority of processes that wait in the system for a long time, so that eventually they will have a priority high enough to actually be selected. Another option is to combine round robine and priority scheduling so that the system executes the highest priority processes, and runs process with the \textbf{same priority} using round robin (basically given equal priority processes, rotate among them using round robin).
 \end{itemize}
 
-\subsection*{OS Concepts 5.3.5: Multilevel Queue Scheduling}
+\subsection*{5.3.5: Multilevel Queue Scheduling}
 
 \begin{itemize}
     \item \textbf{How does multilevel queue scheduling work?} Simple scheduling algorithms have just a single ready queue. Sometimes it is practical to have separate queues for distinct priority levels: multilevel queue scheduling simply schedules the process in the highest-priority queue, and can be combined with round robin to rotate equal priority processes among each other. Processes are permanently assigned to a specific queue and \textbf{may not} be moved between queues. In addition, there must be scheduling among the queue themselves:
@@ -728,7 +728,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How can multilevel queue scheduling be useful?} A useful application of multilevel queue scheduling is categorizing processes based on process type: for example real-time processes, system processes, interactive processes, and batch processes.
 \end{itemize}
 
-\subsection*{OS Concepts 5.3.6: Multilevel Feedback Queue Scheduling}
+\subsection*{5.3.6: Multilevel Feedback Queue Scheduling}
 
 \begin{itemize}
     \item \textbf{How does multilevel feedback queue scheduling work?} Multilevel feedback queue scheduling is basically multilevel queue scheduling but processes are allowed to move between different queues of different priority. The main concept is to move processes among different queues according to their CPU bursts: if a process uses too much CPU time, it will be moved to a lower-priority queue, and a process that waits too long in a lower-priority queue may be moved to a higher-priority queue. This leaves I/O bound and interactive processes (characterized by short CPU bursts) in the higher-priority queues. Moving queues to higher-priority queues also helps prevent starvation. This makes a multilevel feedback queue scheduler the most general scheduling algorithm (can be fine-tuned for system), but also makes it the most complex to implement.
@@ -746,7 +746,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 5.5: Multi-Processor Scheduling}
 
-\subsection*{OS Concepts 5.5.1: Approaches to Multi-Processor Scheduling}
+\subsection*{5.5.1: Approaches to Multi-Processor Scheduling}
 
 \begin{itemize}
     \item \textbf{CPU scheduling in a multiprocessor system:} If multiple CPUs are available, \textbf{load sharing}, where multiple threads may run in \textit{parallel}, becomes possible. Scheduling issues, however, naturally become more complex.
@@ -768,13 +768,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
         \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 5.5.2: Multicore Processors}
+\subsection*{5.5.2: Multicore Processors}
 
 \begin{itemize}
     \item \textbf{Hardware Threads:} Modern CPUs spend lots of time idle waiting for memory accesses, called \textbf{memory stalls} (because of a cache miss, branch misprediction and consequent pipeline flush, or a data dependency). Some CPUs try to remedy this by using hardware designs in which two (or more) hardware threads are assigned to each core (Intel does this with their hyperthreading technology). This way, when one hardware thread stalls while waiting for memory, the core can switch to another thread. Hardware threads appear as logical CPUs to the OS. Note that the main execution resources (pipeline and execution unit) and caches are shared and only architectural state (e.g. processor registers) is duplicated, which means that the processing core can only execute one hardware thread at a time.
 \end{itemize}
 
-\subsection*{OS Concepts 5.5.3: Load Balancing}
+\subsection*{5.5.3: Load Balancing}
 
 \begin{itemize}
     \item \textbf{Why do we need workload load balancing?} In SMP systems, to fully utilize the benefits of having more than one processor we need to make sure the workload among them is balanced: this is called \textbf{load balancing}. Otherwise, one or processors may sit idle while other processors have high workloads.
@@ -787,14 +787,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
         These two strategies are not mutually exclusive and are often implemented together on load-balancing systems.
 \end{itemize}
 
-\subsection*{OS Concepts 5.5.4: Processor Affinity}
+\subsection*{5.5.4: Processor Affinity}
 
 \begin{itemize}
     \item \textbf{What is processor affinity?} We would like to keep our caches ``warm'' and avoid moving threads to other processors which would cause cache invalidation for the original processor and repopulation of the cache for the new processor. Trying to keep a thread running on the same processor and taking advantage of a warm cache is known as \textbf{processor affinity} (a process has an affinity for the processor on which it is currently running). There is a natural tension between processor affinity and load balancing, as they try to accomplish conflicting tasks.
     \item \textbf{Soft vs Hard Affinity?} Soft affinity is best effort- the OS will try to keep processes running on the same processors, but does not guarantee that it does so (during load balancing). Hard affinity ensures that a processor always gets scheduled on the same processor.
 \end{itemize}
 
-\subsection*{OS Concepts 5.5.5: Heterogeneous Multiprocessing}
+\subsection*{5.5.5: Heterogeneous Multiprocessing}
 
 \begin{itemize}
     \item \textbf{What is heterogeneous CPU multiprocessing (HMP)?} Commonly found on mobile systems, some multicore architectures feature designs that use cores that run the same instruction set, yet vary in terms of their clock speed and power management (can reduce power consumption of a core to the point of even idling it). The intention behind HMP is to better manage power consumption by assigning tasks to certain cores based upon the specific requirements of the task. Known as \textit{big.LITTLE} on ARM processors (Firestorm and Icestorm cores in Apple M1).
@@ -802,7 +802,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 5.7: Operating-System Examples}
 
-\subsection*{OS Concepts 5.7.1: Linux Scheduling}
+\subsection*{5.7.1: Linux Scheduling}
 
 \begin{itemize}
     \item \textbf{What scheduler is used in Linux?} Introduced in release 2.6.23 (2007!) of the kernel, the \textbf{Completely Fair Scheduler (CFS)} became the default Linux scheduling algorithm.
@@ -850,7 +850,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 6.4: Hardware Support for Synchronization}
 
-\subsection*{OS Concepts 6.4.1: Memory Barriers}
+\subsection*{6.4.1: Memory Barriers}
 
 \begin{itemize}
     \item \textbf{What is memory reordering?} Modern compilers and processors often reorder memory accesses to maximize performance. Compilers can do this reordering at compile time at the machine instruction level, and processors can do this at runtime (out of order execution).
@@ -859,7 +859,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How do we protect ourselves from memory reordering on multiprocessor systems?} We can use \textbf{memory barriers} to ensure that all loads/stores are completed before any subsequent loads/stores (basically enforce our desired memory ordering and not allow the compiler/processor to perform any memory reordering). This naturally comes at the performance cost of not doing out-of-order execution.
 \end{itemize}
 
-\subsection*{OS Concepts 6.4.2: Hardware Instructions}
+\subsection*{6.4.2: Hardware Instructions}
 
 \begin{itemize}
     \item \textbf{What instructions does HW give us to perform atomic operations?} Many computer systems have special hardware instructions that allow us to perform atomic operations (one uninterruptible unit). These instructions can be used to enforce mutual exclusion.
@@ -879,7 +879,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \end{figure}
 \end{itemize}
 
-\subsection*{OS Concepts 6.4.3: Atomic Variables}
+\subsection*{6.4.3: Atomic Variables}
 
 \begin{itemize}
     \item \textbf{What are atomic variables?} Typically, instructions like test-and-set and CAS are not used directly to provide mutual exclusion. Rather, they are used as basic building blocks for higher level abstractions to solve the critical-section problem. These instructions can be used to implement \textbf{atomic variables}, which provide atomic operations on basic data types like integers and booleans.
@@ -922,7 +922,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 
 \section*{OS Concepts 9.1: Main Memory Background}
 
-\subsection*{OS Concepts 9.1.1: Basic Hardware}
+\subsection*{9.1.1: Basic Hardware}
 
 \begin{itemize}
     \item \textbf{What kinds of memory can a CPU access?} The CPU can only access its registers and the main memory. The machine instructions a CPU executes can only use memory addresses that refer to main memory (can also of course use register names in instructions). If the desired data is not in memory (e.g. in disk), it must be moved there first before the CPU can operate on it.
@@ -930,13 +930,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How do we protect processes from accessing each others memory spaces?} Process memory protection must be provided by the hardware, because the OS does not intervene between the CPU and its memory accesses (software intervention would be way too slow). Each process has its own separate memory space: hardware needs the ability to determine the range of legal addresses that the process may access. Hardware can implement this in several different ways.
 \end{itemize}
 
-\subsection*{OS Concepts 9.1.2: Address Binding}
+\subsection*{9.1.2: Address Binding}
 
 \begin{itemize}
     \item \textbf{How do programs determine the memory addresses they need to access?} Addresses in the source program are generally symbolic (i.e. variables). Binding these symbolic addresses to actual physical addresses may occur during any of comiple, load, or runtime. Most operating systems bind addresses at runtime - this requires virtual to physical address translation implemented in the hardware.
 \end{itemize}
 
-\subsection*{OS Concepts 9.1.3: Logical vs. Physical Address Space}
+\subsection*{9.1.3: Logical vs. Physical Address Space}
 
 \begin{itemize}
     \item \textbf{Logical (Virtual) Address:} An address generated by the CPU. The user program only ever deals with virtual addresses.
@@ -947,13 +947,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How is the runtime mapping from virtual to physical addresses done?} The runtime mapping is done by a hardware device called the memory management unit (MMU). There are multiple methods to implement such a mapping (e.g. variable partition allocation and paging).
 \end{itemize}
 
-\subsection*{OS Concepts 9.1.4: Dynamic Loading}
+\subsection*{9.1.4: Dynamic Loading}
 
 \begin{itemize}
     \item \textbf{What is dynamic loading?} Dynamic \textbf{loading}, not linking! Typically, the entire program and its data needs to be in physical memory for the process to execute. With dynamic loading, a routine is not loaded into memory until it is actually called. All routines are kept on disk in a relocatable load format. Useful for when large amounts of code are needed to handle infrequent cases, keeps memory usage lower. Does not require special support from the OS.
 \end{itemize}
 
-\subsection*{OS Concepts 9.1.5: Dynamic Linking and Shared Libraries}
+\subsection*{9.1.5: Dynamic Linking and Shared Libraries}
 
 \begin{itemize}
     \item \textbf{What are dynamically linked libraries (DLLs)?} Also known as shared libraries. Shared libraries are libraries that are linked to user program when the programs are run (linking at runtime). This is usually used with system libraries (e.g. C standard library), since without shared libraries each program would need to include a copy of its language library in the binary (static linking). This would not only increase binary size but also waste main memory when the program is loaded into memory (multiple copies of same library taking up space in memory). Shared libraries can be shared among multiple processes. Dynamic linking also allows libraries to be updated (essentially replaced) without having to relink programs (programs will automatically use this new version at runtime). Generally requires special support from the OS.
@@ -984,7 +984,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What parts of a computer system are used to implement paging?} Paging requires the support of both the OS and hardware.
 \end{itemize}
 
-\subsection*{OS Concepts 9.3.1: Basic Paging Concepts/Implementation}
+\subsection*{9.3.1: Basic Paging Concepts/Implementation}
 
 \begin{itemize}
     \item \textbf{How is physical memory divided?} Physical memory is broken into fixed-sized blocks called \textbf{frames}.
@@ -1019,7 +1019,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is the programmers/programs view of the address space?} The programmer views the logical address space: a single contiguous array of bytes. The mapping of logical addresses to physical addresses is hidden from the programmer and controlled by the OS.
 \end{itemize}
 
-\subsection*{OS Concepts 9.3.2: Hardware Support for Paging}
+\subsection*{9.3.2: Hardware Support for Paging}
 
 \begin{itemize}
     \item \textbf{How is the page table implemented?} The page table for each process is kept in main memory. A \textbf{page-table base register} in hardware contains the address of the page table. Changing page tables in a context switch requires changing only this one register.
@@ -1029,13 +1029,13 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is the typical hit ratio of a TLB?} TLBs typically have hit ratios of 99 percent.
 \end{itemize}
 
-\subsection*{OS Concepts 9.3.3: Memory Protection using Paging}
+\subsection*{9.3.3: Memory Protection using Paging}
 
 \begin{itemize}
     \item \textbf{How is memory protection achieved in a paged environment?} Memory protection in a paged environment can easily be accomplished by adding permission bits to page table entries. Example permission bits are read, write, execute, and supervisor (process must be in kernel mode). These permission bits can be checked everytime when address translation is performed. If an instruction violates these permissions, the processor triggers a fault that transfers control to an exception handler in the kernel (typically reported as a ``segmentation fault''!).
 \end{itemize}
 
-\subsection*{OS Concepts 9.3.4: Shared Pages}
+\subsection*{9.3.4: Shared Pages}
 
 \begin{itemize}
     \item \textbf{What is reentrant code?} Reentrant code is non-self-modifying code: it never changes during execution. Thus, two or more processes can execute the same code at the same time. Reentrant code can be safely shared between processes.
