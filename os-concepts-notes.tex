@@ -1163,7 +1163,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is the relationship between paging and swapping?} Most modern OS's use a form of swapping where instead of entire processes, only pages of a process are swapped out to disk. This still allows the total physical address space of all processes to exceed real main memory, but does not incur the cost of swapping out \textit{entire} processes (we can keep frequently used pages in memory, and only lesser used pages in disk). Swapping with pages is typically referred to as \textbf{paging} (in/out).
     \item \textbf{Swapping in mobile systems:} Mobile systems typically do not support swapping. This is because even though they use virtual memory (to benefit from things like process address space separation), mobile systems like iOS \href{https://developer.apple.com/library/archive/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html}{do not support a backing store for main memory}. The flash memory these systems use for secondary storage is too small and valuable to be used for swapping, only tolerates a limited number of writes before it becomes unreliable, and has relatively poor throughput between main memory and the flash storage. Instead of swapping, when the free memory falls below a certain threshold, the iOS kernel flushes read-only data from memory and reloads it later if necessary (demand-page read-only memory from file system). In addition, the kernel \textit{requests} that applications voluntarily free anonymous memory (memory that is not backed up by the file system, e.g. stack and heap) themselves. Applications that fail to free up sufficient memory may be terminated by the iOS kernel.
     \item \textbf{What is the performance impact of swapping?} Any form of paging is pure overhead, as it is essentially just copying data back and forth from disk (very slow). Temporal locality normally means paging does not have to occur too frequently. When the working set size exceeds the size of physical memory and pages are continously swapped in and out, this leads to a situation known as \textbf{thrashing} (overhead of lots of paging slows peformance to a crawl).
-    \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory!
+    \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory (as the number of physical frames increases, the number of page faults decreases)!
 \end{itemize}
 
 \section*{OS Concepts 10.1: Virtual Memory Background}
@@ -1197,10 +1197,107 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \end{itemize}
 
 \section*{OS Concepts 10.3: Copy-on-Write}
-\addcontentsline{toc}{section}{OS Concepts 10.3: Copy-on-Write}
+\addcontentsline{toc}{section}{10.3: Copy-on-Write}
 
 \begin{itemize}
     \item \textbf{How does the \texttt{fork()} syscall copy address spaces?} Recall that the \texttt{fork()} syscall creates a child process that is a duplicate of its parent, meaning the child process has a copy of the parent process address space. Traditionally, \texttt{fork()} duplicated the pages belonging to the parent. But since many processes that call \texttt{fork()} just wind up calling \texttt{exec()} immediately after creation anyway, the copying of the parent's address space may be wasteful. Instead, the child and parent process can initially share the same pages, by marking them as \textbf{copy-on-write}. This means a copy of these shared pages is only made when a process first writes to it. Only pages that can be modified need to be marked as copy-on-write: pages that cannot be modified (for example pages containing executable code) can always be shared safely between the parent and the child.
+\end{itemize}
+
+\section*{OS Concepts 10.4: Page Replacement}
+\addcontentsline{toc}{section}{10.4: Page Replacement}
+
+\subsection*{OS Concepts 10.4.1: Basic Page Replacement}
+\addcontentsline{toc}{subsection}{10.4.1: Basic Page Replacement}
+
+\begin{itemize}
+    \item \textbf{How does the page fault service routine (roughly) work?} The page fault service routine performs the following steps when a page fault exception occurs:
+    \begin{enumerate}
+        \item Find the location of the desired page on disk.
+        \item Find a free frame
+        \begin{enumerate}
+            \item If there is a free frame, use it.
+            \item If there is no free frame, use a page replacement algorithm to select a \textbf{victim} page.
+            \item Write the victim frame to disk (if necessary), and update the page and frame tables accordingly.
+        \end{enumerate}
+        \item Read the desired page into the newly freed frame, and update the page and frame tables accordingly.
+        \item Continue the process that originally raised the page fault exception from where the page fault occured.
+    \end{enumerate}
+    \item \textbf{Why use a dirty bit for pages?} If no frames are free, we would require \textit{two} page transfers: page out the victim page, and page in the desired page. To reduce this overhead, we can add a \textbf{dirty bit} for each page table entry. The dirty bit set by the hardware whenever the page is written to (page has been modified). Only if the bit is set, do we actually need to page out the victim page (there is no point in paging out pages that have not been modified).
+    \item \textbf{What is the purpose of page replacement algorithms?} Page replacement algorithms simply choose which victim page to swap out when a page fault exception occurs.
+    \item \textbf{What measure should page replacement algorithms optimize for?} In general, page replacement algorithms should try to reduce the page fault rate as much as possible (we want to avoid unnecessary paging, as this is pure overhead).
+    \item \textbf{What is the relationship between the size of memory and page faults?} As the number of frames increases (by adding more memory), the number of page faults decreases (we can keep more pages in memory without having to swap out to disk).
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.2: FIFO Page Replacement}
+\addcontentsline{toc}{subsection}{10.4.2: FIFO Page Replacement}
+
+\begin{itemize}
+    \item \textbf{FIFO Page Replacement Algorithm:} A FIFO replacement algorithm associates with each page the time that page was brought into memory. When a page needs to be replaced, the oldest page is chosen. This can be implemented using a FIFO queue.
+    \item \textbf{What are the benefits of the FIFO replacement algorithm:} It is easy to implement.
+    \item \textbf{What are the drawbacks of the FIFO replacement algorithm:} Performance can suffer. For example, a page could contain a frequently used data that was initialized early and is in constant use, but is paged out by the FIFO algorithm just because it was initialized early.
+    \item \textbf{What is Belady's anomaly?} Belady's anomaly is where for some page replacement algorithms, the page fault rate may actually \textit{increase} as the number of page frames increases. This can happen when using the FIFO replacement algorithm.
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.3: Optimal Page Replacement (Belady's Algorithm)}
+\addcontentsline{toc}{subsection}{10.4.3: Optimal Page Replacement (Belady's Algorithm)}
+
+\begin{itemize}
+    \item \textbf{Belady's Algorithm:} Belady's algorithm has the lowest page fault rate of all algorithms and will never suffer from Belady's anomaly (it is \textit{optimal}). The algorithm is simply: replace the page that will not be used for the longest period of time in the future. Obviously difficult to implement, as it requires knowledge of future memory accesses. Often used to compare other algorithms against (e.g. algorithm \(x\) is \(y\) percent of optimal at worst).
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.4: LRU Page Replacement}
+\addcontentsline{toc}{subsection}{10.4.4: LRU Page Replacement}
+
+\begin{itemize}
+    \item \textbf{What can we do to try and achieve Belady's algorithm?} If implementing Belady's algorithm is not feasible, we can try to instead approximate it.
+    \item \textbf{LRU page replacement algorithm:} We can use the recent past as an approximation of the near future. This is temporal locality; remember that virtual memory is simply cache for the disk and page replacement is thus just a form of a cache eviction algorithm. The LRU algorithm selects the page to page out that has not been used for the longest period of time. This means it associates with each page the time of that page's last use.
+    \item \textbf{How is LRU implemented?} LRU page replacement typically requires substantial hardware assistance. It needs to be capable of \textit{ordering} frames by the time of last use. Two implementations are possible:
+        \begin{itemize}
+            \item \textbf{Counter:} We can add a time-of-use field to each page table entry, and a hardware clock or counter to the CPU. The clock is incremented for each memory reference, and its contents copied to the time-of-use field in the page table entry for the current page being accessed (this acts as the ``time'' of the last reference to the page). The LRU algorithm chooses the page with the smallest time-of-use value (requires a complete search of the page table, and a write to memory to update the time-of-use field for each memory access). The time-of-use fields must also be maintained when page tables are changed due to CPU scheduling, and overflow of the clock must also be considered.
+            \item \textbf{Stack:} A stack of page numbers is maintained: whenever a page is referenced, it is removed from the stack (note that we can remove from the middle of this stack) and put on the top. This way, the most recently used page is always on the top and the least recently used page on the bottom. Since entried must be removed from the middle of the stack, a doubly linked list is typically used for implementation (removing from middle and placing on top simply requires pointer manipulation). There is no search required for a replacement.
+        \end{itemize}
+    \item \textbf{Why does LRU require substantial hardware assistance?} LRU replacement requires hardware assistance because updating the clock fields or stack must be done for \textit{every memory reference}. If instead we used a CPU interrupt for every memory reference to use software to update these data structures, it would be incredibly slow (overheads of interrupts include saving process state, interrupt handler, restoring process state, etc.).
+    \item \textbf{Does LRU suffer from Belady's anomaly?} Like Belady's algorithm, LRU does not suffer from Belady's anomaly. This is because both belong to a class of algorithms called \textbf{stack algorithms}.
+    \item \textbf{What are stack algorithms?} Stack algorithms are replacement algorithms where the pages that are in memory for \(n\) frames would still be in memory if we have \(m\) frames, where \(m > n\) (the same pages will be in memory even if more memory is added).
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.5: LRU-Approximation Page Replacement Algorithms}
+\addcontentsline{toc}{subsection}{10.4.5: LRU-Approximation Page Replacement Algorithms}
+
+\begin{itemize}
+    \item \textbf{Why might we only be able to approximate LRU?} Most computer systems do not have the hardware support for true LRU replacement. We can, however, use other algorithms that approximate LRU.
+    \item \textbf{What is the basis for most LRU-Approximation algorithms?} We can add a \textbf{reference bit} for each page table entry. This bit is set by the hardware whenever that page is referenced. Initially all reference bits are set to 0 by the OS. This allows us to be able to examine which pages have been referenced, although we will not know the \textit{order} of their use. This is the basis for most LRU-Approximation algorithms.
+    \item \textbf{Additional-reference-bits algorithm:} Additional ordering information can be gained by recording the reference bits at regular intervals. An 8-bit byte for each page is stored. At regular intervals (e.g. 100ms), a timer interrupt transfers control to the OS. For each page, the OS performs a 1 bit right shift on the byte (lowest order bit discarded), and stores the reference bit of the page in the highest order bit. The 8-bit byte is essentially a bit string of page reference history at periods of the interval (higher order bits represent recent history, lower order bits represent older history). These 8-bit bytes can be interpreted as unsigned integers, and the page with the lowest number is the LRU page (victim page). The number of bits used can of course be varied.
+    \item \textbf{Second-chance algorithm:} Basically a FIFO replacement algorithm with one difference: when a page has been selected, if the reference bit is 1, we give the page a ``second chance'' by clearing the reference bit, resetting its arrival time to the current time, and moving on to the next page. If the reference bit is 0, we proceed to replace the page. Can be implemented using a circular queue (also called the clock algorithm). Second-chance replacement falls back to FIFO replacement if it has gone through all pages and all bits were set.
+    \item \textbf{Enhanced second-chance algorithm:} We can modify the second-chance replacement algorithm by instead considering both the reference bit and dirty bit as an ordered pair: (reference bit, dirty bit). With these two bits, we have the following four classes:
+        \begin{enumerate}
+            \item \((0,0)\) neither recently used nor modified: best page to replace.
+            \item \((0,1)\) not recently used but modified: good because likely won't be used soon (temporal locality), but bad because page will need to be page out (requires I/O)
+            \item \((1,0)\) recently used but not modified: probably will be used again soon.
+            \item \((1,1)\) recently used and modified: probably will be used again soon, and would incur I/O for paging out.
+        \end{enumerate}
+        When page replacement is required, the same scheme is used as in the clock algorithm, but instead of checking whether the reference bit is 1, we examine the ordered pair to determine the class to which the page belongs. The first page encountered in the lowest class is replaced. The circular queue may have to be scanned several times before a page to be replaced can be found. The major difference between this algorithm and the second-chance algorithm is that this algorithm tries to avoid paging out pages that have been modified, to reduce I/O.
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.6: Counting-Based Page Replacement}
+\addcontentsline{toc}{subsection}{10.4.6: Counting-Based Page Replacement}
+
+\begin{itemize}
+    \item \textbf{Counting-based replacement algorithms:} A counter of the number of references made to each page can be stored. With this counter, \textbf{least frequently used} (LFU) and \textbf{most frequently used} (MFU) algorithms can be used. Neither are common though, as implementation is expensive and they do not approximate Belady's algorithm well.
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.7: Page-Buffering Algorithms}
+\addcontentsline{toc}{subsection}{10.4.7: Page-Buffering Algorithms}
+
+\begin{itemize}
+    \item \textbf{What optimizations can we perform with page replacement algorithms?} Systems can keep a pool of free frames, so that when a page fault occurs and a victim page selected, the desired page is read into one of these free frames instead. This allows the process to restart as soon as possible without waiting for the victim page to be paged out. When the victim page is finally paged out, its frame is added to the free-frame pool. The system can also maintain a list of modified pages: whenever the paging device is idle, a modified page is selected and \textit{written} (not full page out, still kept in memory) to disk(perform writes to disk ahead of time when system is idle). Its dirty bit is set back to 0.
+\end{itemize}
+
+\subsection*{OS Concepts 10.4.8: Applications and Page Replacement}
+\addcontentsline{toc}{subsection}{10.4.8: Applications and Page Replacement}
+
+\begin{itemize}
+    \item \textbf{Why do some applications bypass OS paging?} Some applications (particularly databases) know their memory and storage use better than the OS does (that uses algorithms for general purpose use), meaning OS virtual memory may actually negatively impact their performance. Because of this, the OS gives programs the ability to use a secondary storage partition as as large sequential array of logical blocks, without any OS intervention (no demand paging, file locking, prefetching, space allocation, file names, directories, etc.). This partition is called the \textbf{raw disk}, and I/O to this disk is called raw I/O.
 \end{itemize}
 
 \section*{OS Concepts 11.1: Overview of Mass-Storage Structure}
