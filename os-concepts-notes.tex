@@ -783,14 +783,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \item A \textbf{cooperative} priority scheduling algorithm will simply put the new process at the head of the ready queue.
         \end{itemize}
     \item \textbf{What is a major issue with priority scheduling?} A major issue with priority scheduling is indefinitely blocking, or \textbf{starvation}. It's possible that low priority processes never get selected to be run on the CPU, since there are always higher priority processes to run first. It is possible that the profess will eventually be run when there are hardly any other processes keeping the computer busy (e.g. 2AM Sunday when system is lightly loaded), or the system may crash eventually and these unfinished low priority processes are just lost (I assume the high priority processes are also lost then?).
-    \item \textbf{How can the issue of starvation be solved?} One solution is to use \textbf{aging}: aging gradually increases the priority of processes that wait in the system for a long time, so that eventually they will have a priority high enough to actually be selected. Another option is to combine round robine and priority scheduling so that the system executes the highest priority processes, and runs process with the \textbf{same priority} using round robin (basically given equal priority processes, rotate among them using round robin).
+    \item \textbf{How can the issue of starvation be solved?} One solution is to use \textbf{aging}: aging gradually increases the priority of processes that wait in the system for a long time, so that eventually they will have a priority high enough to actually be selected. Another option is to combine round robin and priority scheduling so that the system executes the highest priority processes, and runs process with the \textbf{same priority} using round robin (basically given equal priority processes, rotate among them using round robin).
 \end{itemize}
 
 \subsection*{5.3.5: Multilevel Queue Scheduling}
 \addcontentsline{toc}{subsection}{5.3.5: Multilevel Queue Scheduling}
 
 \begin{itemize}
-    \item \textbf{How does multilevel queue scheduling work?} Simple scheduling algorithms have just a single ready queue. Sometimes it is practical to have separate queues for distinct priority levels: multilevel queue scheduling simply schedules the process in the highest-priority queue, and can be combined with round robin to rotate equal priority processes among each other. Processes are permanently assigned to a specific queue and \textbf{may not} be moved between queues. In addition, there must be scheduling among the queue themselves:
+    \item \textbf{How does multilevel queue scheduling work?} Simple scheduling algorithms have just a single ready queue. Sometimes it is practical to have separate queues for distinct priority levels: multilevel queue scheduling simply schedules the process in the highest-priority queue, and can be combined with round robin to rotate equal priority processes among each other. Processes are permanently assigned to a specific queue and \textbf{may not} be moved between queues. In addition, there must be scheduling among the queues themselves:
         \begin{itemize}
             \item One possibility is to use fixed-priority queue preemptive scheduling: each queue has absolute priority over lower-priority queues. No processes in lower-priority queues get to run until all higher priority processes are finished. If a low priority process is running and a higher priority process entered its respective ready queue, the low priority process will be preempted to make way for the higher priority process.
             \item Another option is to time slice among the queues: each queue gets a certain portion of CPU time, during which it can then schedule its various processes (e.g. high-priority queue can be given 80 percent of CPU time and 20 percent for low-priority queue).
@@ -1193,7 +1193,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
             \item Swap in a page from disk (in the process potentially replacing another page in memory, writing this page back to disk if it has been marked as modified). This also requires updating the page table.
             \item Restart the instruction that caused the page fault.
         \end{enumerate}
-    \item \textbf{What performance considerations do we have to make in a demand-paging system?} It is important to keep the pag fault rate low, since otherwise the effective access time increases (more memory accesses require the overhead of paging) and process execution slows down dramatically.
+    \item \textbf{What performance considerations do we have to make in a demand-paging system?} It is important to keep the page fault rate low, since otherwise the effective access time increases (more memory accesses require the overhead of paging) and process execution slows down dramatically.
 \end{itemize}
 
 \section*{OS Concepts 10.3: Copy-on-Write}
@@ -1206,7 +1206,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \section*{OS Concepts 10.4: Page Replacement}
 \addcontentsline{toc}{section}{10.4: Page Replacement}
 
-\subsection*{OS Concepts 10.4.1: Basic Page Replacement}
+\subsection*{10.4.1: Basic Page Replacement}
 \addcontentsline{toc}{subsection}{10.4.1: Basic Page Replacement}
 
 \begin{itemize}
@@ -1228,7 +1228,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is the relationship between the size of memory and page faults?} As the number of frames increases (by adding more memory), the number of page faults decreases (we can keep more pages in memory without having to swap out to disk).
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.2: FIFO Page Replacement}
+\subsection*{10.4.2: FIFO Page Replacement}
 \addcontentsline{toc}{subsection}{10.4.2: FIFO Page Replacement}
 
 \begin{itemize}
@@ -1238,14 +1238,14 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is Belady's anomaly?} Belady's anomaly is where for some page replacement algorithms, the page fault rate may actually \textit{increase} as the number of page frames increases. This can happen when using the FIFO replacement algorithm.
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.3: Optimal Page Replacement (Belady's Algorithm)}
+\subsection*{10.4.3: Optimal Page Replacement (Belady's Algorithm)}
 \addcontentsline{toc}{subsection}{10.4.3: Optimal Page Replacement (Belady's Algorithm)}
 
 \begin{itemize}
     \item \textbf{Belady's Algorithm:} Belady's algorithm has the lowest page fault rate of all algorithms and will never suffer from Belady's anomaly (it is \textit{optimal}). The algorithm is simply: replace the page that will not be used for the longest period of time in the future. Obviously difficult to implement, as it requires knowledge of future memory accesses. Often used to compare other algorithms against (e.g. algorithm \(x\) is \(y\) percent of optimal at worst).
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.4: LRU Page Replacement}
+\subsection*{10.4.4: LRU Page Replacement}
 \addcontentsline{toc}{subsection}{10.4.4: LRU Page Replacement}
 
 \begin{itemize}
@@ -1261,7 +1261,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What are stack algorithms?} Stack algorithms are replacement algorithms where the pages that are in memory for \(n\) frames would still be in memory if we have \(m\) frames, where \(m > n\) (the same pages will be in memory even if more memory is added).
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.5: LRU-Approximation Page Replacement Algorithms}
+\subsection*{10.4.5: LRU-Approximation Page Replacement Algorithms}
 \addcontentsline{toc}{subsection}{10.4.5: LRU-Approximation Page Replacement Algorithms}
 
 \begin{itemize}
@@ -1279,21 +1279,21 @@ The OS can be seen as a resource manager. The following are things that the OS m
         When page replacement is required, the same scheme is used as in the clock algorithm, but instead of checking whether the reference bit is 1, we examine the ordered pair to determine the class to which the page belongs. The first page encountered in the lowest class is replaced. The circular queue may have to be scanned several times before a page to be replaced can be found. The major difference between this algorithm and the second-chance algorithm is that this algorithm tries to avoid paging out pages that have been modified, to reduce I/O.
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.6: Counting-Based Page Replacement}
+\subsection*{10.4.6: Counting-Based Page Replacement}
 \addcontentsline{toc}{subsection}{10.4.6: Counting-Based Page Replacement}
 
 \begin{itemize}
     \item \textbf{Counting-based replacement algorithms:} A counter of the number of references made to each page can be stored. With this counter, \textbf{least frequently used} (LFU) and \textbf{most frequently used} (MFU) algorithms can be used. Neither are common though, as implementation is expensive and they do not approximate Belady's algorithm well.
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.7: Page-Buffering Algorithms}
+\subsection*{10.4.7: Page-Buffering Algorithms}
 \addcontentsline{toc}{subsection}{10.4.7: Page-Buffering Algorithms}
 
 \begin{itemize}
     \item \textbf{What optimizations can we perform with page replacement algorithms?} Systems can keep a pool of free frames, so that when a page fault occurs and a victim page selected, the desired page is read into one of these free frames instead. This allows the process to restart as soon as possible without waiting for the victim page to be paged out. When the victim page is finally paged out, its frame is added to the free-frame pool. The system can also maintain a list of modified pages: whenever the paging device is idle, a modified page is selected and \textit{written} (not full page out, still kept in memory) to disk(perform writes to disk ahead of time when system is idle). Its dirty bit is set back to 0.
 \end{itemize}
 
-\subsection*{OS Concepts 10.4.8: Applications and Page Replacement}
+\subsection*{10.4.8: Applications and Page Replacement}
 \addcontentsline{toc}{subsection}{10.4.8: Applications and Page Replacement}
 
 \begin{itemize}
@@ -1326,8 +1326,8 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Are HDDs and NVM devices the only types of storage devices?} No! There are lots of different types of storafge devices, however most are very niche. Technology is also constantly changing, meaning new types of storage devices come along.
 \end{itemize}
 
-\section*{OS Concepts 12.2: HDD Scheduling}
-\addcontentsline{toc}{section}{12.2: HDD Scheduling}
+\section*{OS Concepts 11.2: HDD Scheduling}
+\addcontentsline{toc}{section}{11.2: HDD Scheduling}
 
 \begin{itemize}
     \item \textbf{What is HDD scheduling and why is it needed?} It is the responsibility of the OS to use the hardware efficiently. For HDDs, this means minimizing acces time and maximizing data transfer bandwidth. This can be achieved by managing the order in which HDD I/O requests are serviced (basically in what order do we vist HDD block addresses?), to minimize the amount of head movement.
