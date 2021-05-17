@@ -39,7 +39,7 @@
 
 \begin{document}
 
-\part*{OS Concepts Chapter 1: Introduction}
+\part*{Chapter 1: Introduction}
 \addcontentsline{toc}{part}{Chapter 1: Introduction}
 
 \section*{1.1: What Operating Systems Do}
@@ -231,7 +231,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Decentralized P2P:} A decentralized system uses no centralized lookup service. Instead, a peer acting as a client must discover what node provides a desired service by broadcasting a request for the service to all other nodes in the network. To support this approach, a \textit{discovery protocol} must be provided that allows peers to discover services provided by other peers in the network.
 \end{itemize}
 
-\part*{OS Concepts Chapter 2: OS Structures}
+\part*{Chapter 2: OS Structures}
 \addcontentsline{toc}{part}{Chapter 2: OS Structures}
 
 \section*{2.6: Why Applications are OS Specific}
@@ -320,7 +320,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{UEFI:} More recent computers have replaced the BIOS-based boot process with UEFI (Unified Extensible Firmware Interface). The biggest difference is that UEFI is a single, complete boot manager and therefore is faster than the multistage BIOS boot process.
 \end{itemize}
 
-\part*{OS Concepts Chapter 3: Processes}
+\part*{Chapter 3: Processes}
 \addcontentsline{toc}{part}{Chapter 3: Processes}
 
 \section*{3.1: Process Concept}
@@ -496,7 +496,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What is difference between ordinary and named pipes?} Named pipes provide bidirectional communication, and do not require a parent-child process relationship. Once a named pipe is established, several processes can use it for communication. Named pipes also continue to exist after communicating processes have finished, and must explicitly be deleted.
 \end{itemize}
 
-\part*{OS Concepts Chapter 4: Threads \& Concurrency}
+\part*{Chapter 4: Threads \& Concurrency}
 \addcontentsline{toc}{part}{Chapter 4: Threads \& Concurrency}
 
 \section*{4.1: Threads Overview}
@@ -660,7 +660,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How are threads and processes created on Linux?} Linux does not distinguish between processes and threads. Linux instead uses the term \textbf{task} - rather than process or thread when referring to a flow of control within a program. The Linux \texttt{clone()} system call provides the ability to create such tasks. The arguments passed to \texttt{clone()} specify the amount of data shared between parent and child tasks, thus making tasks behave more like processes or threads. The \texttt{fork()} system call on Linux is typically implemented using \texttt{clone()}.
 \end{itemize}
 
-\part*{OS Concepts Chapter 5: CPU Scheduling}
+\part*{Chapter 5: CPU Scheduling}
 \addcontentsline{toc}{part}{Chapter 5: CPU Scheduling}
 
 \section*{5.1: CPU Scheduling Basic Concepts}
@@ -915,7 +915,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \end{figure}
 \end{itemize}
 
-\part*{OS Concepts Chapter 6: Synchronization Tools}
+\part*{Chapter 6: Synchronization Tools}
 \addcontentsline{toc}{part}{Chapter 6: Synchronization Tools}
 
 \section*{6.1: Synchronization Background}
@@ -1032,7 +1032,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{How can priority inversion be avoided?} There are several solutions to avoid priority inversion. One such solution is by implementing a \textbf{priority-inheritance protocol}: all processes that are accessing resources needed by a higher priority process inherit the higher priority until they are finished with the resource (at which point they revert to their original priorities).
 \end{itemize}
 
-\part*{OS Concepts Chapter 9: Main Memory}
+\part*{Chapter 9: Main Memory}
 \addcontentsline{toc}{part}{Chapter 9: Main Memory}
 
 \section*{9.1: Main Memory Background}
@@ -1211,7 +1211,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What can we do when thrashing occurs?} There are generally two approaches: terminate some processes, or get more physical memory (as the number of physical frames increases, the number of page faults decreases)!
 \end{itemize}
 
-\part*{OS Concepts Chapter 10: Virtual Memory}
+\part*{Chapter 10: Virtual Memory}
 \addcontentsline{toc}{part}{Chapter 10: Virtual Memory}
 
 \section*{10.1: Virtual Memory Background}
@@ -1348,7 +1348,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Why do some applications bypass OS paging?} Some applications (particularly databases) know their memory and storage use better than the OS does (that uses algorithms for general purpose use), meaning OS virtual memory may actually negatively impact their performance. Because of this, the OS gives programs the ability to use a secondary storage partition as as large sequential array of logical blocks, without any OS intervention (no demand paging, file locking, prefetching, space allocation, file names, directories, etc.). This partition is called the \textbf{raw disk}, and I/O to this disk is called raw I/O.
 \end{itemize}
 
-\part*{OS Concepts Chapter 11: Mass-Storage Structure}
+\part*{Chapter 11: Mass-Storage Structure}
 \addcontentsline{toc}{part}{Chapter 11: Mass-Storage Structure}
 
 \section*{11.1: Overview of Mass-Storage Structure}
@@ -1432,7 +1432,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{What happens after the bootstrap loader runs?} The next step after the bootstrap loader runs is for the full bootstrap loader to run (e.g. grub for Linux). This program is responsible for loading the operating system and transferring execution to it.
 \end{itemize}
 
-\part*{OS Concepts Chapter 12: I/O Systems}
+\part*{Chapter 12: I/O Systems}
 \addcontentsline{toc}{part}{Chapter 12: I/O Systems}
 
 \section*{12.1: I/O Overview}
@@ -1551,7 +1551,7 @@ The OS can be seen as a resource manager. The following are things that the OS m
     \item \textbf{Spooling:} Queue output for a device, such as a printer, that cannot accept interleaved data streams.
 \end{itemize}
 
-\part*{OS Concepts Chapter 13: File-System Interface}
+\part*{Chapter 13: File-System Interface}
 \addcontentsline{toc}{part}{Chapter 13: File-System Interface}
 
 \section*{13.1: File Concept}
