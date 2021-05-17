@@ -1150,7 +1150,28 @@ The OS can be seen as a resource manager. The following are things that the OS m
 \addcontentsline{toc}{section}{9.4: Structure of the Page Table}
 
 \begin{itemize}
-    \item \textbf{TODO}
+    \item \textbf{What is a problem with basic page table implementations on modern architectures?} On modern 32/64 bit architectures, address spaces are very large (\(2^{32}\) to \(2^{64}\)) logical addresses. This means the page tables themselves become extremely large and take up lots of memory, as there is a page table for every process and each page table has \(2^{32}\)/\(2^{64}\) entries.
+    \item \textbf{Hierarchical Paging:} Hierarchical paging attempts to solve the problem by paging the page table itself. The page number in the logical address is divided into an index into the outer page table and an offset into the inner page table. Shown in figure \ref{fig:hierarchical-paging}. Can be extended to more than 2 levels, but each level requires an additional memory access (becomes prohibitive on 64 bit architectures).
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/hierarchical-paging.jpg}
+            \caption{Two level hierarchical paging}
+            \label{fig:hierarchical-paging}
+        \end{figure}
+    \item \textbf{Hashed Page Tables:} Basically just use a chained hash table for the page table: virtual page number in logical address used as keys, and linked list of virtual page numbers and page frames as values. The virtual page numbers are stored as values as well since we need to verify if the virtual page number and page frame combination stored in the linked list is indeed the correct pair for the virtual page number we are looking up. Shown in \ref{fig:hashed-page-table}..
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/hashed-page-table.jpg}
+            \caption{Hashed page table}
+            \label{fig:hashed-page-table}
+        \end{figure}
+    \item \textbf{Inverted Page Tables:} An inverted page table has one entry for each physical frame of memory. Each entry consists of the virtual page number stored in that physical frame, and also information about the process that owns the page (address-space identifier, ASID). This means there is \textbf{only one} page table in the system, and only one entry for each physical frame. The ASID is needed so that the system can verify that the process asking for the physical address is the process that actually owns that page. The entire page must be linearly searched (since the inverted page table is sorted by physical addresses but lookups occur on virtual addresses); hash tables can be used to alleviate this issue. Shared memory is also not possible, since multiple virtual pages cannot map to the same physical page (only one virtual page). Shown in \ref{fig:inverted-page-table}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{figures/inverted-page-table.jpg}
+            \caption{Inverted page table}
+            \label{fig:inverted-page-table}
+        \end{figure}
 \end{itemize}
 
 \section*{OS Concepts 9.5: Swapping}
